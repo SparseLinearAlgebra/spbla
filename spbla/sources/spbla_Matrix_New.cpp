@@ -24,10 +24,15 @@
 
 #include <spbla_Common.hpp>
 
-spbla_Info spbla_Initialize(
-        spbla_Backend       backend
+spbla_Info spbla_Matrix_New(
+        spbla_Matrix*       matrix,
+        spbla_Index         nrows,
+        spbla_Index         ncols
 ) {
     SPBLA_BEGIN()
-        spbla::Library::Initialize(backend);
+        SPBLA_VALIDATE_LIBRARY()
+        SPBLA_ARG_NOT_NULL(matrix)
+
+        *matrix = (spbla_Matrix) spbla::Library::CreateMatrix(nrows, ncols);
     SPBLA_END()
 }

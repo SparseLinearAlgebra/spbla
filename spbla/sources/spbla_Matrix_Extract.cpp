@@ -24,10 +24,23 @@
 
 #include <spbla_Common.hpp>
 
-spbla_Info spbla_Initialize(
-        spbla_Backend       backend
+spbla_Info spbla_Matrix_Extract(
+        spbla_Matrix        matrix,
+        spbla_Index*        rows,
+        spbla_Index*        cols,
+        spbla_Index*        nvals,
+        spbla_Hints         hints
 ) {
     SPBLA_BEGIN()
-        spbla::Library::Initialize(backend);
+        SPBLA_VALIDATE_LIBRARY()
+        SPBLA_ARG_NOT_NULL(matrix)
+        SPBLA_ARG_NOT_NULL(rows)
+        SPBLA_ARG_NOT_NULL(cols)
+        SPBLA_ARG_NOT_NULL(nvals)
+
+        auto m = (spbla::Matrix*) matrix;
+        auto size = (size_t) nvals;
+        m->Extract(rows, cols, size);
+        *nvals = size;
     SPBLA_END()
 }

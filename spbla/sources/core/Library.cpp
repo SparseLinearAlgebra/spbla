@@ -24,6 +24,7 @@
 
 #include <core/Library.hpp>
 #include <core/Matrix.hpp>
+#include <core/Exception.hpp>
 
 #ifdef SPBLA_WITH_CPU_BACKEND
 #include <cpu/Backend.hpp>
@@ -78,6 +79,10 @@ namespace spbla {
 
     void Library::Finalize() {
         delete mProvider;
+    }
+
+    void Library::Validate() {
+        CHECK_RAISE_ERROR(mProvider, InvalidState, "Library backend is not initialized");
     }
 
     Matrix* Library::CreateMatrix(size_t nrows, size_t ncols) {

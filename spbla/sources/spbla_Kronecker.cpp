@@ -24,10 +24,21 @@
 
 #include <spbla_Common.hpp>
 
-spbla_Info spbla_Initialize(
-        spbla_Backend       backend
+SPBLA_EXPORT SPBLA_API spbla_Info spbla_Kronecker(
+        spbla_Matrix        result,
+        spbla_Matrix        left,
+        spbla_Matrix        right
 ) {
     SPBLA_BEGIN()
-        spbla::Library::Initialize(backend);
+        SPBLA_VALIDATE_LIBRARY()
+        SPBLA_ARG_NOT_NULL(result)
+        SPBLA_ARG_NOT_NULL(left)
+        SPBLA_ARG_NOT_NULL(right)
+
+        auto resultM = (spbla::Matrix*) result;
+        auto leftM = (spbla::Matrix*) left;
+        auto rightM = (spbla::Matrix*) right;
+
+        resultM->Kronecker(*leftM, *rightM);
     SPBLA_END()
 }

@@ -41,15 +41,13 @@ namespace spbla {
     public:
         static void Initialize(spbla_Backend backend);
         static void Finalize();
+        static void Validate();
         static class Matrix* CreateMatrix(size_t nrows, size_t ncols);
         static void ReleaseMatrix(class Matrix* matrix);
     private:
         /** Private pointer to actual implementation */
         static class backend::Backend* mProvider;
     };
-
-    /** Actual library primitive type */
-    using spbla_Matrix = class Matrix;
 
 }
 

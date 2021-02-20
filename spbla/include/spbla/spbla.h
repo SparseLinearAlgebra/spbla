@@ -87,7 +87,7 @@ typedef enum spbla_Backend {
 /**
  * Hint flags, passed to the library functions.
  */
-typedef enum spbla_HINT {
+typedef enum spbla_Hint {
     /** Pass, if no hints provided */
     SPBLA_HINT_NO = 0x0,
     /** Pass, if matrix input values are sorted in row-col order */
@@ -168,12 +168,84 @@ SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Build(
  * @param hints
  * @return
  */
-SPBLA_EXPORT SPBLA_API spbla_Matrix spbla_Matrix_Extract(
+SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Extract(
     spbla_Matrix        matrix,
     spbla_Index*        rows,
     spbla_Index*        cols,
     spbla_Index*        nvals,
     spbla_Hints         hints
+);
+
+/**
+ *
+ * @param matrix
+ * @param nrows
+ * @return
+ */
+SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Nrows(
+    spbla_Matrix        matrix,
+    spbla_Index*        nrows
+);
+
+/**
+ *
+ * @param matrix
+ * @param ncols
+ * @return
+ */
+SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Ncols(
+    spbla_Matrix        matrix,
+    spbla_Index*        ncols
+);
+
+/**
+ *
+ * @param matrix
+ * @param nvals
+ * @return
+ */
+SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Nvals(
+    spbla_Matrix        matrix,
+    spbla_Index*        nvals
+);
+
+/**
+ *
+ * @param result
+ * @param left
+ * @param right
+ * @return
+ */
+SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_EWiseAdd(
+    spbla_Matrix        result,
+    spbla_Matrix        left,
+    spbla_Matrix        right
+);
+
+/**
+ *
+ * @param result
+ * @param left
+ * @param right
+ * @return
+ */
+SPBLA_EXPORT SPBLA_API spbla_Info spbla_MxM(
+    spbla_Matrix        result,
+    spbla_Matrix        left,
+    spbla_Matrix        right
+);
+
+/**
+ *
+ * @param result
+ * @param left
+ * @param right
+ * @return
+ */
+SPBLA_EXPORT SPBLA_API spbla_Info spbla_Kronecker(
+    spbla_Matrix        result,
+    spbla_Matrix        left,
+    spbla_Matrix        right
 );
 
 #endif //SPBLA_SPBLA_H

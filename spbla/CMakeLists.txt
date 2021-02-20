@@ -12,6 +12,16 @@ set(SPBLA_C_API_SOURCES
         sources/spbla_Common.hpp
         sources/spbla_Initialize.cpp
         sources/spbla_Finalize.cpp
+        sources/spbla_Matrix_New.cpp
+        sources/spbla_Matrix_Free.cpp
+        sources/spbla_Matrix_Build.cpp
+        sources/spbla_Matrix_Extract.cpp
+        sources/spbla_Matrix_Nrows.cpp
+        sources/spbla_Matrix_Ncols.cpp
+        sources/spbla_Matrix_Nvals.cpp
+        sources/spbla_Matrix_EWiseAdd.cpp
+        sources/spbla_MxM.cpp
+        sources/spbla_Kronecker.cpp
         )
 
 # Generic backend interface

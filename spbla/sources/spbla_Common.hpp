@@ -27,7 +27,27 @@
 
 #include <spbla/spbla.h>
 #include <core/Library.hpp>
+#include <core/Exception.hpp>
+#include <core/Matrix.hpp>
 
-// todo: useful macro
+// Code block to wrap backend exceptions
+#define SPBLA_BEGIN()                               \
+    try {
+
+#define SPBLA_END()                                 \
+    } catch (const spbla::Exception& e) {           \
+        return e.GetInfo();                         \
+    } catch (const std::exception& fallback) {      \
+        return spbla_Info::SPBLA_INFO_ERROR;        \
+    }                                               \
+    return spbla_Info::SPBLA_INFO_SUCCESS;
+
+// State validation
+#define SPBLA_VALIDATE_LIBRARY()                    \
+    spbla::Library::Validate();
+
+// Arguments validation
+#define SPBLA_ARG_NOT_NULL(arg)                     \
+    CHECK_RAISE_ERROR(arg != nullptr, InvalidArgument, "Passed null argument")
 
 #endif //SPBLA_SPBLA_COMMON_HPP

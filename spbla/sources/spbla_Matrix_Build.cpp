@@ -24,10 +24,20 @@
 
 #include <spbla_Common.hpp>
 
-spbla_Info spbla_Initialize(
-        spbla_Backend       backend
+spbla_Info spbla_Matrix_Build(
+        spbla_Matrix        matrix,
+        const spbla_Index*  rows,
+        const spbla_Index*  cols,
+        spbla_Index         nvals,
+        spbla_Hints         hints
 ) {
     SPBLA_BEGIN()
-        spbla::Library::Initialize(backend);
+        SPBLA_VALIDATE_LIBRARY()
+        SPBLA_ARG_NOT_NULL(matrix)
+        SPBLA_ARG_NOT_NULL(rows)
+        SPBLA_ARG_NOT_NULL(cols)
+
+        auto m = (spbla::Matrix*) matrix;
+        m->Build(rows, cols, nvals, hints & SPBLA_HINT_VALUES_SORTED);
     SPBLA_END()
 }

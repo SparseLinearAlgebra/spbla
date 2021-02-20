@@ -31,6 +31,10 @@
 
 namespace spbla {
 
+    /**
+     * Generic library exception.
+     * Use this one in particular backend implementations.
+     */
     class Exception: public std::exception {
     public:
 
@@ -43,6 +47,9 @@ namespace spbla {
               mCritical(critical) {
 
         }
+
+        Exception(const Exception& e) noexcept = default;
+        Exception(Exception&& e) noexcept = default;
 
         ~Exception() override = default;
 
@@ -83,6 +90,51 @@ namespace spbla {
         bool mCritical;
     };
 
+    /**
+     * Exceptions with spbla_Info error code parametrisation.
+     * @tparam Type Exception error code (type)
+     */
+    template<spbla_Info Type>
+    class TException: public Exception {
+    public:
+        TException(std::string&& message, std::string&& function, std::string&& file, size_t line, bool critical)
+            : Exception(std::move(message), std::move(function), std::move(file), line, Type, critical)  {
+
+        }
+
+        TException(const TException& other) noexcept = default;
+        TException(TException&& other) noexcept = default;
+
+        ~TException() override = default;
+    };
+
+    // Errors exposed to the C API
+    using Error = TException<spbla_Info::SPBLA_INFO_ERROR>;
+    using DeviceError = TException<spbla_Info::SPBLA_INFO_DEVICE_ERROR>;
+    using MemOpFailed = TException<spbla_Info::SPBLA_INFO_MEM_OP_FAILED>;
+    using InvalidArgument = TException<spbla_Info::SPBLA_INFO_INVALID_ARGUMENT>;
+    using InvalidState = TException<spbla_Info::SPBLA_INFO_INVALID_STATE>;
+    using BackendNotSupported = TException<spbla_Info::SPBLA_INFO_BACKEND_NOT_SUPPORTED>;
+    using NotImplemented = TException<spbla_Info::SPBLA_INFO_NOT_IMPLEMENTED>;
+
 }
+
+// An error, in theory, can recover after this
+#define RAISE_ERROR(type, message)                                                      \
+    do {                                                                                \
+        throw ::spbla::type(message, __FUNCTION__, __FILE__, __LINE__, false);          \
+    } while (0);
+
+#define CHECK_RAISE_ERROR(condition, type, message)                                     \
+    if (!(condition)) { RAISE_ERROR(type, #condition ": " message); } else { }
+
+// Critical errors, cause library shutdown
+#define RAISE_CRITICAL_ERROR(type, message)                                             \
+    do {                                                                                \
+        throw ::spbla::type(message, __FUNCTION__, __FILE__, __LINE__, true);           \
+    } while (0);
+
+#define CHECK_RAISE_CRITICAL_ERROR(condition, type, message)                            \
+    if (!(condition)) { RAISE_CRITICAL_ERROR(type, #condition ": " message); } else { }
 
 #endif //SPBLA_EXCEPTION_HPP

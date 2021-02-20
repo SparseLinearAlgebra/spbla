@@ -24,10 +24,13 @@
 
 #include <spbla_Common.hpp>
 
-spbla_Info spbla_Initialize(
-        spbla_Backend       backend
+spbla_Info spbla_Matrix_Free(
+        spbla_Matrix*       matrix
 ) {
     SPBLA_BEGIN()
-        spbla::Library::Initialize(backend);
+        SPBLA_VALIDATE_LIBRARY()
+        SPBLA_ARG_NOT_NULL(matrix)
+
+        spbla::Library::ReleaseMatrix((spbla::Matrix*) *matrix);
     SPBLA_END()
 }

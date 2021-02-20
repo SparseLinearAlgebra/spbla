@@ -24,10 +24,16 @@
 
 #include <spbla_Common.hpp>
 
-spbla_Info spbla_Initialize(
-        spbla_Backend       backend
+spbla_Info spbla_Matrix_Nvals(
+        spbla_Matrix        matrix,
+        spbla_Index*        nvals
 ) {
     SPBLA_BEGIN()
-        spbla::Library::Initialize(backend);
+        SPBLA_VALIDATE_LIBRARY()
+        SPBLA_ARG_NOT_NULL(matrix)
+        SPBLA_ARG_NOT_NULL(nvals)
+
+        auto m = (spbla::Matrix*) matrix;
+        *nvals = m->GetNvals();
     SPBLA_END()
 }

@@ -26,6 +26,8 @@
 
 spbla_Info spbla_Finalize(
 ) {
-    spbla::Library::Finalize();
-    return spbla_Info::SPBLA_INFO_SUCCESS;
+    SPBLA_BEGIN()
+        SPBLA_VALIDATE_LIBRARY()
+        spbla::Library::Finalize();
+    SPBLA_END();
 }
