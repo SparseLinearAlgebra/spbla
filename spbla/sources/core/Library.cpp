@@ -32,8 +32,14 @@
 
 namespace spbla {
 
-    void Library::Initialize(spbla_Backend backend) {
+    backend::Backend* Library::mProvider = nullptr;
+
+    void Library::Initialize(spbla_Backend backend, index optionsCount, const char *const *options) {
         bool selected = false;
+        OptionsParser optionsParser;
+
+        // todo: log error if it is not parsed
+        optionsParser.Parse(optionsCount, options);
 
         // Default strategy is:
         // - First check if cuda is supported
@@ -61,7 +67,7 @@ namespace spbla {
             default:
 #ifdef SPBLA_WITH_CPU_BACKEND
                 mProvider = new cpu::Backend();
-                mProvider->Initialize(0, nullptr);
+                mProvider->Initialize(optionsParser);
 
                 if (mProvider->IsInitialized()) {
                     selected = true;
@@ -69,16 +75,20 @@ namespace spbla {
                 }
 
                 delete mProvider;
+                mProvider = nullptr;
 #endif //SPBLA_WITH_CPU_BACKEND
         }
 
-        if (!selected) {
-            //todo: throw exception
-        }
+        CHECK_RAISE_CRITICAL_ERROR(selected, BackendNotSupported, "Failed to select supported backend for computations");
     }
 
     void Library::Finalize() {
+        // Remember to finalize backend
+        mProvider->Finalize();
+        // Release memory
         delete mProvider;
+        // Note: set to null for convenience
+        mProvider = nullptr;
     }
 
     void Library::Validate() {

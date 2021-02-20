@@ -22,36 +22,56 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#ifndef SPBLA_CPU_BACKEND_HPP
-#define SPBLA_CPU_BACKEND_HPP
+#ifndef SPBLA_TESTING_MATRIXKRONECKER_HPP
+#define SPBLA_TESTING_MATRIXKRONECKER_HPP
 
-#include <backend/Backend.hpp>
-#include <backend/Matrix.hpp>
+#include <testing/Matrix.hpp>
 
-namespace spbla {
-    namespace cpu {
+namespace testing {
 
-        class Backend final: public backend::Backend {
-        public:
-            ~Backend() override = default;
+    struct MatrixKroneckerFunctor {
+        Matrix operator()(const Matrix& ma, const Matrix& mb) {
+            auto m = ma.mNrows;
+            auto n = ma.mNcols;
+            auto k = mb.mNrows;
+            auto t = mb.mNcols;
 
-            void Initialize(const OptionsParser& options) override;
-            bool IsInitialized() const override;
-            void Finalize() override;
+            Matrix result;
+            result.mNrows = m * k;
+            result.mNcols = n * t;
+            result.mNvals = ma.mNvals * mb.mNvals;
+            result.mRowsIndex.reserve(result.mNvals);
+            result.mColsIndex.reserve(result.mNvals);
 
-            backend::Matrix *CreateMatrix(size_t nrows, size_t ncols) override;
-            void ReleaseMatrix(backend::Matrix *matrix) override;
+            std::vector<Pair> vals;
+            vals.reserve(result.mNvals);
 
-            const std::string &GetName() const override;
-            const std::string &GetDescription() const override;
-            const std::string &GetAuthorsName() const override;
+            for (spbla_Index i = 0; i < ma.mNvals; i++) {
+                auto blockI = ma.mRowsIndex[i];
+                auto blockJ = ma.mColsIndex[i];
 
-        private:
-            bool mIsInitialized = false;
-            bool mMustFinalize = true;
-        };
+                for (spbla_Index j = 0; j < mb.mNvals; j++) {
+                    auto valueI = mb.mRowsIndex[j];
+                    auto valueJ = mb.mColsIndex[j];
 
-    }
+                    spbla_Index idI = k * blockI + valueI;
+                    spbla_Index idJ = t * blockJ + valueJ;
+
+                    vals.push_back(Pair{idI, idJ});
+                }
+            }
+
+            std::sort(vals.begin(), vals.end(), PairCmp{});
+
+            for (auto& p: vals) {
+                result.mRowsIndex.push_back(p.i);
+                result.mColsIndex.push_back(p.j);
+            }
+
+            return std::move(result);
+        }
+    };
+
 }
 
-#endif //SPBLA_CPU_BACKEND_HPP
+#endif //SPBLA_TESTING_MATRIXKRONECKER_HPP

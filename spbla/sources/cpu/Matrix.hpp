@@ -26,7 +26,10 @@
 #define SPBLA_CPU_MATRIX_HPP
 
 #include <backend/Matrix.hpp>
-#include <GraphBLAS.h>
+
+extern "C" {
+    #include <GraphBLAS.h>
+};
 
 namespace spbla {
     namespace cpu {

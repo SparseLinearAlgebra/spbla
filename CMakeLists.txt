@@ -5,7 +5,11 @@ option(SPBLA_WITH_CPU_BACKEND "Build library with cpu backend as fallback" ON)
 option(SPBLA_WITH_CUDA_BACKEND "Build library with cuda backend" OFF)
 option(SPBLA_WITH_OPENCL_BACKEND "Build library with opencl backend" OFF)
 
-# Make sure our own modules are found
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+option(SPBLA_WITH_TESTS "Build library source code with provided unit tests" ON)
+
+if (SPBLA_WITH_TESTS)
+    message(STATUS "Add gtest dependency for library unit tests")
+    add_subdirectory(deps/gtest)
+endif()
 
 add_subdirectory(spbla)

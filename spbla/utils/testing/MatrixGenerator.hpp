@@ -22,36 +22,68 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#ifndef SPBLA_CPU_BACKEND_HPP
-#define SPBLA_CPU_BACKEND_HPP
+#ifndef SPBLA_TESTING_MATRIXGENERATOR_HPP
+#define SPBLA_TESTING_MATRIXGENERATOR_HPP
 
-#include <backend/Backend.hpp>
-#include <backend/Matrix.hpp>
+#include <testing/Pair.hpp>
+#include <vector>
+#include <random>
+#include <ctime>
 
-namespace spbla {
-    namespace cpu {
+namespace testing {
 
-        class Backend final: public backend::Backend {
-        public:
-            ~Backend() override = default;
+    struct Condition1 {
+        bool operator()(spbla_Index i, spbla_Index j) {
+            return (((i - 1) & i) == 0 && ((j - 1) & j) == 0);
+        }
+    };
 
-            void Initialize(const OptionsParser& options) override;
-            bool IsInitialized() const override;
-            void Finalize() override;
+    struct Condition2 {
+        bool operator()(spbla_Index i, spbla_Index j) {
+            return !(i % 5) && !(j % 7);
+        }
+    };
 
-            backend::Matrix *CreateMatrix(size_t nrows, size_t ncols) override;
-            void ReleaseMatrix(backend::Matrix *matrix) override;
+    struct Condition3 {
+    public:
+        explicit Condition3(float density): mDensity(density) {
+            mRandomEngine.seed(std::time(0));
+        }
+        bool operator()(spbla_Index i, spbla_Index j) {
+            return std::uniform_real_distribution<float>(0.0f, 1.0f)(mRandomEngine) <= mDensity;
+        }
+    private:
+        std::default_random_engine mRandomEngine;
+        float mDensity = 1.0f;
+    };
 
-            const std::string &GetName() const override;
-            const std::string &GetDescription() const override;
-            const std::string &GetAuthorsName() const override;
-
-        private:
-            bool mIsInitialized = false;
-            bool mMustFinalize = true;
-        };
-
+    template<typename Condition>
+    static void GenerateTestData(size_t rows, size_t columns, std::vector<Pair> &values, Condition&& condition) {
+        for (spbla_Index i = 0; i < rows; i++) {
+            for (spbla_Index j = 0; j < columns; j++) {
+                // is i and j power of two or 0
+                if (condition(i, j)) {
+                    values.push_back(Pair{i, j});
+                }
+            }
+        }
     }
+
+    template<typename Condition>
+    static void GenerateTestData(size_t nrows, size_t ncols, std::vector<spbla_Index> &rows, std::vector<spbla_Index> &cols, size_t& nvals, Condition&& condition) {
+        nvals = 0;
+        for (spbla_Index i = 0; i < nrows; i++) {
+            for (spbla_Index j = 0; j < ncols; j++) {
+                // is i and j power of two or 0
+                if (condition(i, j)) {
+                    rows.push_back(i);
+                    cols.push_back(j);
+                    nvals += 1;
+                }
+            }
+        }
+    }
+    
 }
 
-#endif //SPBLA_CPU_BACKEND_HPP
+#endif //SPBLA_TESTING_MATRIXGENERATOR_HPP

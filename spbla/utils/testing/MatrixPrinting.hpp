@@ -22,36 +22,56 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#ifndef SPBLA_CPU_BACKEND_HPP
-#define SPBLA_CPU_BACKEND_HPP
+#ifndef SPBLA_TESTING_MATRIXPRINTING_HPP
+#define SPBLA_TESTING_MATRIXPRINTING_HPP
 
-#include <backend/Backend.hpp>
-#include <backend/Matrix.hpp>
+#include <spbla/spbla.h>
 
-namespace spbla {
-    namespace cpu {
+namespace testing {
 
-        class Backend final: public backend::Backend {
-        public:
-            ~Backend() override = default;
+    template <typename Stream>
+    void PrintMatrix(Stream& stream, const spbla_Index* rowsIndex, const spbla_Index* colsIndex, spbla_Index nrows, spbla_Index ncols, spbla_Index nvals) {
+        spbla_Index currentRow = 0;
+        spbla_Index currentCol = 0;
+        spbla_Index currentId = 0;
 
-            void Initialize(const OptionsParser& options) override;
-            bool IsInitialized() const override;
-            void Finalize() override;
+        while (currentId < nvals) {
+            auto i = rowsIndex[currentId];
+            auto j = colsIndex[currentId];
 
-            backend::Matrix *CreateMatrix(size_t nrows, size_t ncols) override;
-            void ReleaseMatrix(backend::Matrix *matrix) override;
+            while (currentRow < i) {
+                while (currentCol < ncols) {
+                    stream << "." << " ";
+                    currentCol += 1;
+                }
 
-            const std::string &GetName() const override;
-            const std::string &GetDescription() const override;
-            const std::string &GetAuthorsName() const override;
+                stream << "\n";
+                currentRow += 1;
+                currentCol = 0;
+            }
 
-        private:
-            bool mIsInitialized = false;
-            bool mMustFinalize = true;
-        };
+            while (currentCol < j) {
+                stream << "." << " ";
+                currentCol += 1;
+            }
 
+            stream << "1" << " ";
+            currentId += 1;
+            currentCol += 1;
+        }
+
+        while (currentRow < nrows) {
+            while (currentCol < ncols) {
+                stream << "." << " ";
+                currentCol += 1;
+            }
+
+            stream << "\n";
+            currentRow += 1;
+            currentCol = 0;
+        }
     }
+    
 }
 
-#endif //SPBLA_CPU_BACKEND_HPP
+#endif //SPBLA_TESTING_MATRIXPRINTING_HPP

@@ -104,18 +104,38 @@ SPBLA_EXPORT typedef uint32_t               spbla_Index;
 SPBLA_EXPORT typedef struct spbla_Matrix_t* spbla_Matrix;
 
 /**
+ * Initialize the library state before usage.
+ * No other library function must be called before this one.
+ * spbla_Finalize must be called as the last library function.
  *
- * @param backend
+ * Initialize function allows to provide hint to the library
+ * for preferred backend selection. Default backend selection strategy
+ * is following: cuda, opencl, cpu.
  *
- * @return
+ * Initialize function allows to pass init option directly to the
+ * backend. This options are formed as array of string.
+ * Prefix '-' used for options with value, '--' for options without values.
+ *
+ * @note Backend options:
+ *         --CPU_IGNORE_FINALIZATION - do not finalize cpu backend (for testing purposes only)
+ *
+ * @param backend Preferred backend type. Pass SPBLA_BACKEND_DEFAULT as default value.
+ * @param optionsCount Number of the init options, passed to the backend
+ * @param options Actual array of the options, provided by the user
+ *
+ * @return Result info
  */
 SPBLA_EXPORT SPBLA_API spbla_Info spbla_Initialize(
-    spbla_Backend       backend
+    spbla_Backend       backend,
+    spbla_Index         optionsCount,
+    const char* const*  options
 );
 
 /**
+ * Finalize the library state.
+ * Must be called as the last library function in the application.
  *
- * @return
+ * @return Result info
  */
 SPBLA_EXPORT SPBLA_API spbla_Info spbla_Finalize(
 );
@@ -125,7 +145,8 @@ SPBLA_EXPORT SPBLA_API spbla_Info spbla_Finalize(
  * @param matrix
  * @param nrows
  * @param ncols
- * @return
+ *
+ * @return Result info
  */
 SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_New(
     spbla_Matrix*       matrix,
@@ -136,7 +157,8 @@ SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_New(
 /**
  *
  * @param matrix
- * @return
+ *
+ * @return Result info
  */
 SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Free(
     spbla_Matrix*       matrix
@@ -149,7 +171,8 @@ SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Free(
  * @param cols
  * @param nvals
  * @param hints
- * @return
+ *
+ * @return Result info
  */
 SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Build(
     spbla_Matrix        matrix,
@@ -166,7 +189,8 @@ SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Build(
  * @param cols
  * @param nvals
  * @param hints
- * @return
+ *
+ * @return Result info
  */
 SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Extract(
     spbla_Matrix        matrix,
@@ -180,7 +204,8 @@ SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Extract(
  *
  * @param matrix
  * @param nrows
- * @return
+ *
+ * @return Result info
  */
 SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Nrows(
     spbla_Matrix        matrix,
@@ -191,7 +216,8 @@ SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Nrows(
  *
  * @param matrix
  * @param ncols
- * @return
+ *
+ * @return Result info
  */
 SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Ncols(
     spbla_Matrix        matrix,
@@ -202,7 +228,8 @@ SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Ncols(
  *
  * @param matrix
  * @param nvals
- * @return
+ *
+ * @return Result info
  */
 SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Nvals(
     spbla_Matrix        matrix,
@@ -214,7 +241,8 @@ SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_Nvals(
  * @param result
  * @param left
  * @param right
- * @return
+ *
+ * @return Result info
  */
 SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_EWiseAdd(
     spbla_Matrix        result,
@@ -227,7 +255,8 @@ SPBLA_EXPORT SPBLA_API spbla_Info spbla_Matrix_EWiseAdd(
  * @param result
  * @param left
  * @param right
- * @return
+ *
+ * @return Result info
  */
 SPBLA_EXPORT SPBLA_API spbla_Info spbla_MxM(
     spbla_Matrix        result,
@@ -240,7 +269,8 @@ SPBLA_EXPORT SPBLA_API spbla_Info spbla_MxM(
  * @param result
  * @param left
  * @param right
- * @return
+ *
+ * @return Result info
  */
 SPBLA_EXPORT SPBLA_API spbla_Info spbla_Kronecker(
     spbla_Matrix        result,

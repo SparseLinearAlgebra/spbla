@@ -25,9 +25,11 @@
 #include <spbla_Common.hpp>
 
 spbla_Info spbla_Initialize(
-        spbla_Backend       backend
+        spbla_Backend       backend,
+        spbla_Index         optionsCount,
+        const char* const*  options
 ) {
     SPBLA_BEGIN()
-        spbla::Library::Initialize(backend);
+        spbla::Library::Initialize(backend, optionsCount, options);
     SPBLA_END()
 }

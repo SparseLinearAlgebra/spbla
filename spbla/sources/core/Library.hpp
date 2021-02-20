@@ -25,7 +25,7 @@
 #ifndef SPBLA_LIBRARY_HPP
 #define SPBLA_LIBRARY_HPP
 
-#include <spbla/spbla.h>
+#include <core/Defines.hpp>
 #include <memory>
 
 namespace spbla {
@@ -39,7 +39,7 @@ namespace spbla {
      */
     class Library {
     public:
-        static void Initialize(spbla_Backend backend);
+        static void Initialize(spbla_Backend backend, index optionsCount, const char *const *options);
         static void Finalize();
         static void Validate();
         static class Matrix* CreateMatrix(size_t nrows, size_t ncols);

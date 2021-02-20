@@ -22,36 +22,23 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#ifndef SPBLA_CPU_BACKEND_HPP
-#define SPBLA_CPU_BACKEND_HPP
+#ifndef SPBLA_TESTING_TESTING_HPP
+#define SPBLA_TESTING_TESTING_HPP
 
-#include <backend/Backend.hpp>
-#include <backend/Matrix.hpp>
+#include <gtest/gtest.h>
+#include <testing/Pair.hpp>
+#include <testing/Matrix.hpp>
+#include <testing/MatrixPrinting.hpp>
+#include <testing/MatrixGenerator.hpp>
+#include <testing/MatrixEWiseAdd.hpp>
+#include <testing/MatrixMxM.hpp>
+#include <testing/MatrixKronecker.hpp>
 
-namespace spbla {
-    namespace cpu {
-
-        class Backend final: public backend::Backend {
-        public:
-            ~Backend() override = default;
-
-            void Initialize(const OptionsParser& options) override;
-            bool IsInitialized() const override;
-            void Finalize() override;
-
-            backend::Matrix *CreateMatrix(size_t nrows, size_t ncols) override;
-            void ReleaseMatrix(backend::Matrix *matrix) override;
-
-            const std::string &GetName() const override;
-            const std::string &GetDescription() const override;
-            const std::string &GetAuthorsName() const override;
-
-        private:
-            bool mIsInitialized = false;
-            bool mMustFinalize = true;
-        };
-
+// Put in the end of the unit test file
+#define SPBLA_GTEST_MAIN                                                        \
+    int main(int argc, char *argv[]) {                                          \
+        ::testing::InitGoogleTest(&argc, argv);                                 \
+        return RUN_ALL_TESTS();                                                 \
     }
-}
 
-#endif //SPBLA_CPU_BACKEND_HPP
+#endif //SPBLA_TESTING_TESTING_HPP

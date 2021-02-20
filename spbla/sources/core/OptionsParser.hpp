@@ -22,36 +22,75 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#ifndef SPBLA_CPU_BACKEND_HPP
-#define SPBLA_CPU_BACKEND_HPP
+#ifndef SPBLA_OPTIONSPARSER_HPP
+#define SPBLA_OPTIONSPARSER_HPP
 
-#include <backend/Backend.hpp>
-#include <backend/Matrix.hpp>
+#include <core/Defines.hpp>
+#include <unordered_map>
+#include <string>
+#include <cassert>
 
 namespace spbla {
-    namespace cpu {
 
-        class Backend final: public backend::Backend {
-        public:
-            ~Backend() override = default;
+    /**
+     * Parses input options for backends setup.
+     */
+    class OptionsParser {
+    public:
+        OptionsParser() = default;
+        ~OptionsParser() = default;
 
-            void Initialize(const OptionsParser& options) override;
-            bool IsInitialized() const override;
-            void Finalize() override;
+        void Parse(index optionsCount, const char* const* options) {
+            index i = 0;
 
-            backend::Matrix *CreateMatrix(size_t nrows, size_t ncols) override;
-            void ReleaseMatrix(backend::Matrix *matrix) override;
+            while (i < optionsCount) {
+                std::string option = options[i];
 
-            const std::string &GetName() const override;
-            const std::string &GetDescription() const override;
-            const std::string &GetAuthorsName() const override;
+                if (option.rfind("--", 0) == 0) {
+                    std::string name = option.substr(2);
+                    mOptions.emplace(std::move(name), "");
+                    i += 1;
+                    continue;
+                }
 
-        private:
-            bool mIsInitialized = false;
-            bool mMustFinalize = true;
-        };
+                if (option.rfind("-", 0) == 0) {
+                    std::string name = option.substr(1);
+                    i += 1;
 
-    }
+                    if (i < optionsCount) {
+                        std::string arg = options[i];
+                        mOptions.emplace(std::move(name), std::move(arg));
+                        i += 1;
+                        continue;
+                    }
+
+                    return;
+                }
+            }
+
+            mParsed = true;
+        }
+
+        bool Has(const std::string& option) const {
+            auto found = mOptions.find(option);
+            return found != mOptions.end();
+        }
+
+        const std::string& Get(const std::string& option) const {
+            auto found = mOptions.find(option);
+            assert(found != mOptions.end());
+            return found->second;
+        }
+
+        bool IsParsed() const {
+            return mParsed;
+        }
+
+    private:
+        bool mParsed = false;
+        std::unordered_map<std::string, std::string> mOptions;
+    };
+
 }
 
-#endif //SPBLA_CPU_BACKEND_HPP
+#endif //SPBLA_OPTIONSPARSER_HPP

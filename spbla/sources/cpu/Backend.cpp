@@ -28,9 +28,16 @@
 namespace spbla {
     namespace cpu {
 
-        void Backend::Initialize(uint32_t argc, const char *const *argv) {
-            GrB_Info info = GrB_init(GrB_BLOCKING);
-            mIsInitialized = info == GrB_SUCCESS;
+        static bool GrB_WAS_ALREADY_INITIALIZED = false;
+
+        void Backend::Initialize(const OptionsParser& options) {
+            if (!GrB_WAS_ALREADY_INITIALIZED) {
+                GrB_Info info = GrB_init(GrB_BLOCKING);
+                GrB_WAS_ALREADY_INITIALIZED = info == GrB_SUCCESS;
+            }
+
+            mIsInitialized = GrB_WAS_ALREADY_INITIALIZED;
+            mMustFinalize = !options.Has("CPU_IGNORE_FINALIZATION");
         }
 
         bool Backend::IsInitialized() const {
@@ -38,7 +45,10 @@ namespace spbla {
         }
 
         void Backend::Finalize() {
-            GrB_Info info = GrB_finalize();
+            if (mIsInitialized && mMustFinalize) {
+                GrB_Info info = GrB_finalize();
+                GrB_WAS_ALREADY_INITIALIZED = false;
+            }
         }
 
         backend::Matrix *Backend::CreateMatrix(size_t nrows, size_t ncols) {

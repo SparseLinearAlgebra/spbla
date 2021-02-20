@@ -22,36 +22,69 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#ifndef SPBLA_CPU_BACKEND_HPP
-#define SPBLA_CPU_BACKEND_HPP
+#ifndef SPBLA_TESTING_MATRIXMXM_HPP
+#define SPBLA_TESTING_MATRIXMXM_HPP
 
-#include <backend/Backend.hpp>
-#include <backend/Matrix.hpp>
+#include <testing/Matrix.hpp>
 
-namespace spbla {
-    namespace cpu {
+namespace testing {
 
-        class Backend final: public backend::Backend {
-        public:
-            ~Backend() override = default;
+    struct MatrixMultiplyFunctor {
+        Matrix operator()(const Matrix& ma, const Matrix& mb, const Matrix& mc) {
+            auto m = ma.mNrows;
+            auto t = ma.mNcols;
+            auto n = mb.mNcols;
 
-            void Initialize(const OptionsParser& options) override;
-            bool IsInitialized() const override;
-            void Finalize() override;
+            assert(ma.mNcols == mb.mNrows);
+            assert(ma.mNrows == mc.mNrows);
+            assert(mb.mNcols == mc.mNcols);
 
-            backend::Matrix *CreateMatrix(size_t nrows, size_t ncols) override;
-            void ReleaseMatrix(backend::Matrix *matrix) override;
+            std::vector<std::vector<uint8_t>> a(m, std::vector<uint8_t>(t, 0));
+            std::vector<std::vector<uint8_t>> b(n, std::vector<uint8_t>(t, 0));
+            std::vector<std::vector<uint8_t>> r(m, std::vector<uint8_t>(n, 0));
 
-            const std::string &GetName() const override;
-            const std::string &GetDescription() const override;
-            const std::string &GetAuthorsName() const override;
+            for (size_t i = 0; i < ma.mNvals; i++) {
+                a[ma.mRowsIndex[i]][ma.mColsIndex[i]] = 1;
+            }
 
-        private:
-            bool mIsInitialized = false;
-            bool mMustFinalize = true;
-        };
+            for (size_t i = 0; i < mb.mNvals; i++) {
+                b[mb.mColsIndex[i]][mb.mRowsIndex[i]] = 1;
+            }
 
-    }
+            for (size_t i = 0; i < m; i++) {
+                for (size_t j = 0; j < n; j++) {
+                    uint8_t v = 0;
+
+                    for (size_t k = 0; k < t; k++) {
+                        v |= a[i][k] & b[j][k] ? 1u: 0u;
+                    }
+
+                    r[i][j] = v;
+                }
+            }
+
+            for (size_t i = 0; i < mc.mNvals; i++) {
+                r[mc.mRowsIndex[i]][mc.mColsIndex[i]] |= 1u;
+            }
+
+            Matrix result;
+            result.mNrows = m;
+            result.mNcols = n;
+
+            for (size_t i = 0; i < m; i++) {
+                for (size_t j = 0; j < n; j++) {
+                    if (r[i][j] != 0) {
+                        result.mRowsIndex.push_back(i);
+                        result.mColsIndex.push_back(j);
+                        result.mNvals += 1;
+                    }
+                }
+            }
+
+            return std::move(result);
+        }
+    };
+
 }
 
-#endif //SPBLA_CPU_BACKEND_HPP
+#endif //SPBLA_TESTING_MATRIXMXM_HPP

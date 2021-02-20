@@ -1,0 +1,5 @@
+add_executable(spbla_Library_Setup spbla_Library_Setup.cpp)
+target_link_libraries(spbla_Library_Setup PRIVATE testing)
+
+add_executable(spbla_Matrix_BuildExtract spbla_Matrix_BuildExtract.cpp)
+target_link_libraries(spbla_Matrix_BuildExtract PRIVATE testing)

@@ -25,7 +25,7 @@
 #ifndef SPBLA_BACKEND_HPP
 #define SPBLA_BACKEND_HPP
 
-#include <string>
+#include <core/OptionsParser.hpp>
 
 namespace spbla {
     namespace backend {
@@ -36,7 +36,7 @@ namespace spbla {
         class Backend {
         public:
             virtual ~Backend() = default;
-            virtual void Initialize(uint32_t argc, const char* const *argv) = 0;
+            virtual void Initialize(const OptionsParser& options) = 0;
             virtual bool IsInitialized() const = 0;
             virtual void Finalize() = 0;
             virtual class Matrix* CreateMatrix(size_t nrows, size_t ncols) = 0;

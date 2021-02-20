@@ -22,36 +22,27 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#ifndef SPBLA_CPU_BACKEND_HPP
-#define SPBLA_CPU_BACKEND_HPP
+#include <testing/Testing.hpp>
 
-#include <backend/Backend.hpp>
-#include <backend/Matrix.hpp>
-
-namespace spbla {
-    namespace cpu {
-
-        class Backend final: public backend::Backend {
-        public:
-            ~Backend() override = default;
-
-            void Initialize(const OptionsParser& options) override;
-            bool IsInitialized() const override;
-            void Finalize() override;
-
-            backend::Matrix *CreateMatrix(size_t nrows, size_t ncols) override;
-            void ReleaseMatrix(backend::Matrix *matrix) override;
-
-            const std::string &GetName() const override;
-            const std::string &GetDescription() const override;
-            const std::string &GetAuthorsName() const override;
-
-        private:
-            bool mIsInitialized = false;
-            bool mMustFinalize = true;
-        };
-
-    }
+void LibrarySetup(spbla_Backend backend) {
+    EXPECT_EQ(spbla_Initialize(backend), SPBLA_INFO_SUCCESS);
+    EXPECT_EQ(spbla_Finalize(), SPBLA_INFO_SUCCESS);
 }
 
-#endif //SPBLA_CPU_BACKEND_HPP
+TEST(spbla_Library, SetupDefault) {
+    LibrarySetup(SPBLA_BACKEND_DEFAULT);
+}
+
+TEST(spbla_Library, SetupCuda) {
+    LibrarySetup(SPBLA_BACKEND_CUDA);
+}
+
+TEST(spbla_Library, SetupOpenCL) {
+    LibrarySetup(SPBLA_BACKEND_OPENCL);
+}
+
+TEST(spbla_Library, SetupCpu) {
+    LibrarySetup(SPBLA_BACKEND_CPU);
+}
+
+SPBLA_GTEST_MAIN

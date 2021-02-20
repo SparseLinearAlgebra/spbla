@@ -22,36 +22,45 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#ifndef SPBLA_CPU_BACKEND_HPP
-#define SPBLA_CPU_BACKEND_HPP
+#include <testing/Testing.hpp>
 
-#include <backend/Backend.hpp>
-#include <backend/Matrix.hpp>
+// Fills sparse matrix with random data and tests whether the transfer works correctly
+void TestMatrixBuildExtract(spbla_Index m, spbla_Index n, float density) {
+    spbla_Matrix matrix = nullptr;
 
-namespace spbla {
-    namespace cpu {
+    testing::Matrix tmatrix = testing::Matrix::Generate(m, n, testing::Condition3(density));
 
-        class Backend final: public backend::Backend {
-        public:
-            ~Backend() override = default;
+    EXPECT_EQ(spbla_Matrix_New(&matrix, m, n), SPBLA_INFO_SUCCESS);
+    EXPECT_EQ(spbla_Matrix_Build(matrix, tmatrix.mRowsIndex.data(), tmatrix.mColsIndex.data(), tmatrix.mNvals, SPBLA_HINT_VALUES_SORTED), SPBLA_INFO_SUCCESS);
 
-            void Initialize(const OptionsParser& options) override;
-            bool IsInitialized() const override;
-            void Finalize() override;
+    // Compare test matrix and library one
+    EXPECT_EQ(tmatrix.AreEqual(matrix), true);
 
-            backend::Matrix *CreateMatrix(size_t nrows, size_t ncols) override;
-            void ReleaseMatrix(backend::Matrix *matrix) override;
-
-            const std::string &GetName() const override;
-            const std::string &GetDescription() const override;
-            const std::string &GetAuthorsName() const override;
-
-        private:
-            bool mIsInitialized = false;
-            bool mMustFinalize = true;
-        };
-
-    }
+    // Remember to release resources
+    EXPECT_EQ(spbla_Matrix_Free(&matrix), SPBLA_INFO_SUCCESS);
 }
 
-#endif //SPBLA_CPU_BACKEND_HPP
+void TestRun(spbla_Index m, spbla_Index n, spbla_Backend backend) {
+    const char* options[] = { "--CPU_IGNORE_FINALIZATION" };
+    EXPECT_EQ(spbla_Initialize(backend, 1, options), SPBLA_INFO_SUCCESS);
+
+    for (size_t i = 0; i < 10; i++) {
+        TestMatrixBuildExtract(m, n, 0.001f + (0.05f) * ((float) i));
+    }
+
+    EXPECT_EQ(spbla_Finalize(), SPBLA_INFO_SUCCESS);
+}
+
+TEST(spbla_Matrix, BuildExtractSmall) {
+    TestRun(testing::SMALL_M, testing::SMALL_N, SPBLA_BACKEND_DEFAULT);
+}
+
+TEST(spbla_Matrix, BuildExtractMedium) {
+    TestRun(testing::MEDIUM_M, testing::MEDIUM_N, SPBLA_BACKEND_DEFAULT);
+}
+
+TEST(spbla_Matrix, BuildExtractLarge) {
+    TestRun(testing::LARGE_M, testing::LARGE_N, SPBLA_BACKEND_DEFAULT);
+}
+
+SPBLA_GTEST_MAIN

@@ -22,36 +22,49 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#ifndef SPBLA_CPU_BACKEND_HPP
-#define SPBLA_CPU_BACKEND_HPP
+#ifndef SPBLA_TESTING_MATRIXEWISEADD_HPP
+#define SPBLA_TESTING_MATRIXEWISEADD_HPP
 
-#include <backend/Backend.hpp>
-#include <backend/Matrix.hpp>
+#include <testing/Matrix.hpp>
 
-namespace spbla {
-    namespace cpu {
+namespace testing {
 
-        class Backend final: public backend::Backend {
-        public:
-            ~Backend() override = default;
+    struct MatrixEWiseAddFunctor {
+        Matrix operator()(const Matrix& ma, const Matrix& mb) {
+            auto m = ma.mNrows;
+            auto n = ma.mNcols;
 
-            void Initialize(const OptionsParser& options) override;
-            bool IsInitialized() const override;
-            void Finalize() override;
+            assert(ma.mNrows == mb.mNrows);
+            assert(ma.mNcols == mb.mNcols);
 
-            backend::Matrix *CreateMatrix(size_t nrows, size_t ncols) override;
-            void ReleaseMatrix(backend::Matrix *matrix) override;
+            std::vector<std::vector<uint8_t>> r(m, std::vector<uint8_t>(n, 0));
 
-            const std::string &GetName() const override;
-            const std::string &GetDescription() const override;
-            const std::string &GetAuthorsName() const override;
+            for (size_t i = 0; i < ma.mNvals; i++) {
+                r[ma.mRowsIndex[i]][ma.mColsIndex[i]] = 1;
+            }
 
-        private:
-            bool mIsInitialized = false;
-            bool mMustFinalize = true;
-        };
+            for (size_t i = 0; i < mb.mNvals; i++) {
+                r[mb.mRowsIndex[i]][mb.mColsIndex[i]] = 1;
+            }
 
-    }
+            Matrix result;
+            result.mNrows = m;
+            result.mNcols = n;
+
+            for (size_t i = 0; i < m; i++) {
+                for (size_t j = 0; j < n; j++) {
+                    if (r[i][j] != 0) {
+                        result.mRowsIndex.push_back(i);
+                        result.mColsIndex.push_back(j);
+                        result.mNvals += 1;
+                    }
+                }
+            }
+
+            return std::move(result);
+        }
+    };
+
 }
 
-#endif //SPBLA_CPU_BACKEND_HPP
+#endif //SPBLA_TESTING_MATRIXEWISEADD_HPP

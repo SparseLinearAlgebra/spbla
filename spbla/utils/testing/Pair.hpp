@@ -22,36 +22,45 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#ifndef SPBLA_CPU_BACKEND_HPP
-#define SPBLA_CPU_BACKEND_HPP
+#ifndef SPBLA_TESTING_PAIR_HPP
+#define SPBLA_TESTING_PAIR_HPP
 
-#include <backend/Backend.hpp>
-#include <backend/Matrix.hpp>
+#include <spbla/spbla.h>
+#include <unordered_set>
 
-namespace spbla {
-    namespace cpu {
+namespace testing {
 
-        class Backend final: public backend::Backend {
-        public:
-            ~Backend() override = default;
+    struct Pair {
+        spbla_Index i;
+        spbla_Index j;
+    };
 
-            void Initialize(const OptionsParser& options) override;
-            bool IsInitialized() const override;
-            void Finalize() override;
+    struct PairHash {
+    public:
+        std::size_t operator()(const Pair &x) const {
+            return std::hash<size_t>()(x.i) ^ std::hash<size_t>()(x.j);
+        }
+    };
 
-            backend::Matrix *CreateMatrix(size_t nrows, size_t ncols) override;
-            void ReleaseMatrix(backend::Matrix *matrix) override;
+    struct PairCmp {
+    public:
+        bool operator()(const Pair &a, const Pair& b) const {
+            return a.i < b.i || (a.i == b.i && a.j < b.j);
+        }
+    };
 
-            const std::string &GetName() const override;
-            const std::string &GetDescription() const override;
-            const std::string &GetAuthorsName() const override;
+    struct PairEq {
+    public:
+        bool operator()(const Pair &a, const Pair& b)  const {
+            return a.i == b.i && a.j == b.j;
+        }
+    };
 
-        private:
-            bool mIsInitialized = false;
-            bool mMustFinalize = true;
-        };
-
+    bool operator ==(const Pair& a, const Pair& b) {
+        PairEq pairEq;
+        return pairEq(a, b);
     }
+
 }
 
-#endif //SPBLA_CPU_BACKEND_HPP
+#endif //SPBLA_TESTING_PAIR_HPP
