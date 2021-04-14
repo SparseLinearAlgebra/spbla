@@ -23,10 +23,11 @@
 /**********************************************************************************/
 
 #include <cuda/instance.hpp>
-#include <cuda/matrix_dense.hpp>
 #include <core/error.hpp>
 #include <string>
 #include <cstring>
+#include <cassert>
+#include <cstdio>
 
 namespace spbla {
 
@@ -96,7 +97,7 @@ namespace spbla {
             error = cudaGetDeviceProperties(&deviceProp, device);
 
             if (error == cudaSuccess) {
-                strcpy(deviceCaps.name, deviceProp.name);
+                std::snprintf(deviceCaps.name, sizeof(deviceCaps.name), "%s", deviceProp.name);
                 deviceCaps.cudaSupported = true;
                 deviceCaps.minor = deviceProp.minor;
                 deviceCaps.major = deviceProp.major;

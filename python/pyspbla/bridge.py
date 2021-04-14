@@ -27,15 +27,17 @@ __all__ = [
 
 _hint_no = 0
 _hint_cpu_backend = 1
-_hint_gpu_mem_managed = 2
-_hint_values_sorted = 4
-_hint_accumulate = 8
-_hint_relaxed_release = 16
-_hint_log_error = 32
-_hint_log_warning = 64
-_hint_log_all = 128
-_hint_no_duplicates = 256
-_hint_time_check = 512
+_hint_cuda_backend = 2
+_hint_opencl_backend = 4
+_hint_gpu_mem_managed = 8
+_hint_values_sorted = 16
+_hint_accumulate = 32
+_hint_relaxed_release = 64
+_hint_log_error = 128
+_hint_log_warning = 256
+_hint_log_all = 512
+_hint_no_duplicates = 1024
+_hint_time_check = 2048
 
 
 def get_log_hints(default=True, error=False, warning=False):

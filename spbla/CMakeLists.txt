@@ -12,6 +12,9 @@ endif()
 if (SPBLA_WITH_CUDA)
     message(STATUS "Add CUDA backend for GPGPU computations")
 endif()
+if (SPBLA_WITH_OPENCL)
+    message(STATUS "Add OpenCL backend for GPGPU computations")
+endif()
 
 # Library sources
 set(SPBLA_SOURCES
@@ -27,8 +30,7 @@ set(SPBLA_SOURCES
     sources/utils/exclusive_scan.hpp
     sources/utils/timer.hpp
     sources/utils/csr_utils.cpp
-    sources/utils/csr_utils.hpp
-        )
+    sources/utils/csr_utils.hpp)
 
 set(SPBLA_C_API_SOURCES
     include/spbla/spbla.h
@@ -62,6 +64,7 @@ set(SPBLA_BACKEND_SOURCES
     sources/backend/matrix_base.hpp)
 
 set(SPBLA_CUDA_SOURCES)
+set(SPBLA_OPENCL_SOURCES)
 set(SPBLA_SEQUENTIAL_SOURCES)
 
 # Cuda backend sources
@@ -72,16 +75,16 @@ if (SPBLA_WITH_CUDA)
         sources/cuda/instance.hpp
         sources/cuda/instance.cu
         sources/cuda/instance.cpp
-        sources/cuda/matrix_csr.hpp
-        sources/cuda/matrix_csr.cu
-        sources/cuda/matrix_csr_build.cu
-        sources/cuda/matrix_csr_extract.cu
-        sources/cuda/matrix_csr_ewiseadd.cu
-        sources/cuda/matrix_csr_kronecker.cu
-        sources/cuda/matrix_csr_multiply.cu
-        sources/cuda/matrix_csr_transpose.cu
-        sources/cuda/matrix_csr_reduce.cu
-        sources/cuda/matrix_csr_extract_sub_matrix.cu
+        sources/cuda/cuda_matrix.hpp
+        sources/cuda/cuda_matrix.cu
+        sources/cuda/cuda_matrix_build.cu
+        sources/cuda/cuda_matrix_extract.cu
+        sources/cuda/cuda_matrix_ewiseadd.cu
+        sources/cuda/cuda_matrix_kronecker.cu
+        sources/cuda/cuda_matrix_multiply.cu
+        sources/cuda/cuda_matrix_transpose.cu
+        sources/cuda/cuda_matrix_reduce.cu
+        sources/cuda/cuda_matrix_extract_sub_matrix.cu
         sources/cuda/kernels/slow_sort.cuh
         sources/cuda/kernels/bin_search.cuh
         sources/cuda/kernels/sptranspose.cuh
@@ -90,6 +93,23 @@ if (SPBLA_WITH_CUDA)
         sources/cuda/kernels/spmerge.cuh
         sources/cuda/kernels/spreduce.cuh
         sources/cuda/kernels/spsubmatrix.cuh)
+endif()
+
+# OpenCL backend related stuff
+if (SPBLA_WITH_OPENCL)
+    set(SPBLA_OPENCL_SOURCES
+        sources/opencl/opencl_backend.cpp
+        sources/opencl/opencl_backend.hpp
+        sources/opencl/opencl_matrix.cpp
+        sources/opencl/opencl_matrix.hpp
+        sources/opencl/opencl_matrix_build.cpp
+        sources/opencl/opencl_matrix_extract.cpp
+        sources/opencl/opencl_matrix_ewiseadd.cpp
+        sources/opencl/opencl_matrix_kronecker.cpp
+        sources/opencl/opencl_matrix_multiply.cpp
+        sources/opencl/opencl_matrix_transpose.cpp
+        sources/opencl/opencl_matrix_reduce.cpp
+        sources/opencl/opencl_matrix_extract_sub_matrix.cpp)
 endif()
 
 # Cpu sequential backend sources
@@ -119,6 +139,7 @@ add_library(spbla SHARED
     ${SPBLA_SOURCES}
     ${SPBLA_C_API_SOURCES}
     ${SPBLA_BACKEND_SOURCES}
+    ${SPBLA_OPENCL_SOURCES}
     ${SPBLA_CUDA_SOURCES}
     ${SPBLA_SEQUENTIAL_SOURCES})
 
@@ -145,21 +166,17 @@ if (SPBLA_WITH_CUDA)
     set_target_properties(spbla PROPERTIES CUDA_STANDARD_REQUIRED ON)
     set_target_properties(spbla PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
-    # Settings: https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/
-    #target_compile_options(spbla PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
-    #    # todo: fix this flag later -arch=sm_30 ?
-    #    # todo: can we omit arch flag?
-    #    -gencode=arch=compute_30,code=sm_30
-    #    -gencode=arch=compute_50,code=sm_50
-    #    -gencode=arch=compute_52,code=sm_52
-    #    -gencode=arch=compute_60,code=sm_60
-    #    -gencode=arch=compute_61,code=sm_61
-    #    -gencode=arch=compute_61,code=compute_61>)
-
     target_compile_options(spbla PRIVATE $<$<COMPILE_LANGUAGE:CUDA>: -use_fast_math -Xptxas -O2>)
 
     target_compile_definitions(spbla PRIVATE SPBLA_WITH_CUDA)
-    target_link_libraries(spbla PRIVATE nsparse_um)
+    target_link_libraries(spbla PRIVATE nsparse)
+endif()
+
+# OpenCL specifics
+if (SPBLA_WITH_OPENCL)
+    # required flags and deps goes here
+
+    target_compile_definitions(spbla PRIVATE SPBLA_WITH_OPENCL)
 endif()
 
 # Sequential Cpu based backend

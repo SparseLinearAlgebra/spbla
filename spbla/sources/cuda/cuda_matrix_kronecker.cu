@@ -22,56 +22,41 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#include <cuda/cuda_backend.hpp>
 #include <cuda/cuda_matrix.hpp>
-#include <core/library.hpp>
-#include <io/logger.hpp>
+#include <cuda/kernels/spkron.cuh>
 
 namespace spbla {
 
-    void CudaBackend::initialize(hints initHints) {
-        if (Instance::isCudaDeviceSupported()) {
-            mInstance = new Instance(initHints & SPBLA_HINT_GPU_MEM_MANAGED);
+    void MatrixCsr::kronecker(const MatrixBase &aBase, const MatrixBase &bBase, bool checkTime) {
+        auto a = dynamic_cast<const MatrixCsr*>(&aBase);
+        auto b = dynamic_cast<const MatrixCsr*>(&bBase);
+
+        CHECK_RAISE_ERROR(a != nullptr, InvalidArgument, "Passed matrix does not belong to csr matrix class");
+        CHECK_RAISE_ERROR(b != nullptr, InvalidArgument, "Passed matrix does not belong to csr matrix class");
+
+        index M = a->getNrows();
+        index N = a->getNcols();
+        index K = b->getNrows();
+        index T = b->getNcols();
+
+        assert(this->getNrows() == M * K);
+        assert(this->getNcols() == N * T);
+
+        if (a->isMatrixEmpty() || b->isMatrixEmpty()) {
+            // Result will be empty
+            mMatrixImpl.zero_dim();
+            return;
         }
 
-        // No device. Cannot init this backend
-    }
+        // Prepare matrices
+        a->resizeStorageToDim();
+        b->resizeStorageToDim();
 
-    void CudaBackend::finalize() {
-        assert(mMatCount == 0);
+        kernels::SpKronFunctor<index, DeviceAlloc<index>> spKronFunctor;
+        auto result = spKronFunctor(a->mMatrixImpl, b->mMatrixImpl);
 
-        if (mMatCount > 0) {
-            LogStream stream(*Library::getLogger());
-            stream << Logger::Level::Error
-                   << "Lost some (" << mMatCount << ") matrix objects" << LogStream::cmt;
-        }
-
-        if (mInstance) {
-            delete mInstance;
-            mInstance = nullptr;
-        }
-    }
-
-    bool CudaBackend::isInitialized() const {
-        return mInstance != nullptr;
-    }
-
-    MatrixBase *CudaBackend::createMatrix(size_t nrows, size_t ncols) {
-        mMatCount++;
-        return new MatrixCsr(nrows, ncols, getInstance());
-    }
-
-    void CudaBackend::releaseMatrix(MatrixBase *matrixBase) {
-        mMatCount--;
-        delete matrixBase;
-    }
-
-    void CudaBackend::queryCapabilities(spbla_DeviceCaps &caps) {
-        Instance::queryDeviceCapabilities(caps);
-    }
-
-    Instance & CudaBackend::getInstance() {
-        return *mInstance;
+        // Assign result to this
+        this->mMatrixImpl = std::move(result);
     }
 
 }

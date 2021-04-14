@@ -1,7 +1,7 @@
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */
-/* Copyright (c) 2020, 2021 JetBrains-Research                                    */
+/* Copyright (c) 2021 JetBrains-Research                                          */
 /*                                                                                */
 /* Permission is hereby granted, free of charge, to any person obtaining a copy   */
 /* of this software and associated documentation files (the "Software"), to deal  */
@@ -22,56 +22,30 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#include <cuda/cuda_backend.hpp>
-#include <cuda/cuda_matrix.hpp>
-#include <core/library.hpp>
-#include <io/logger.hpp>
+#ifndef SPBLA_OPENCL_BACKEND_HPP
+#define SPBLA_OPENCL_BACKEND_HPP
+
+#include <backend/backend_base.hpp>
 
 namespace spbla {
 
-    void CudaBackend::initialize(hints initHints) {
-        if (Instance::isCudaDeviceSupported()) {
-            mInstance = new Instance(initHints & SPBLA_HINT_GPU_MEM_MANAGED);
-        }
+    class OpenCLBackend: public BackendBase {
+    public:
+        ~OpenCLBackend() override = default;
 
-        // No device. Cannot init this backend
-    }
+        void initialize(hints initHints) override;
 
-    void CudaBackend::finalize() {
-        assert(mMatCount == 0);
+        void finalize() override;
 
-        if (mMatCount > 0) {
-            LogStream stream(*Library::getLogger());
-            stream << Logger::Level::Error
-                   << "Lost some (" << mMatCount << ") matrix objects" << LogStream::cmt;
-        }
+        bool isInitialized() const override;
 
-        if (mInstance) {
-            delete mInstance;
-            mInstance = nullptr;
-        }
-    }
+        MatrixBase *createMatrix(size_t nrows, size_t ncols) override;
 
-    bool CudaBackend::isInitialized() const {
-        return mInstance != nullptr;
-    }
+        void releaseMatrix(MatrixBase *matrixBase) override;
 
-    MatrixBase *CudaBackend::createMatrix(size_t nrows, size_t ncols) {
-        mMatCount++;
-        return new MatrixCsr(nrows, ncols, getInstance());
-    }
-
-    void CudaBackend::releaseMatrix(MatrixBase *matrixBase) {
-        mMatCount--;
-        delete matrixBase;
-    }
-
-    void CudaBackend::queryCapabilities(spbla_DeviceCaps &caps) {
-        Instance::queryDeviceCapabilities(caps);
-    }
-
-    Instance & CudaBackend::getInstance() {
-        return *mInstance;
-    }
+        void queryCapabilities(spbla_DeviceCaps &caps) override;
+    };
 
 }
+
+#endif //SPBLA_OPENCL_BACKEND_HPP

@@ -22,8 +22,8 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#ifndef SPBLA_MATRIX_CSR_HPP
-#define SPBLA_MATRIX_CSR_HPP
+#ifndef SPBLA_CUDA_MATRIX_HPP
+#define SPBLA_CUDA_MATRIX_HPP
 
 #include <backend/matrix_base.hpp>
 #include <cuda/details/host_allocator.hpp>
@@ -77,4 +77,4 @@ namespace spbla {
     };
 };
 
-#endif //SPBLA_MATRIX_CSR_HPP
+#endif //SPBLA_CUDA_MATRIX_HPP

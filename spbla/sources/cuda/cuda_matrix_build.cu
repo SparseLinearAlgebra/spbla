@@ -22,56 +22,25 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#include <cuda/cuda_backend.hpp>
 #include <cuda/cuda_matrix.hpp>
-#include <core/library.hpp>
-#include <io/logger.hpp>
+#include <utils/csr_utils.hpp>
 
 namespace spbla {
 
-    void CudaBackend::initialize(hints initHints) {
-        if (Instance::isCudaDeviceSupported()) {
-            mInstance = new Instance(initHints & SPBLA_HINT_GPU_MEM_MANAGED);
+    void MatrixCsr::build(const index *rows, const index *cols, size_t nvals, bool isSorted, bool noDuplicates) {
+        if (nvals == 0) {
+            mMatrixImpl.zero_dim();  // no content, empty matrix
+            return;
         }
 
-        // No device. Cannot init this backend
-    }
+        // Build csr structure and store on cpu side
+        std::vector<index> rowOffsets;
+        std::vector<index> colIndices;
 
-    void CudaBackend::finalize() {
-        assert(mMatCount == 0);
+        CsrUtils::buildFromData(getNrows(), getNcols(), rows, cols, nvals, rowOffsets, colIndices, isSorted, noDuplicates);
 
-        if (mMatCount > 0) {
-            LogStream stream(*Library::getLogger());
-            stream << Logger::Level::Error
-                   << "Lost some (" << mMatCount << ") matrix objects" << LogStream::cmt;
-        }
-
-        if (mInstance) {
-            delete mInstance;
-            mInstance = nullptr;
-        }
-    }
-
-    bool CudaBackend::isInitialized() const {
-        return mInstance != nullptr;
-    }
-
-    MatrixBase *CudaBackend::createMatrix(size_t nrows, size_t ncols) {
-        mMatCount++;
-        return new MatrixCsr(nrows, ncols, getInstance());
-    }
-
-    void CudaBackend::releaseMatrix(MatrixBase *matrixBase) {
-        mMatCount--;
-        delete matrixBase;
-    }
-
-    void CudaBackend::queryCapabilities(spbla_DeviceCaps &caps) {
-        Instance::queryDeviceCapabilities(caps);
-    }
-
-    Instance & CudaBackend::getInstance() {
-        return *mInstance;
+        // Move actual data to the matrix implementation
+        this->transferToDevice(rowOffsets, colIndices);
     }
 
 }

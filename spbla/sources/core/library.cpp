@@ -42,6 +42,10 @@
 #include <sequential/sq_backend.hpp>
 #endif
 
+#ifdef SPBLA_WITH_OPENCL
+#include <opencl/opencl_backend.hpp>
+#endif
+
 namespace spbla {
 
     std::unordered_set<class Matrix*> Library::mAllocated;
@@ -53,35 +57,56 @@ namespace spbla {
         CHECK_RAISE_CRITICAL_ERROR(mBackend == nullptr, InvalidState, "Library already initialized");
 
         bool preferCpu = initHints & SPBLA_HINT_CPU_BACKEND;
+        bool preferCuda = initHints & SPBLA_HINT_CUDA_BACKEND;
+        bool preferOpenCL = initHints & SPBLA_HINT_OPENCL_BACKEND;
+        bool prefer = preferCpu || preferCuda || preferOpenCL;
+        bool initialized = false;
 
-        // If user do not force the cpu backend usage
-        if (!preferCpu) {
 #ifdef SPBLA_WITH_CUDA
+        // If user do not force something else or force cuda
+        if (!prefer || preferCuda) {
             mBackend = std::make_shared<CudaBackend>();
             mBackend->initialize(initHints);
+            initialized = mBackend->isInitialized();
 
-            // Failed to setup cuda, release backend and go to try cpu
-            if (!mBackend->isInitialized()) {
+            // Failed to setup cuda, release backend and go to try next
+            if (!initialized) {
                 mBackend = nullptr;
                 mLogger->logWarning("Failed to initialize Cuda backend");
             }
-#endif
         }
+#endif
+
+#ifdef SPBLA_WITH_OPENCL
+        // If user do not force something else or force opencl
+        if (!initialized && (!prefer || preferOpenCL)) {
+            mBackend = std::make_shared<OpenCLBackend>();
+            mBackend->initialize(initHints);
+            initialized = mBackend->isInitialized();
+
+            // Failed to setup opencl, release backend and go to try cpu
+            if (!initialized) {
+                mBackend = nullptr;
+                mLogger->logWarning("Failed to initialize OpenCL backend");
+            }
+        }
+#endif
 
 #ifdef SPBLA_WITH_SEQUENTIAL
-        if (mBackend == nullptr) {
+        if (!initialized) {
             mBackend = std::make_shared<SqBackend>();
             mBackend->initialize(initHints);
+            initialized = mBackend->isInitialized();
 
             // Failed somehow setup
-            if (!mBackend->isInitialized()) {
+            if (!initialized) {
                 mBackend = nullptr;
                 mLogger->logWarning("Failed to initialize Cpu fallback backend");
             }
         }
 #endif
 
-        CHECK_RAISE_ERROR(mBackend != nullptr, BackendError, "Failed to select backend");
+        CHECK_RAISE_ERROR(initialized, BackendError, "Failed to select backend");
 
         // If initialized, post-init actions
         mRelaxedRelease = initHints & SPBLA_HINT_RELAXED_FINALIZE;
@@ -212,6 +237,7 @@ namespace spbla {
     void Library::queryCapabilities(spbla_DeviceCaps &caps) {
         caps.name[0] = '\0';
         caps.cudaSupported = false;
+        caps.openclSupported = false;
         caps.major = 0;
         caps.minor = 0;
         caps.warp = 0;
@@ -230,8 +256,10 @@ namespace spbla {
         LogStream stream(*getLogger());
         stream << Logger::Level::Info;
 
-        if (caps.cudaSupported) {
-            stream << "Cuda device capabilities:"
+        if (caps.cudaSupported || caps.openclSupported) {
+            stream << "Device capabilities:"
+                   << " Cuda Type (" << caps.cudaSupported << "),"
+                   << " OpenCL Type (" << caps.openclSupported << "),"
                    << " name: " << caps.name << ","
                    << " major: " << caps.major << ","
                    << " minor: " << caps.minor << ","

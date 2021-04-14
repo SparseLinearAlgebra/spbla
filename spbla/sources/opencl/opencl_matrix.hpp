@@ -1,7 +1,7 @@
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */
-/* Copyright (c) 2020, 2021 JetBrains-Research                                    */
+/* Copyright (c) 2021 JetBrains-Research                                          */
 /*                                                                                */
 /* Permission is hereby granted, free of charge, to any person obtaining a copy   */
 /* of this software and associated documentation files (the "Software"), to deal  */
@@ -22,65 +22,36 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#ifndef SPBLA_MATRIX_DENSE_HPP
-#define SPBLA_MATRIX_DENSE_HPP
+#ifndef SPBLA_OPENCL_MATRIX_HPP
+#define SPBLA_OPENCL_MATRIX_HPP
 
-#include <spbla/spbla.h>
 #include <backend/matrix_base.hpp>
-#include <cuda/details/host_allocator.hpp>
-#include <cuda/details/device_allocator.cuh>
-#include <thrust/device_vector.h>
-#include <thrust/host_vector.h>
-#include <cinttypes>
-#include <vector>
 
 namespace spbla {
 
-    class MatrixDense final: public MatrixBase {
+    class OpenCLMatrix: public MatrixBase {
     public:
-        // How we actually pack this matrix in memory
-        // This info approached by kernels code
-        using PackType_t = uint32_t;
-        using Super = MatrixBase;
-        template<typename T>
-        using DeviceAlloc = details::DeviceAllocator<T>;
-        template<typename T>
-        using HostAlloc = details::HostAllocator<T>;
-        static const size_t BYTE_SIZE_IN_BITS = 8; // 8 bits per byte?
-        static const size_t PACK_TYPE_SIZE_BITS = sizeof(PackType_t) * BYTE_SIZE_IN_BITS;
+        OpenCLMatrix(size_t nrows, size_t ncols);
+        ~OpenCLMatrix() override;
 
-        explicit MatrixDense(class Instance& instance);
-        MatrixDense(const MatrixDense& other) = delete;
-        MatrixDense(MatrixDense&& other) noexcept = delete;
-        ~MatrixDense() override = default;
-
+        void setElement(index i, index j) override;
         void build(const index *rows, const index *cols, size_t nvals, bool isSorted, bool noDuplicates) override;
-        void extract(index* rows, index* cols, size_t& nvals) override;
+        void extract(index *rows, index *cols, size_t &nvals) override;
+        void extractSubMatrix(const MatrixBase &otherBase, index i, index j, index nrows, index ncols, bool checkTime) override;
 
-        void clone(const MatrixBase& other) override;
-        void transpose(const MatrixBase &other, bool checkTime) override;
+        void clone(const MatrixBase &otherBase) override;
+        void transpose(const MatrixBase &otherBase, bool checkTime) override;
+        void reduce(const MatrixBase &otherBase, bool checkTime) override;
 
         void multiply(const MatrixBase &aBase, const MatrixBase &bBase, bool accumulate, bool checkTime) override;
         void kronecker(const MatrixBase &aBase, const MatrixBase &bBase, bool checkTime) override;
         void eWiseAdd(const MatrixBase &aBase, const MatrixBase &bBase, bool checkTime) override;
 
-        index getNumRowsPacked() const { return mNumRowsPacked; }
-        index getNumColsPadded() const { return mNumColsPadded; }
-        thrust::device_vector<PackType_t, DeviceAlloc<PackType_t>>& getBuffer() { return mBuffer; }
-        const thrust::device_vector<PackType_t, DeviceAlloc<PackType_t>>& getBuffer() const { return mBuffer; }
-
-        static void getRowPackedIndex(index rowIndex, index &rowPackIdxMajor, index &rowPackIdxMinor);
-        static index getNumRowsPackedFromRows(index rows);
-        static index getNumColsPaddedFromCols(index cols);
-
-    private:
-        void extractVector(std::vector<Pair, details::HostAllocator<Pair>> &vals) const;
-
-        thrust::device_vector<PackType_t, DeviceAlloc<PackType_t>> mBuffer;
-        index mNumRowsPacked = 0;
-        index mNumColsPadded = 0;
+        index getNrows() const override;
+        index getNcols() const override;
+        index getNvals() const override;
     };
 
 }
 
-#endif //SPBLA_MATRIX_DENSE_HPP
+#endif //SPBLA_OPENCL_MATRIX_HPP

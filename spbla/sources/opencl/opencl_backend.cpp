@@ -1,7 +1,7 @@
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */
-/* Copyright (c) 2020, 2021 JetBrains-Research                                    */
+/* Copyright (c) 2021 JetBrains-Research                                          */
 /*                                                                                */
 /* Permission is hereby granted, free of charge, to any person obtaining a copy   */
 /* of this software and associated documentation files (the "Software"), to deal  */
@@ -22,56 +22,33 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#include <cuda/cuda_backend.hpp>
-#include <cuda/cuda_matrix.hpp>
-#include <core/library.hpp>
-#include <io/logger.hpp>
+#include <opencl/opencl_backend.hpp>
+#include <core/error.hpp>
 
 namespace spbla {
 
-    void CudaBackend::initialize(hints initHints) {
-        if (Instance::isCudaDeviceSupported()) {
-            mInstance = new Instance(initHints & SPBLA_HINT_GPU_MEM_MANAGED);
-        }
-
-        // No device. Cannot init this backend
+    void OpenCLBackend::initialize(hints initHints) {
+        RAISE_ERROR(NotImplemented, "This function is not implemented");
     }
 
-    void CudaBackend::finalize() {
-        assert(mMatCount == 0);
-
-        if (mMatCount > 0) {
-            LogStream stream(*Library::getLogger());
-            stream << Logger::Level::Error
-                   << "Lost some (" << mMatCount << ") matrix objects" << LogStream::cmt;
-        }
-
-        if (mInstance) {
-            delete mInstance;
-            mInstance = nullptr;
-        }
+    void OpenCLBackend::finalize() {
+        RAISE_ERROR(NotImplemented, "This function is not implemented");
     }
 
-    bool CudaBackend::isInitialized() const {
-        return mInstance != nullptr;
+    bool OpenCLBackend::isInitialized() const {
+        RAISE_ERROR(NotImplemented, "This function is not implemented");
     }
 
-    MatrixBase *CudaBackend::createMatrix(size_t nrows, size_t ncols) {
-        mMatCount++;
-        return new MatrixCsr(nrows, ncols, getInstance());
+    MatrixBase* OpenCLBackend::createMatrix(size_t nrows, size_t ncols) {
+        RAISE_ERROR(NotImplemented, "This function is not implemented");
     }
 
-    void CudaBackend::releaseMatrix(MatrixBase *matrixBase) {
-        mMatCount--;
-        delete matrixBase;
+    void OpenCLBackend::releaseMatrix(MatrixBase *matrixBase) {
+        RAISE_ERROR(NotImplemented, "This function is not implemented");
     }
 
-    void CudaBackend::queryCapabilities(spbla_DeviceCaps &caps) {
-        Instance::queryDeviceCapabilities(caps);
-    }
-
-    Instance & CudaBackend::getInstance() {
-        return *mInstance;
+    void OpenCLBackend::queryCapabilities(spbla_DeviceCaps &caps) {
+        RAISE_ERROR(NotImplemented, "This function is not implemented");
     }
 
 }

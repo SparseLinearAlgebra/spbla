@@ -1,7 +1,7 @@
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */
-/* Copyright (c) 2020, 2021 JetBrains-Research                                    */
+/* Copyright (c) 2021 JetBrains-Research                                          */
 /*                                                                                */
 /* Permission is hereby granted, free of charge, to any person obtaining a copy   */
 /* of this software and associated documentation files (the "Software"), to deal  */
@@ -22,27 +22,13 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#include <cuda/matrix_csr.hpp>
-#include <cuda/kernels/spreduce.cuh>
+#include <opencl/opencl_matrix.hpp>
+#include <core/error.hpp>
 
 namespace spbla {
 
-    void MatrixCsr::reduce(const MatrixBase &otherBase, bool checkTime) {
-        auto other = dynamic_cast<const MatrixCsr*>(&otherBase);
-
-        CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Passed matrix does not belong to csr matrix class");
-
-        auto M = other->getNrows();
-
-        assert(this->getNrows() == M);
-        assert(this->getNcols() == 1);
-
-        other->resizeStorageToDim();
-
-        kernels::SpReduceFunctor<index, details::DeviceAllocator<index>> spReduceFunctor;
-        auto result = spReduceFunctor(other->mMatrixImpl);
-
-        mMatrixImpl = std::move(result);
+    void OpenCLMatrix::reduce(const MatrixBase &otherBase, bool checkTime) {
+        RAISE_ERROR(NotImplemented, "This function must be implemented");
     }
 
 }

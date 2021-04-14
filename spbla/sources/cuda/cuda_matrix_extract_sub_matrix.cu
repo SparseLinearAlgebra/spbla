@@ -22,56 +22,33 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#include <cuda/cuda_backend.hpp>
 #include <cuda/cuda_matrix.hpp>
-#include <core/library.hpp>
-#include <io/logger.hpp>
+#include <cuda/kernels/spsubmatrix.cuh>
 
 namespace spbla {
 
-    void CudaBackend::initialize(hints initHints) {
-        if (Instance::isCudaDeviceSupported()) {
-            mInstance = new Instance(initHints & SPBLA_HINT_GPU_MEM_MANAGED);
-        }
+    void MatrixCsr::extractSubMatrix(const MatrixBase &otherBase, index i, index j, index nrows, index ncols,
+                                     bool checkTime) {
+        auto other = dynamic_cast<const MatrixCsr*>(&otherBase);
 
-        // No device. Cannot init this backend
-    }
+        CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Provided matrix does not belong to matrix csr class");
+        CHECK_RAISE_ERROR(other != this, InvalidArgument, "Matrices must differ");
 
-    void CudaBackend::finalize() {
-        assert(mMatCount == 0);
+        assert(nrows > 0);
+        assert(ncols > 0);
 
-        if (mMatCount > 0) {
-            LogStream stream(*Library::getLogger());
-            stream << Logger::Level::Error
-                   << "Lost some (" << mMatCount << ") matrix objects" << LogStream::cmt;
-        }
+        assert(other->getNrows() >= i + nrows);
+        assert(other->getNcols() >= j + ncols);
 
-        if (mInstance) {
-            delete mInstance;
-            mInstance = nullptr;
-        }
-    }
+        assert(this->getNrows() == nrows);
+        assert(this->getNcols() == ncols);
 
-    bool CudaBackend::isInitialized() const {
-        return mInstance != nullptr;
-    }
+        other->resizeStorageToDim();
 
-    MatrixBase *CudaBackend::createMatrix(size_t nrows, size_t ncols) {
-        mMatCount++;
-        return new MatrixCsr(nrows, ncols, getInstance());
-    }
+        kernels::SpSubMatrix<index, details::DeviceAllocator<index>> spSubMatrix;
+        auto result = spSubMatrix(other->mMatrixImpl, i, j, nrows, ncols);
 
-    void CudaBackend::releaseMatrix(MatrixBase *matrixBase) {
-        mMatCount--;
-        delete matrixBase;
-    }
-
-    void CudaBackend::queryCapabilities(spbla_DeviceCaps &caps) {
-        Instance::queryDeviceCapabilities(caps);
-    }
-
-    Instance & CudaBackend::getInstance() {
-        return *mInstance;
+        mMatrixImpl = std::move(result);
     }
 
 }

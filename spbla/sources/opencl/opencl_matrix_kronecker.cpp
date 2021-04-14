@@ -1,7 +1,7 @@
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */
-/* Copyright (c) 2020, 2021 JetBrains-Research                                    */
+/* Copyright (c) 2021 JetBrains-Research                                          */
 /*                                                                                */
 /* Permission is hereby granted, free of charge, to any person obtaining a copy   */
 /* of this software and associated documentation files (the "Software"), to deal  */
@@ -22,28 +22,13 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#include <cuda/matrix_csr.hpp>
-#include <cuda/kernels/sptranspose.cuh>
-#include <cuda/kernels/sptranspose2.cuh>
+#include <opencl/opencl_matrix.hpp>
+#include <core/error.hpp>
 
 namespace spbla {
 
-    void MatrixCsr::transpose(const MatrixBase &otherBase, bool checkTime) {
-        auto other = dynamic_cast<const MatrixCsr*>(&otherBase);
-
-        CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Passed matrix does not belong to csr matrix class");
-
-        size_t M = other->getNrows();
-        size_t N = other->getNcols();
-
-        assert(this->getNrows() == N);
-        assert(this->getNcols() == M);
-
-        kernels::SpTranspose2Functor<index, DeviceAlloc<index>> spTranspose2Functor;
-        auto result = spTranspose2Functor(other->mMatrixImpl);
-
-        // Assign the actual impl result to this storage
-        this->mMatrixImpl = std::move(result);
+    void OpenCLMatrix::kronecker(const MatrixBase &aBase, const MatrixBase &bBase, bool checkTime) {
+        RAISE_ERROR(NotImplemented, "This function must be implemented");
     }
 
 }

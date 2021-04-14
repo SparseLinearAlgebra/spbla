@@ -80,24 +80,28 @@ typedef enum spbla_Hint {
     SPBLA_HINT_NO = 0,
     /** Force Cpu based backend usage */
     SPBLA_HINT_CPU_BACKEND = 1,
+    /** Force Cuda based backend usage */
+    SPBLA_HINT_CUDA_BACKEND = 2,
+    /** Force OpenCL based backend usage */
+    SPBLA_HINT_OPENCL_BACKEND = 4,
     /** Use managed gpu memory type instead of default (device) memory */
-    SPBLA_HINT_GPU_MEM_MANAGED = 2,
+    SPBLA_HINT_GPU_MEM_MANAGED = 8,
     /** Mark input data as row-col sorted */
-    SPBLA_HINT_VALUES_SORTED = 4,
+    SPBLA_HINT_VALUES_SORTED = 16,
     /** Accumulate result of the operation in the result matrix */
-    SPBLA_HINT_ACCUMULATE = 8,
+    SPBLA_HINT_ACCUMULATE = 32,
     /** Finalize library state, even if not all resources were explicitly released */
-    SPBLA_HINT_RELAXED_FINALIZE = 16,
+    SPBLA_HINT_RELAXED_FINALIZE = 64,
     /** Logging hint: log includes error message */
-    SPBLA_HINT_LOG_ERROR = 32,
+    SPBLA_HINT_LOG_ERROR = 128,
     /** Logging hint: log includes warning message */
-    SPBLA_HINT_LOG_WARNING = 64,
+    SPBLA_HINT_LOG_WARNING = 256,
     /** Logging hint: log includes all types of messages */
-    SPBLA_HINT_LOG_ALL = 128,
+    SPBLA_HINT_LOG_ALL = 512,
     /** No duplicates in the build data */
-    SPBLA_HINT_NO_DUPLICATES = 256,
+    SPBLA_HINT_NO_DUPLICATES = 1024,
     /** Performs time measurement and logs elapsed operation time */
-    SPBLA_HINT_TIME_CHECK = 512
+    SPBLA_HINT_TIME_CHECK = 2048
 } spbla_Hint;
 
 /** Hit mask */
@@ -109,16 +113,17 @@ typedef uint32_t spbla_Index;
 /** Cubool sparse boolean matrix handle */
 typedef struct spbla_Matrix_t* spbla_Matrix;
 
-/** Cuda device capabilities */
+/** Device capabilities */
 typedef struct spbla_DeviceCaps {
     char name[256];
     bool cudaSupported;
+    bool openclSupported;
     int major;
     int minor;
     int warp;
-    int globalMemoryKiBs;
-    int sharedMemoryPerMultiProcKiBs;
-    int sharedMemoryPerBlockKiBs;
+    unsigned long long globalMemoryKiBs;
+    unsigned long long sharedMemoryPerMultiProcKiBs;
+    unsigned long long sharedMemoryPerBlockKiBs;
 } spbla_DeviceCaps;
 
 /**
@@ -203,12 +208,12 @@ SPBLA_EXPORT SPBLA_API spbla_Status spbla_Finalize(
 );
 
 /**
- * Query device capabilities/properties if cuda compatible device is present.
+ * Query device capabilities/properties if cuda/opencl compatible device is present.
  *
- * @note This function returns no actual info if cuda backend is not presented.
+ * @note This function returns no actual info if cuda/opencl backend is not presented.
  * @param deviceCaps Pointer to device caps structure to store result
  *
- * @return Error if cuda device not present or if failed to query capabilities
+ * @return Error if cuda/opencl device not present or if failed to query capabilities
  */
 SPBLA_EXPORT SPBLA_API spbla_Status spbla_GetDeviceCaps(
     spbla_DeviceCaps* deviceCaps

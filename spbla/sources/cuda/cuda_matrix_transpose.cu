@@ -22,56 +22,28 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#include <cuda/cuda_backend.hpp>
 #include <cuda/cuda_matrix.hpp>
-#include <core/library.hpp>
-#include <io/logger.hpp>
+#include <cuda/kernels/sptranspose.cuh>
+#include <cuda/kernels/sptranspose2.cuh>
 
 namespace spbla {
 
-    void CudaBackend::initialize(hints initHints) {
-        if (Instance::isCudaDeviceSupported()) {
-            mInstance = new Instance(initHints & SPBLA_HINT_GPU_MEM_MANAGED);
-        }
+    void MatrixCsr::transpose(const MatrixBase &otherBase, bool checkTime) {
+        auto other = dynamic_cast<const MatrixCsr*>(&otherBase);
 
-        // No device. Cannot init this backend
-    }
+        CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Passed matrix does not belong to csr matrix class");
 
-    void CudaBackend::finalize() {
-        assert(mMatCount == 0);
+        size_t M = other->getNrows();
+        size_t N = other->getNcols();
 
-        if (mMatCount > 0) {
-            LogStream stream(*Library::getLogger());
-            stream << Logger::Level::Error
-                   << "Lost some (" << mMatCount << ") matrix objects" << LogStream::cmt;
-        }
+        assert(this->getNrows() == N);
+        assert(this->getNcols() == M);
 
-        if (mInstance) {
-            delete mInstance;
-            mInstance = nullptr;
-        }
-    }
+        kernels::SpTranspose2Functor<index, DeviceAlloc<index>> spTranspose2Functor;
+        auto result = spTranspose2Functor(other->mMatrixImpl);
 
-    bool CudaBackend::isInitialized() const {
-        return mInstance != nullptr;
-    }
-
-    MatrixBase *CudaBackend::createMatrix(size_t nrows, size_t ncols) {
-        mMatCount++;
-        return new MatrixCsr(nrows, ncols, getInstance());
-    }
-
-    void CudaBackend::releaseMatrix(MatrixBase *matrixBase) {
-        mMatCount--;
-        delete matrixBase;
-    }
-
-    void CudaBackend::queryCapabilities(spbla_DeviceCaps &caps) {
-        Instance::queryDeviceCapabilities(caps);
-    }
-
-    Instance & CudaBackend::getInstance() {
-        return *mInstance;
+        // Assign the actual impl result to this storage
+        this->mMatrixImpl = std::move(result);
     }
 
 }

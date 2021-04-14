@@ -22,46 +22,27 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#include <cuda/matrix_csr.hpp>
-#include <cuda/kernels/spmerge.cuh>
+#include <cuda/cuda_matrix.hpp>
+#include <cuda/kernels/spreduce.cuh>
 
 namespace spbla {
 
-    void MatrixCsr::eWiseAdd(const MatrixBase &aBase, const MatrixBase &bBase, bool checkTime) {
-        auto a = dynamic_cast<const MatrixCsr*>(&aBase);
-        auto b = dynamic_cast<const MatrixCsr*>(&bBase);
+    void MatrixCsr::reduce(const MatrixBase &otherBase, bool checkTime) {
+        auto other = dynamic_cast<const MatrixCsr*>(&otherBase);
 
-        CHECK_RAISE_ERROR(a != nullptr, InvalidArgument, "Passed matrix does not belong to csr matrix class");
-        CHECK_RAISE_ERROR(b != nullptr, InvalidArgument, "Passed matrix does not belong to csr matrix class");
+        CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Passed matrix does not belong to csr matrix class");
 
-        index M = this->getNrows();
-        index N = this->getNcols();
+        auto M = other->getNrows();
 
-        assert(a->getNrows() == M);
-        assert(a->getNcols() == N);
+        assert(this->getNrows() == M);
+        assert(this->getNcols() == 1);
 
-        assert(b->getNrows() == M);
-        assert(b->getNcols() == N);
+        other->resizeStorageToDim();
 
-        if (a->isMatrixEmpty()) {
-            this->clone(bBase);
-            return;
-        }
+        kernels::SpReduceFunctor<index, details::DeviceAllocator<index>> spReduceFunctor;
+        auto result = spReduceFunctor(other->mMatrixImpl);
 
-        if (b->isMatrixEmpty()) {
-            this->clone(aBase);
-            return;
-        }
-
-        // Ensure csr proper csr format even if empty
-        a->resizeStorageToDim();
-        b->resizeStorageToDim();
-
-        kernels::SpMergeFunctor<index, DeviceAlloc<index>> spMergeFunctor;
-        auto result = spMergeFunctor(a->mMatrixImpl, b->mMatrixImpl);
-
-        // Assign the actual impl result to this storage
-        this->mMatrixImpl = std::move(result);
+        mMatrixImpl = std::move(result);
     }
 
 }

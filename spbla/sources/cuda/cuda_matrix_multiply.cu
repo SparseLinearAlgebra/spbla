@@ -22,7 +22,7 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#include <cuda/matrix_csr.hpp>
+#include <cuda/cuda_matrix.hpp>
 #include <nsparse/spgemm.h>
 
 namespace spbla {
