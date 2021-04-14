@@ -1,7 +1,7 @@
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */
-/* Copyright (c) 2021 JetBrains-Research                                          */
+/* Copyright (c) 2020, 2021 JetBrains-Research                                    */
 /*                                                                                */
 /* Permission is hereby granted, free of charge, to any person obtaining a copy   */
 /* of this software and associated documentation files (the "Software"), to deal  */
@@ -24,15 +24,14 @@
 
 #include <spbla_Common.hpp>
 
-spbla_Info spbla_Matrix_New(
-        spbla_Matrix*       matrix,
-        spbla_Index         nrows,
-        spbla_Index         ncols
+spbla_Status spbla_Matrix_New(
+        spbla_Matrix *matrix,
+        spbla_Index nrows,
+        spbla_Index ncols
 ) {
-    SPBLA_BEGIN()
-        SPBLA_VALIDATE_LIBRARY()
+    SPBLA_BEGIN_BODY
+        SPBLA_VALIDATE_LIBRARY
         SPBLA_ARG_NOT_NULL(matrix)
-
-        *matrix = (spbla_Matrix) spbla::Library::CreateMatrix(nrows, ncols);
-    SPBLA_END()
+        *matrix = (spbla_Matrix_t *) spbla::Library::createMatrix(nrows, ncols);
+    SPBLA_END_BODY
 }

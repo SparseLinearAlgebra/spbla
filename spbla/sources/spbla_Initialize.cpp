@@ -1,7 +1,7 @@
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */
-/* Copyright (c) 2021 JetBrains-Research                                          */
+/* Copyright (c) 2020, 2021 JetBrains-Research                                    */
 /*                                                                                */
 /* Permission is hereby granted, free of charge, to any person obtaining a copy   */
 /* of this software and associated documentation files (the "Software"), to deal  */
@@ -24,12 +24,11 @@
 
 #include <spbla_Common.hpp>
 
-spbla_Info spbla_Initialize(
-        spbla_Backend       backend,
-        spbla_Index         optionsCount,
-        const char* const*  options
+spbla_Status spbla_Initialize(
+        spbla_Hints hints
 ) {
-    SPBLA_BEGIN()
-        spbla::Library::Initialize(backend, optionsCount, options);
-    SPBLA_END()
+    SPBLA_BEGIN_BODY
+        spbla::Library::initialize(hints);
+    SPBLA_END_BODY
 }
+

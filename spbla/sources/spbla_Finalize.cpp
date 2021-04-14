@@ -1,7 +1,7 @@
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */
-/* Copyright (c) 2021 JetBrains-Research                                          */
+/* Copyright (c) 2020, 2021 JetBrains-Research                                    */
 /*                                                                                */
 /* Permission is hereby granted, free of charge, to any person obtaining a copy   */
 /* of this software and associated documentation files (the "Software"), to deal  */
@@ -24,10 +24,10 @@
 
 #include <spbla_Common.hpp>
 
-spbla_Info spbla_Finalize(
+spbla_Status spbla_Finalize(
 ) {
-    SPBLA_BEGIN()
-        SPBLA_VALIDATE_LIBRARY()
-        spbla::Library::Finalize();
-    SPBLA_END();
+    SPBLA_BEGIN_BODY
+        SPBLA_VALIDATE_LIBRARY
+        spbla::Library::finalize();
+    SPBLA_END_BODY
 }

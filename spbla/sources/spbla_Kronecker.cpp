@@ -1,7 +1,7 @@
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */
-/* Copyright (c) 2021 JetBrains-Research                                          */
+/* Copyright (c) 2020, 2021 JetBrains-Research                                    */
 /*                                                                                */
 /* Permission is hereby granted, free of charge, to any person obtaining a copy   */
 /* of this software and associated documentation files (the "Software"), to deal  */
@@ -24,21 +24,20 @@
 
 #include <spbla_Common.hpp>
 
-SPBLA_EXPORT SPBLA_API spbla_Info spbla_Kronecker(
-        spbla_Matrix        result,
-        spbla_Matrix        left,
-        spbla_Matrix        right
+spbla_Status spbla_Kronecker(
+        spbla_Matrix result,
+        spbla_Matrix left,
+        spbla_Matrix right,
+        spbla_Hints hints
 ) {
-    SPBLA_BEGIN()
-        SPBLA_VALIDATE_LIBRARY()
+    SPBLA_BEGIN_BODY
+        SPBLA_VALIDATE_LIBRARY
         SPBLA_ARG_NOT_NULL(result)
         SPBLA_ARG_NOT_NULL(left)
         SPBLA_ARG_NOT_NULL(right)
-
-        auto resultM = (spbla::Matrix*) result;
-        auto leftM = (spbla::Matrix*) left;
-        auto rightM = (spbla::Matrix*) right;
-
-        resultM->Kronecker(*leftM, *rightM);
-    SPBLA_END()
+        auto resultM = (spbla::Matrix *) result;
+        auto leftM = (spbla::Matrix *) left;
+        auto rightM = (spbla::Matrix *) right;
+        resultM->kronecker(*leftM, *rightM, hints & SPBLA_HINT_TIME_CHECK);
+    SPBLA_END_BODY
 }

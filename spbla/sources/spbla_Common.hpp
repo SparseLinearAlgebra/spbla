@@ -1,7 +1,7 @@
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */
-/* Copyright (c) 2021 JetBrains-Research                                          */
+/* Copyright (c) 2020, 2021 JetBrains-Research                                    */
 /*                                                                                */
 /* Permission is hereby granted, free of charge, to any person obtaining a copy   */
 /* of this software and associated documentation files (the "Software"), to deal  */
@@ -26,28 +26,32 @@
 #define SPBLA_SPBLA_COMMON_HPP
 
 #include <spbla/spbla.h>
-#include <core/Library.hpp>
-#include <core/Exception.hpp>
-#include <core/Matrix.hpp>
-
-// Code block to wrap backend exceptions
-#define SPBLA_BEGIN()                               \
-    try {
-
-#define SPBLA_END()                                 \
-    } catch (const spbla::Exception& e) {           \
-        return e.GetInfo();                         \
-    } catch (const std::exception& fallback) {      \
-        return spbla_Info::SPBLA_INFO_ERROR;        \
-    }                                               \
-    return spbla_Info::SPBLA_INFO_SUCCESS;
+#include <core/config.hpp>
+#include <core/version.hpp>
+#include <core/error.hpp>
+#include <core/library.hpp>
+#include <core/matrix.hpp>
 
 // State validation
-#define SPBLA_VALIDATE_LIBRARY()                    \
-    spbla::Library::Validate();
+#define SPBLA_VALIDATE_LIBRARY                                                         \
+    spbla::Library::validate();
 
 // Arguments validation
-#define SPBLA_ARG_NOT_NULL(arg)                     \
+#define SPBLA_ARG_NOT_NULL(arg)                                                        \
     CHECK_RAISE_ERROR(arg != nullptr, InvalidArgument, "Passed null argument")
+
+#define SPBLA_BEGIN_BODY                                                               \
+    try {
+
+#define SPBLA_END_BODY }                                                               \
+    catch (const spbla::Error& err) {                                                  \
+         spbla::Library::handleError(err);                                             \
+         return err.getStatus();                                                        \
+    }                                                                                   \
+    catch (const std::exception& exc) {                                                 \
+         spbla::Library::handleError(exc);                                             \
+         return SPBLA_STATUS_ERROR;                                                    \
+    }                                                                                   \
+    return spbla_Status::SPBLA_STATUS_SUCCESS;
 
 #endif //SPBLA_SPBLA_COMMON_HPP
