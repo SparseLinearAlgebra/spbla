@@ -30,8 +30,8 @@
 namespace spbla {
 
     void CudaBackend::initialize(hints initHints) {
-        if (Instance::isCudaDeviceSupported()) {
-            mInstance = new Instance(initHints & SPBLA_HINT_GPU_MEM_MANAGED);
+        if (CudaInstance::isCudaDeviceSupported()) {
+            mInstance = new CudaInstance(initHints & SPBLA_HINT_GPU_MEM_MANAGED);
         }
 
         // No device. Cannot init this backend
@@ -58,7 +58,7 @@ namespace spbla {
 
     MatrixBase *CudaBackend::createMatrix(size_t nrows, size_t ncols) {
         mMatCount++;
-        return new MatrixCsr(nrows, ncols, getInstance());
+        return new CudaMatrix(nrows, ncols, getInstance());
     }
 
     void CudaBackend::releaseMatrix(MatrixBase *matrixBase) {
@@ -67,10 +67,10 @@ namespace spbla {
     }
 
     void CudaBackend::queryCapabilities(spbla_DeviceCaps &caps) {
-        Instance::queryDeviceCapabilities(caps);
+        CudaInstance::queryDeviceCapabilities(caps);
     }
 
-    Instance & CudaBackend::getInstance() {
+    CudaInstance & CudaBackend::getInstance() {
         return *mInstance;
     }
 

@@ -26,7 +26,7 @@
 #define SPBLA_CUDA_BACKEND_HPP
 
 #include <backend/backend_base.hpp>
-#include <cuda/instance.hpp>
+#include <cuda/cuda_instance.hpp>
 
 namespace spbla {
 
@@ -45,10 +45,10 @@ namespace spbla {
         void releaseMatrix(MatrixBase *matrixBase) override;
         void queryCapabilities(spbla_DeviceCaps& caps) override;
 
-        Instance& getInstance();
+        CudaInstance& getInstance();
 
     private:
-        Instance* mInstance;
+        CudaInstance* mInstance;
         size_t mMatCount = 0;
     };
 

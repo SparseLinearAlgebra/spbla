@@ -22,48 +22,51 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#include <cuda/instance.hpp>
-#include <core/error.hpp>
-#include <string>
-#include <cstdlib>
+#ifndef SPBLA_CUDA_INSTANCE_HPP
+#define SPBLA_CUDA_INSTANCE_HPP
+
+#include <core/config.hpp>
+#include <unordered_set>
 
 namespace spbla {
 
-    volatile Instance* Instance::gInstance = nullptr;
+    /**
+     * Manages global state for various internal operations.
+     */
+    class CudaInstance {
+    public:
+        enum MemType {
+            Default,
+            Managed
+        };
 
-    Instance::Instance(bool useManagedMemory) {
-        gInstance = this;
-        mMemoryType = useManagedMemory? Managed: Default;
+        explicit CudaInstance(bool useManagedMemory);
+        CudaInstance(const CudaInstance& other) = delete;
+        CudaInstance(CudaInstance&& other) noexcept = delete;
+        ~CudaInstance();
 
-#ifdef SPBLA_DEBUG
-        sendMessage(SPBLA_STATUS_SUCCESS, "Initialize spbla instance");
-        printDeviceCapabilities();
-#endif // SPBLA_DEBUG
-    }
+        // For custom host & device allocators
+        void allocate(void* &ptr, size_t s) const;
+        void allocateOnGpu(void* &ptr, size_t s) const;
+        void deallocate(void* ptr) const;
+        void deallocateOnGpu(void* ptr) const;
 
-    void Instance::allocate(void* &ptr, size_t size) const {
-        ptr = malloc(size);
-        CHECK_RAISE_ERROR(ptr != nullptr, MemOpFailed, "Failed to allocate memory on the CPU");
-        mHostAllocCount++;
-    }
+        void syncHostDevice() const;
 
-    void Instance::deallocate(void* ptr) const {
-        CHECK_RAISE_ERROR(ptr != nullptr, InvalidArgument, "Passed null ptr to free");
-        free(ptr);
-        mHostAllocCount--;
-    }
+        static bool isCudaDeviceSupported();
+        static void queryDeviceCapabilities(spbla_DeviceCaps& deviceCaps);
+        static CudaInstance& getInstanceRef();
+        static CudaInstance* getInstancePtr();
+        static bool isInstancePresent();
 
-    Instance& Instance::getInstanceRef() {
-        CHECK_RAISE_ERROR(gInstance != nullptr, InvalidState, "No instance in the system");
-        return (Instance&) *gInstance;
-    }
+    private:
+        MemType mMemoryType = Default;
+        mutable size_t mHostAllocCount = 0;
+        mutable size_t mDeviceAllocCount = 0;
 
-    Instance* Instance::getInstancePtr() {
-        return (Instance* ) gInstance;
-    }
-
-    bool Instance::isInstancePresent() {
-        return gInstance != nullptr;
-    }
+        static volatile CudaInstance* gInstance;
+    };
 
 }
+
+#endif //SPBLA_CUDA_INSTANCE_HPP

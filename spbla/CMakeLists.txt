@@ -90,9 +90,9 @@ if (SPBLA_WITH_CUDA)
     set(SPBLA_CUDA_SOURCES
         sources/cuda/cuda_backend.hpp
         sources/cuda/cuda_backend.cu
-        sources/cuda/instance.hpp
-        sources/cuda/instance.cu
-        sources/cuda/instance.cpp
+        sources/cuda/cuda_instance.hpp
+        sources/cuda/cuda_instance.cu
+        sources/cuda/cuda_instance.cpp
         sources/cuda/cuda_matrix.hpp
         sources/cuda/cuda_matrix.cu
         sources/cuda/cuda_matrix_build.cu

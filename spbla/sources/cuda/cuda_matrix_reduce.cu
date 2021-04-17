@@ -27,8 +27,8 @@
 
 namespace spbla {
 
-    void MatrixCsr::reduce(const MatrixBase &otherBase, bool checkTime) {
-        auto other = dynamic_cast<const MatrixCsr*>(&otherBase);
+    void CudaMatrix::reduce(const MatrixBase &otherBase, bool checkTime) {
+        auto other = dynamic_cast<const CudaMatrix*>(&otherBase);
 
         CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Passed matrix does not belong to csr matrix class");
 
