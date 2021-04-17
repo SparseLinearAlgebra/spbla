@@ -16,6 +16,24 @@ if (SPBLA_WITH_OPENCL)
     message(STATUS "Add OpenCL backend for GPGPU computations")
 endif()
 
+set(TARGET_NAME spbla)
+set(TARGET_FILE_NAME)
+set(DEFINES_LIST)
+
+# Platform checks
+if(APPLE)
+    list(APPEND DEFINES_LIST SPBLA_PLATFORM_MACOS)
+    set(TARGET_FILE_NAME "lib${TARGET_NAME}.dylib")
+elseif(UNIX)
+    list(APPEND DEFINES_LIST SPBLA_PLATFORM_LINUX)
+    set(TARGET_FILE_NAME "lib${TARGET_NAME}.so")
+elseif(WIN32)
+    list(APPEND DEFINES_LIST SPBLA_PLATFORM_WIN)
+    set(TARGET_FILE_NAME "${TARGET_NAME}.dll")
+else()
+    message(FATAL_ERROR "Platform not specified")
+endif()
+
 # Library sources
 set(SPBLA_SOURCES
     sources/core/config.hpp
@@ -160,6 +178,11 @@ target_compile_options(spbla PRIVATE $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAG
 set_target_properties(spbla PROPERTIES CXX_STANDARD 17)
 set_target_properties(spbla PROPERTIES CXX_STANDARD_REQUIRED ON)
 
+# Platform defines
+foreach(DEFINE ${DEFINES_LIST})
+    target_compile_definitions(spbla PUBLIC ${DEFINE})
+endforeach()
+
 # Cuda specifics
 if (SPBLA_WITH_CUDA)
     set_target_properties(spbla PROPERTIES CUDA_STANDARD 14)
@@ -197,8 +220,7 @@ endif()
 
 # Copy spbla library after build if allowed
 if (SPBLA_COPY_TO_PY_PACKAGE)
-    # todo: Different platforms has specific naming conventions
-    set(LIBRARY_FILE_NAME "libspbla.so")
+    set(LIBRARY_FILE_NAME ${TARGET_FILE_NAME})
 
     add_custom_command(
         TARGET spbla POST_BUILD
@@ -206,5 +228,5 @@ if (SPBLA_COPY_TO_PY_PACKAGE)
         copy
         "${CMAKE_BINARY_DIR}/spbla/${LIBRARY_FILE_NAME}"
         "${CMAKE_BINARY_DIR}/python/pyspbla"
-        COMMENT "Copy spbla compiled lib into python folder")
+        COMMENT "Copy ${LIBRARY_FILE_NAME} compiled lib into python folder")
 endif()

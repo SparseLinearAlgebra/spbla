@@ -26,7 +26,7 @@ def get_default_log_name():
 
     :return: String log file
     """
-    return "cubool-" + datetime.datetime.now().strftime("%d-%m-%y--%H-%M-%S") + ".textlog"
+    return "spbla-" + datetime.datetime.now().strftime("%d-%m-%y--%H-%M-%S") + ".textlog"
 
 
 def setup_logger(file_path: str, default=True, error=False, warning=False):

@@ -280,7 +280,7 @@ def load_and_configure(cubool_lib_path: str):
 
 
 """
-/** Possible status codes that can be returned from cubool api */
+/** Possible status codes that can be returned from spbla api */
 
 /** Successful execution of the function */
 SPBLA_STATUS_SUCCESS,
