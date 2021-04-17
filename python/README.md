@@ -7,7 +7,7 @@
 **pyspbla** is a python wrapper for [spbla](https://github.com/JetBrains-Research/spbla) library.
 
 **spbla** is a linear Boolean algebra library primitives and operations for 
-work with sparse matrices written on CPU/GPU platforms. The primary 
+work with sparse matrices written for CPU, Cuda and OpenCL platforms. The primary 
 goal of the library is implementation, testing and profiling algorithms for
 solving *formal-language-constrained problems*, such as *context-free* 
 and *regular* path queries with various semantics for graph databases.
@@ -27,7 +27,7 @@ for computations on CPU side only. This backend is selected automatically
 if Cuda compatible device is not presented in the system. This can be quite handy for 
 prototyping algorithms on a local computer for later running on a powerful server.   
 
-## Features
+### Features
 
 - Matrix creation (empty, from data, with random data)
 - Matrix-matrix operations (multiplication, element-wise addition, kronecker product)
@@ -38,7 +38,7 @@ prototyping algorithms on a local computer for later running on a powerful serve
 - GraphViz (export single matrix or set of matrices as a graph with custom color and label settings)
 - Debug (matrix string debug markers, logging)
 
-## Simple example
+### Simple example
 
 Create sparse matrices, compute matrix-matrix product and print the result to the output:
 
@@ -58,7 +58,7 @@ b[2, 1] = True
 print(a, b, a.mxm(b), sep="\n")
 ```
 
-## Transitive closure example
+### Transitive closure example
 
 Compute the transitive closure problem for the directed graph and print the result:
 
@@ -82,7 +82,7 @@ while total != t.nvals:
 print(a, t, sep="\n")
 ```
 
-## GraphViz example
+### GraphViz example
 
 Generate GraphViz graph script for a graph stored as a set of adjacency matrices:
 
@@ -120,8 +120,8 @@ Script can be rendered by any [gviz tool](https://dreampuf.github.io/GraphvizOnl
 ```ignorelang
 @online{spbla,
   author = {Orachyov, Egor and Alimov, Pavel and Grigorev, Semyon},
-  title = {spbla: sparse Boolean linear algebra for CPU/GPU computations},
-  year = 2020,
+  title = {spbla: sparse Boolean linear algebra for CPU, Cuda and OpenCL computations},
+  year = 2021,
   url = {https://github.com/JetBrains-Research/spbla},
   note = {Version Alpha}
 }

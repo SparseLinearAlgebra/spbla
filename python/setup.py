@@ -1,3 +1,4 @@
+import os
 import pathlib
 import setuptools
 
@@ -8,9 +9,18 @@ HERE = pathlib.Path(__file__).parent
 with open(HERE / "README.md", "r", encoding="utf-8") as fh:
     README = fh.read()
 
+# Find lib name
+SOURCE_PATH = pathlib.Path(__file__).resolve()
+LIB_NAME = None
+
+for entry in os.listdir(SOURCE_PATH.parent / "pyspbla"):
+    if "spbla" in str(entry):
+        LIB_NAME = entry
+        break
+
 setuptools.setup(
     name="pyspbla",
-    version="1.0.0",
+    version="0.0.0",
     author="Egor Orachyov",
     author_email="egororachyov@gmail.com",
     license="MIT",
@@ -50,7 +60,7 @@ setuptools.setup(
     ],
     packages=["pyspbla"],
     package_dir={'': '.'},
-    package_data={'': ['libspbla.so']},
+    package_data={'': [LIB_NAME]},
     python_requires=">=3.0",
     include_package_data=True
 )
