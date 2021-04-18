@@ -1,7 +1,7 @@
 # spbla
 
 [![JB Research](https://jb.gg/badges/research-flat-square.svg)](https://research.jetbrains.org/)
-[![Ubuntu](https://github.com/JetBrains-Research/spbla/workflows/Ubuntu/badge.svg?branch=master)](https://github.com/JetBrains-Research/spbla/actions)
+[![Ubuntu](https://github.com/JetBrains-Research/spbla/actions/workflows/ubuntu.yml/badge.svg?branch=main)](https://github.com/JetBrains-Research/spbla/actions/workflows/ubuntu.yml)
 [![License](https://img.shields.io/badge/license-MIT-orange)](https://github.com/JetBrains-Research/spbla/blob/master/LICENSE)
 
 **spbla** is a linear Boolean algebra library primitives and operations for 
@@ -67,20 +67,6 @@ b[2, 1] = True
 print(a, b, a.mxm(b), sep="\n")
 ```
 
-### Installation
-
-If you are running **Linux based** OS (tested on Ubuntu 20.04) you can download the official
-PyPI **pyspbla** python package, which includes compiled library source code
-with Cuda and Sequential computations support. Installation process 
-requires only `python3` to be installed on your machine. Python can be installed 
-as follows [link](https://phoenixnap.com/kb/how-to-install-python-3-ubuntu).
-
-If all requirements are satisfied, run the following command to install PyPI package:
-
-```shell script
-$ python3 -m pip install pyspbla
-``` 
-
 ## Getting started
 
 This section gives instructions to build the library from sources.
@@ -102,7 +88,7 @@ These steps are required if you want to build library for your specific platform
 > without cuda backend support.
 
 Before the CUDA setup process, validate your system NVIDIA driver with `nvidia-smi`
-command. if it is need, install required driver via `ubuntu-drivers devices` and 
+command. Install required driver via `ubuntu-drivers devices` and 
 `apt install <driver>` commands respectively.
 
 The following commands grubs the required GCC compilers for the CC and CXX compiling 
