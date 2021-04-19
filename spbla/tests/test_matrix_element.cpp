@@ -138,21 +138,41 @@ void testRun(spbla_Index m, spbla_Index n, spbla_Hints setup) {
     ASSERT_EQ(spbla_Finalize(), SPBLA_STATUS_SUCCESS);
 }
 
-TEST(spbla_Matrix, SetElementSmall) {
+#ifdef SPBLA_WITH_CUDA
+TEST(spbla_Matrix, SetElementSmallCuda) {
     spbla_Index m = 60, n = 100;
-    testRun(m, n, SPBLA_HINT_NO);
+    testRun(m, n, SPBLA_HINT_CUDA_BACKEND);
 }
 
-TEST(spbla_Matrix, SetElementMedium) {
+TEST(spbla_Matrix, SetElementMediumCuda) {
     spbla_Index m = 500, n = 1000;
-    testRun(m, n, SPBLA_HINT_NO);
+    testRun(m, n, SPBLA_HINT_CUDA_BACKEND);
 }
 
-TEST(spbla_Matrix, SetElementLarge) {
+TEST(spbla_Matrix, SetElementLargeCuda) {
     spbla_Index m = 1000, n = 2000;
-    testRun(m, n, SPBLA_HINT_NO);
+    testRun(m, n, SPBLA_HINT_CUDA_BACKEND);
+}
+#endif
+
+#ifdef SPBLA_WITH_OPENCL
+TEST(spbla_Matrix, SetElementSmallOpenCL) {
+    spbla_Index m = 60, n = 100;
+    testRun(m, n, SPBLA_HINT_OPENCL_BACKEND);
 }
 
+TEST(spbla_Matrix, SetElementMediumOpenCL) {
+    spbla_Index m = 500, n = 1000;
+    testRun(m, n, SPBLA_HINT_OPENCL_BACKEND);
+}
+
+TEST(spbla_Matrix, SetElementLargeOpenCL) {
+    spbla_Index m = 1000, n = 2000;
+    testRun(m, n, SPBLA_HINT_OPENCL_BACKEND);
+}
+#endif
+
+#ifdef SPBLA_WITH_SEQUENTIAL
 TEST(spbla_Matrix, SetElementSmallFallback) {
     spbla_Index m = 60, n = 100;
     testRun(m, n, SPBLA_HINT_CPU_BACKEND);
@@ -167,5 +187,6 @@ TEST(spbla_Matrix, SetElementLargeFallback) {
     spbla_Index m = 1000, n = 2000;
     testRun(m, n, SPBLA_HINT_CPU_BACKEND);
 }
+#endif
 
 SPBLA_GTEST_MAIN

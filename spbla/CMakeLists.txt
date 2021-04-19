@@ -191,7 +191,7 @@ if (SPBLA_WITH_CUDA)
 
     target_compile_options(spbla PRIVATE $<$<COMPILE_LANGUAGE:CUDA>: -use_fast_math -Xptxas -O2>)
 
-    target_compile_definitions(spbla PRIVATE SPBLA_WITH_CUDA)
+    target_compile_definitions(spbla PUBLIC SPBLA_WITH_CUDA)
     target_link_libraries(spbla PRIVATE nsparse)
 endif()
 
@@ -199,12 +199,12 @@ endif()
 if (SPBLA_WITH_OPENCL)
     # required flags and deps goes here
 
-    target_compile_definitions(spbla PRIVATE SPBLA_WITH_OPENCL)
+    target_compile_definitions(spbla PUBLIC SPBLA_WITH_OPENCL)
 endif()
 
 # Sequential Cpu based backend
 if (SPBLA_WITH_SEQUENTIAL)
-    target_compile_definitions(spbla PRIVATE SPBLA_WITH_SEQUENTIAL)
+    target_compile_definitions(spbla PUBLIC SPBLA_WITH_SEQUENTIAL)
 endif()
 
 # If tests enabled, add tests sources to the build

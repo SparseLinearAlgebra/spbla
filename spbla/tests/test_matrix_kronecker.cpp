@@ -57,37 +57,63 @@ void testMatrixKronecker(spbla_Index m, spbla_Index n, spbla_Index k, spbla_Inde
 
 void testRun(spbla_Index m, spbla_Index n, spbla_Index k, spbla_Index t, float step, spbla_Hints setup) {
     // Setup library
-    EXPECT_EQ(spbla_Initialize(setup), SPBLA_STATUS_SUCCESS);
+    ASSERT_EQ(spbla_Initialize(setup), SPBLA_STATUS_SUCCESS);
 
     for (size_t i = 0; i < 10; i++) {
         testMatrixKronecker(m, n, k, t, 0.01f + step * ((float) i), SPBLA_HINT_NO);
     }
 
     // Finalize library
-    EXPECT_EQ(spbla_Finalize(), SPBLA_STATUS_SUCCESS);
+    ASSERT_EQ(spbla_Finalize(), SPBLA_STATUS_SUCCESS);
 }
 
-TEST(spbla_Matrix, KroneckerSmall) {
+#ifdef SPBLA_WITH_CUDA
+TEST(spbla_Matrix, KroneckerSmallCuda) {
     spbla_Index m = 10, n = 20;
     spbla_Index k = 5, t = 15;
     float step = 0.05f;
-    testRun(m, n, k, t, step, SPBLA_HINT_NO);
+    testRun(m, n, k, t, step, SPBLA_HINT_CUDA_BACKEND);
 }
 
-TEST(spbla_Matrix, KroneckerMedium) {
+TEST(spbla_Matrix, KroneckerMediumCuda) {
     spbla_Index m = 100, n = 40;
     spbla_Index k = 30, t = 80;
     float step = 0.02f;
-    testRun(m, n, k, t, step, SPBLA_HINT_NO);
+    testRun(m, n, k, t, step, SPBLA_HINT_CUDA_BACKEND);
 }
 
-TEST(spbla_Matrix, KroneckerLarge) {
+TEST(spbla_Matrix, KroneckerLargeCuda) {
     spbla_Index m = 1000, n = 400;
     spbla_Index k = 300, t = 800;
     float step = 0.001f;
-    testRun(m, n, k, t, step, SPBLA_HINT_NO);
+    testRun(m, n, k, t, step, SPBLA_HINT_CUDA_BACKEND);
+}
+#endif
+
+#ifdef SPBLA_WITH_OPENCL
+TEST(spbla_Matrix, KroneckerSmallOpenCL) {
+    spbla_Index m = 10, n = 20;
+    spbla_Index k = 5, t = 15;
+    float step = 0.05f;
+    testRun(m, n, k, t, step, SPBLA_HINT_OPENCL_BACKEND);
 }
 
+TEST(spbla_Matrix, KroneckerMediumOpenCL) {
+    spbla_Index m = 100, n = 40;
+    spbla_Index k = 30, t = 80;
+    float step = 0.02f;
+    testRun(m, n, k, t, step, SPBLA_HINT_OPENCL_BACKEND);
+}
+
+TEST(spbla_Matrix, KroneckerLargeOpenCL) {
+    spbla_Index m = 1000, n = 400;
+    spbla_Index k = 300, t = 800;
+    float step = 0.001f;
+    testRun(m, n, k, t, step, SPBLA_HINT_OPENCL_BACKEND);
+}
+#endif
+
+#ifdef SPBLA_WITH_SEQUENTIAL
 TEST(spbla_Matrix, KroneckerSmallFallback) {
     spbla_Index m = 10, n = 20;
     spbla_Index k = 5, t = 15;
@@ -108,5 +134,6 @@ TEST(spbla_Matrix, KroneckerLargeFallback) {
     float step = 0.001f;
     testRun(m, n, k, t, step, SPBLA_HINT_CPU_BACKEND);
 }
+#endif
 
 SPBLA_GTEST_MAIN

@@ -52,7 +52,7 @@ void testMatrixExtractSubMatrix(spbla_Index m, spbla_Index n, spbla_Index N, flo
 
 void testRun(spbla_Index m, spbla_Index n, float step, spbla_Hints setup) {
     // Setup library
-    EXPECT_EQ(spbla_Initialize(setup), SPBLA_STATUS_SUCCESS);
+    ASSERT_EQ(spbla_Initialize(setup), SPBLA_STATUS_SUCCESS);
 
     auto N = 10;
 
@@ -61,27 +61,50 @@ void testRun(spbla_Index m, spbla_Index n, float step, spbla_Hints setup) {
     }
 
     // Finalize library
-    EXPECT_EQ(spbla_Finalize(), SPBLA_STATUS_SUCCESS);
+    ASSERT_EQ(spbla_Finalize(), SPBLA_STATUS_SUCCESS);
 }
 
-TEST(spbla_Matrix, SubMatrixExtractSmall) {
+#ifdef SPBLA_WITH_CUDA
+TEST(spbla_Matrix, SubMatrixExtractSmallCuda) {
     spbla_Index m = 100, n = 200;
     float step = 0.05f;
-    testRun(m, n, step, SPBLA_HINT_NO);
+    testRun(m, n, step, SPBLA_HINT_CUDA_BACKEND);
 }
 
-TEST(spbla_Matrix, SubMatrixExtractMedium) {
+TEST(spbla_Matrix, SubMatrixExtractMediumCuda) {
     spbla_Index m = 400, n = 700;
     float step = 0.05f;
-    testRun(m, n, step, SPBLA_HINT_NO);
+    testRun(m, n, step, SPBLA_HINT_CUDA_BACKEND);
 }
 
-TEST(spbla_Matrix, SubMatrixExtractLarge) {
+TEST(spbla_Matrix, SubMatrixExtractLargeCuda) {
     spbla_Index m = 2000, n = 4000;
     float step = 0.01f;
-    testRun(m, n, step, SPBLA_HINT_NO);
+    testRun(m, n, step, SPBLA_HINT_CUDA_BACKEND);
+}
+#endif
+
+#ifdef SPBLA_WITH_OPENCL
+TEST(spbla_Matrix, SubMatrixExtractSmallOpenCL) {
+    spbla_Index m = 100, n = 200;
+    float step = 0.05f;
+    testRun(m, n, step, SPBLA_HINT_OPENCL_BACKEND);
 }
 
+TEST(spbla_Matrix, SubMatrixExtractMediumOpenCL) {
+    spbla_Index m = 400, n = 700;
+    float step = 0.05f;
+    testRun(m, n, step, SPBLA_HINT_OPENCL_BACKEND);
+}
+
+TEST(spbla_Matrix, SubMatrixExtractLargeOpenCL) {
+    spbla_Index m = 2000, n = 4000;
+    float step = 0.01f;
+    testRun(m, n, step, SPBLA_HINT_OPENCL_BACKEND);
+}
+#endif
+
+#ifdef SPBLA_WITH_SEQUENTIAL
 TEST(spbla_Matrix, SubMatrixExtractSmallFallback) {
     spbla_Index m = 100, n = 200;
     float step = 0.05f;
@@ -99,5 +122,6 @@ TEST(spbla_Matrix, SubMatrixExtractLargeFallback) {
     float step = 0.01f;
     testRun(m, n, step, SPBLA_HINT_CPU_BACKEND);
 }
+#endif
 
 SPBLA_GTEST_MAIN

@@ -52,31 +52,51 @@ void testMatrixTranspose(spbla_Index m, spbla_Index n, float density, spbla_Hint
 
 void testRun(spbla_Index m, spbla_Index n, spbla_Hints setup) {
     // Setup library
-    EXPECT_EQ(spbla_Initialize(setup), SPBLA_STATUS_SUCCESS);
+    ASSERT_EQ(spbla_Initialize(setup), SPBLA_STATUS_SUCCESS);
 
     for (size_t i = 0; i < 5; i++) {
         testMatrixTranspose(m, n, 0.1f + (0.05f) * ((float) i), SPBLA_HINT_NO);
     }
 
     // Finalize library
-    EXPECT_EQ(spbla_Finalize(), SPBLA_STATUS_SUCCESS);
+    ASSERT_EQ(spbla_Finalize(), SPBLA_STATUS_SUCCESS);
 }
 
-TEST(spbla_Matrix, TransposeSmall) {
+#ifdef SPBLA_WITH_CUDA
+TEST(spbla_Matrix, TransposeSmallCuda) {
     spbla_Index m = 60, n = 80;
-    testRun(m, n, SPBLA_HINT_NO);
+    testRun(m, n, SPBLA_HINT_CUDA_BACKEND);
 }
 
-TEST(spbla_Matrix, TransposeMedium) {
+TEST(spbla_Matrix, TransposeMediumCuda) {
     spbla_Index m = 500, n = 800;
-    testRun(m, n, SPBLA_HINT_NO);
+    testRun(m, n, SPBLA_HINT_CUDA_BACKEND);
 }
 
-TEST(spbla_Matrix, TransposeLarge) {
+TEST(spbla_Matrix, TransposeLargeCuda) {
     spbla_Index m = 2500, n = 1500;
-    testRun(m, n, SPBLA_HINT_NO);
+    testRun(m, n, SPBLA_HINT_CUDA_BACKEND);
+}
+#endif
+
+#ifdef SPBLA_WITH_OPENCL
+TEST(spbla_Matrix, TransposeSmallOpenCL) {
+    spbla_Index m = 60, n = 80;
+    testRun(m, n, SPBLA_HINT_OPENCL_BACKEND);
 }
 
+TEST(spbla_Matrix, TransposeMediumOpenCL) {
+    spbla_Index m = 500, n = 800;
+    testRun(m, n, SPBLA_HINT_OPENCL_BACKEND);
+}
+
+TEST(spbla_Matrix, TransposeLargeOpenCL) {
+    spbla_Index m = 2500, n = 1500;
+    testRun(m, n, SPBLA_HINT_OPENCL_BACKEND);
+}
+#endif
+
+#ifdef SPBLA_WITH_SEQUENTIAL
 TEST(spbla_Matrix, TransposeSmallFallback) {
     spbla_Index m = 60, n = 80;
     testRun(m, n, SPBLA_HINT_CPU_BACKEND);
@@ -91,5 +111,6 @@ TEST(spbla_Matrix, TransposeLargeFallback) {
     spbla_Index m = 2500, n = 1500;
     testRun(m, n, SPBLA_HINT_CPU_BACKEND);
 }
+#endif
 
 SPBLA_GTEST_MAIN
