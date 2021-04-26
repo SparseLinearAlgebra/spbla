@@ -202,22 +202,23 @@ So, the wrapper will be able to automatically locate required lib file.
 
 You can configure python package by the usage of the following **optional** env variables:
 
-- **SPBLA_PATH** - path to the compiled **spbla** library. Setup this variable, if you want to use your library build/
+- **SPBLA_PATH** - path to the compiled **spbla** library. Setup this variable, 
+if you want to use your custom library build.
 Setup this variable as `/path/to/the/compiled/library/libspbla.so` (actual lib name depend on target platform).
 
-- **SPBLA_BACKEND** - string name of the preferred backend for computations. Allowed options are `default` (default backend
-will be selected), `cpu`, `cuda` and `opencl`.
+- **SPBLA_BACKEND** - string name of the preferred backend for computations. Allowed options are `default`
+(default backend will be selected), `cpu`, `cuda` and `opencl`.
 
 Following example shows how to configure these variables within Python runtime:
 
 ```python
-import os
+# import os
 # os.environ["SPBLA_BACKEND"] = "cpu"
 # os.environ["SPBLA_BACKEND"] = "cuda"
 # os.environ["SPBLA_BACKEND"] = "opencl"
-import pyspbla as sp
 
-# Uncomment desired line to setup selected backend
+# Uncomment desired line to setup selected backend before actual package import
+import pyspbla as sp
 ```
 
 ## Usage 

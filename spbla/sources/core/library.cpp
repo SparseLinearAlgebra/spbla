@@ -272,7 +272,7 @@ namespace spbla {
                    << " sharedMemoryPerBlockKiBs: " << caps.sharedMemoryPerBlockKiBs;
         }
         else {
-            stream << "CPU backend (GPU device is not presented)";
+            stream << "CPU backend (GPU device is not present)";
         }
 
         stream << LogStream::cmt;
