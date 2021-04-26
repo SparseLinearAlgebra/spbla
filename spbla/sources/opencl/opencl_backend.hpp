@@ -25,7 +25,10 @@
 #ifndef SPBLA_OPENCL_BACKEND_HPP
 #define SPBLA_OPENCL_BACKEND_HPP
 
+#include <memory>
+
 #include <backend/backend_base.hpp>
+#include <library_classes/controls.hpp>
 
 namespace spbla {
 
@@ -44,7 +47,11 @@ namespace spbla {
         void releaseMatrix(MatrixBase *matrixBase) override;
 
         void queryCapabilities(spbla_DeviceCaps &caps) override;
+
+    private:
+        std::shared_ptr<clbool::Controls> controls;
     };
+
 
 }
 

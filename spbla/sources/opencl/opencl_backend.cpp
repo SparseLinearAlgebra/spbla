@@ -24,31 +24,35 @@
 
 #include <opencl/opencl_backend.hpp>
 #include <core/error.hpp>
+#include <library_classes/controls.hpp>
+#include <common/utils.hpp>
+
+#include <opencl/opencl_matrix.hpp>
 
 namespace spbla {
 
     void OpenCLBackend::initialize(hints initHints) {
-        RAISE_ERROR(NotImplemented, "This function is not implemented");
+        controls = std::make_shared<clbool::Controls>(clbool::utils::create_controls());
     }
 
     void OpenCLBackend::finalize() {
-        RAISE_ERROR(NotImplemented, "This function is not implemented");
+        controls.reset();
     }
 
     bool OpenCLBackend::isInitialized() const {
-        RAISE_ERROR(NotImplemented, "This function is not implemented");
+        return controls != nullptr;
     }
 
     MatrixBase* OpenCLBackend::createMatrix(size_t nrows, size_t ncols) {
-        RAISE_ERROR(NotImplemented, "This function is not implemented");
+        return new OpenCLMatrix(nrows, ncols);
     }
 
     void OpenCLBackend::releaseMatrix(MatrixBase *matrixBase) {
-        RAISE_ERROR(NotImplemented, "This function is not implemented");
+        delete matrixBase;
     }
 
     void OpenCLBackend::queryCapabilities(spbla_DeviceCaps &caps) {
-        RAISE_ERROR(NotImplemented, "This function is not implemented");
+        clbool::utils::printDeviceInfo(controls->device);
     }
 
 }

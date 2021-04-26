@@ -24,12 +24,16 @@
 
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
+#include <cassert>
+
 
 namespace spbla {
 
-    OpenCLMatrix::OpenCLMatrix(size_t nrows, size_t ncols) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
-    }
+    OpenCLMatrix::OpenCLMatrix(size_t nrows, size_t ncols)
+    : mNrows(nrows)
+    , mNcols(ncols)
+    , mNvals(0)
+    {}
 
     OpenCLMatrix::~OpenCLMatrix() {
         //RAISE_ERROR(NotImplemented, "This function must be implemented");
@@ -40,18 +44,30 @@ namespace spbla {
     }
 
     void OpenCLMatrix::clone(const MatrixBase &otherBase) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        auto other = dynamic_cast<const OpenCLMatrix*>(&otherBase);
+
+        CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Passed matrix does not belong to csr matrix class");
+        CHECK_RAISE_ERROR(other != this, InvalidArgument, "Matrices must differ");
+
+        size_t M = other->getNrows();
+        size_t N = other->getNcols();
+
+        //TODO: rassert?
+        assert(this->getNrows() == M);
+        assert(this->getNcols() == N);
+
+        this->mMatrixImpl = other->mMatrixImpl;
     }
 
     index OpenCLMatrix::getNrows() const {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        return mNrows;
     }
 
     index OpenCLMatrix::getNcols() const {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        return mNcols;
     }
 
     index OpenCLMatrix::getNvals() const {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        return mNvals;
     }
 }

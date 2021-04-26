@@ -25,12 +25,16 @@
 #ifndef SPBLA_OPENCL_MATRIX_HPP
 #define SPBLA_OPENCL_MATRIX_HPP
 
+#include <>
 #include <backend/matrix_base.hpp>
+#include <library_classes/matrix_dcsr.hpp>
 
 namespace spbla {
 
     class OpenCLMatrix: public MatrixBase {
     public:
+        using MatrixImplType = clbool::matrix_dcsr;
+
         OpenCLMatrix(size_t nrows, size_t ncols);
         ~OpenCLMatrix() override;
 
@@ -50,6 +54,15 @@ namespace spbla {
         index getNrows() const override;
         index getNcols() const override;
         index getNvals() const override;
+
+    private:
+
+        MatrixImplType mMatrixImpl;
+
+
+        size_t mNrows = 0;
+        size_t mNcols = 0;
+        size_t mNvals = 0;
     };
 
 }

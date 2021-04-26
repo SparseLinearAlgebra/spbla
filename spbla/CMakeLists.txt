@@ -177,6 +177,7 @@ if (SPBLA_WITH_OPENCL)
     # required flags and deps goes here
 
     target_compile_definitions(spbla PRIVATE SPBLA_WITH_OPENCL)
+    target_link_libraries(spbla PUBLIC clbool)
 endif()
 
 # Sequential Cpu based backend
@@ -195,10 +196,34 @@ if (SPBLA_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
+
+if(WIN32 AND SPBLA_BUILD_TESTS)
+    set(CLBOOL_LIBRARY_FILE_NAME "libclbool.dll")
+    set(SPBLA_LIBRARY_FILE_NAME "libspbla.dll")
+    add_custom_command(
+            TARGET spbla POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E
+            copy
+            "${CMAKE_BINARY_DIR}/deps/clbool/${CLBOOL_LIBRARY_FILE_NAME}"
+            "${CMAKE_BINARY_DIR}/spbla/tests"
+            "${CMAKE_BINARY_DIR}/deps/clbool/${CLBOOL_LIBRARY_FILE_NAME}.a"
+            "${CMAKE_BINARY_DIR}/spbla/tests"
+            "${CMAKE_BINARY_DIR}/spbla/${SPBLA_LIBRARY_FILE_NAME}"
+            "${CMAKE_BINARY_DIR}/spbla/tests"
+            "${CMAKE_BINARY_DIR}/spbla/${SPBLA_LIBRARY_FILE_NAME}.a"
+            "${CMAKE_BINARY_DIR}/spbla/tests"
+            COMMENT "Copy spbla and clbool compiled libs into test folder"
+    )
+endif()
+
+
 # Copy spbla library after build if allowed
 if (SPBLA_COPY_TO_PY_PACKAGE)
-    # todo: Different platforms has specific naming conventions
-    set(LIBRARY_FILE_NAME "libspbla.so")
+    if(WIN32)
+        set(LIBRARY_FILE_NAME "libspbla.dll")
+    else()
+        set(LIBRARY_FILE_NAME "libspbla.so")
+    endif()
 
     add_custom_command(
         TARGET spbla POST_BUILD

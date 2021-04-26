@@ -25,10 +25,16 @@
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
 
+#include <library_classes/matrix_coo.hpp>
+#include <library_classes/matrix_dcsr.hpp>
+
 namespace spbla {
 
     void OpenCLMatrix::build(const index *rows, const index *cols, size_t nvals, bool isSorted, bool noDuplicates) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        mNvals = nvals;
+        clbool::matrix_coo mCoo
+        // TODO: noDuplicates?
+
     }
 
 }
