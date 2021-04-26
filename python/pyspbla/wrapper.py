@@ -44,6 +44,7 @@ class Wrapper:
 
     def __init__(self):
         self.loaded_dll = None
+        self.backend = "default"
 
         try:
             # Try from config if present
@@ -53,7 +54,14 @@ class Wrapper:
             source_path = pathlib.Path(__file__).resolve()
             self.load_path = Wrapper.__get_lib_path(source_path.parent)
 
+        try:
+            # Check, if user has backend-type preferences
+            self.backend = str(os.environ["SPBLA_BACKEND"]).lower()
+        except KeyError:
+            pass
+
         assert self.load_path
+        assert self.backend
 
         self.loaded_dll = bridge.load_and_configure(self.load_path)
         self.__setup_library()
@@ -62,7 +70,7 @@ class Wrapper:
         self.__release_library()
 
     def __setup_library(self):
-        status = self.loaded_dll.spbla_Initialize(ctypes.c_uint(bridge.get_init_hints(False, False)))
+        status = self.loaded_dll.spbla_Initialize(ctypes.c_uint(bridge.get_init_hints(self.backend)))
         bridge.check(status)
 
     def __release_library(self):
