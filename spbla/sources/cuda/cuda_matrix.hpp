@@ -32,7 +32,7 @@
 
 namespace spbla {
 
-    class MatrixCsr: public MatrixBase {
+    class CudaMatrix: public MatrixBase {
     public:
         template<typename T>
         using DeviceAlloc = details::DeviceAllocator<T>;
@@ -40,8 +40,8 @@ namespace spbla {
         using HostAlloc = details::HostAllocator<T>;
         using MatrixImplType = nsparse::matrix<bool, index, DeviceAlloc<index>>;
 
-        explicit MatrixCsr(size_t nrows, size_t ncols, Instance& instance);
-        ~MatrixCsr() override = default;
+        explicit CudaMatrix(size_t nrows, size_t ncols, CudaInstance& instance);
+        ~CudaMatrix() override = default;
 
         void setElement(index i, index j) override;
         void build(const index *rows, const index *cols, size_t nvals, bool isSorted, bool noDuplicates) override;
@@ -73,7 +73,7 @@ namespace spbla {
 
         size_t mNrows = 0;
         size_t mNcols = 0;
-        Instance& mInstance;
+        CudaInstance& mInstance;
     };
 };
 

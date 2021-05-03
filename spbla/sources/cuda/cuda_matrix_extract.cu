@@ -27,7 +27,7 @@
 
 namespace spbla {
 
-    void MatrixCsr::extract(index *rows, index *cols, size_t &nvals) {
+    void CudaMatrix::extract(index *rows, index *cols, size_t &nvals) {
         assert(nvals >= getNvals());
 
         // Set nvals to the exact number of nnz values

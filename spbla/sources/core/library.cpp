@@ -46,6 +46,15 @@
 #include <opencl/opencl_backend.hpp>
 #endif
 
+#define INIT_BACKEND(type)                                  \
+    try {                                                   \
+        mBackend = std::make_shared<type>();                \
+        mBackend->initialize(initHints);                    \
+        initialized = mBackend->isInitialized();            \
+    } catch (const std::exception& e) {                     \
+        handleError(e);                                     \
+    }
+
 namespace spbla {
 
     std::unordered_set<class Matrix*> Library::mAllocated;
@@ -65,9 +74,7 @@ namespace spbla {
 #ifdef SPBLA_WITH_CUDA
         // If user do not force something else or force cuda
         if (!prefer || preferCuda) {
-            mBackend = std::make_shared<CudaBackend>();
-            mBackend->initialize(initHints);
-            initialized = mBackend->isInitialized();
+            INIT_BACKEND(CudaBackend)
 
             // Failed to setup cuda, release backend and go to try next
             if (!initialized) {
@@ -80,9 +87,7 @@ namespace spbla {
 #ifdef SPBLA_WITH_OPENCL
         // If user do not force something else or force opencl
         if (!initialized && (!prefer || preferOpenCL)) {
-            mBackend = std::make_shared<OpenCLBackend>();
-            mBackend->initialize(initHints);
-            initialized = mBackend->isInitialized();
+            INIT_BACKEND(OpenCLBackend)
 
             // Failed to setup opencl, release backend and go to try cpu
             if (!initialized) {
@@ -94,9 +99,7 @@ namespace spbla {
 
 #ifdef SPBLA_WITH_SEQUENTIAL
         if (!initialized) {
-            mBackend = std::make_shared<SqBackend>();
-            mBackend->initialize(initHints);
-            initialized = mBackend->isInitialized();
+            INIT_BACKEND(SqBackend)
 
             // Failed somehow setup
             if (!initialized) {
@@ -269,7 +272,7 @@ namespace spbla {
                    << " sharedMemoryPerBlockKiBs: " << caps.sharedMemoryPerBlockKiBs;
         }
         else {
-            stream << "Cuda device is not presented";
+            stream << "CPU backend (GPU device is not present)";
         }
 
         stream << LogStream::cmt;

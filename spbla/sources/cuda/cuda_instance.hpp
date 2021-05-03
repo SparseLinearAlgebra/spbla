@@ -22,67 +22,51 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#include <testing/testing.hpp>
-#include <memory>
+#ifndef SPBLA_CUDA_INSTANCE_HPP
+#define SPBLA_CUDA_INSTANCE_HPP
 
-// Simple kernel to sum float matrices
+#include <core/config.hpp>
+#include <unordered_set>
 
-__global__ void kernelAdd(unsigned int n, const float* a, const float* b, float* c) {
-    unsigned int i = blockDim.x * blockIdx.x + threadIdx.x;
-    unsigned int j = blockDim.y * blockIdx.y + threadIdx.y;
+namespace spbla {
 
-    unsigned int idx = n * i + j;
+    /**
+     * Manages global state for various internal operations.
+     */
+    class CudaInstance {
+    public:
+        enum MemType {
+            Default,
+            Managed
+        };
 
-    if (i < n * n) {
-        c[idx] = a[idx] + b[idx];
-    }
+        explicit CudaInstance(bool useManagedMemory);
+        CudaInstance(const CudaInstance& other) = delete;
+        CudaInstance(CudaInstance&& other) noexcept = delete;
+        ~CudaInstance();
+
+        // For custom host & device allocators
+        void allocate(void* &ptr, size_t s) const;
+        void allocateOnGpu(void* &ptr, size_t s) const;
+        void deallocate(void* ptr) const;
+        void deallocateOnGpu(void* ptr) const;
+
+        void syncHostDevice() const;
+
+        static bool isCudaDeviceSupported();
+        static void queryDeviceCapabilities(spbla_DeviceCaps& deviceCaps);
+        static CudaInstance& getInstanceRef();
+        static CudaInstance* getInstancePtr();
+        static bool isInstancePresent();
+
+    private:
+        MemType mMemoryType = Default;
+        mutable size_t mHostAllocCount = 0;
+        mutable size_t mDeviceAllocCount = 0;
+
+        static volatile CudaInstance* gInstance;
+    };
+
 }
 
-// Test cuda device support.
-TEST(Cuda, BasicExample) {
-    const unsigned int N = 128;
-    const unsigned int NxN = N * N;
-    const unsigned int THREADS_PER_BLOCK = 8;
-
-    float *a, *device_a;
-    float *b, *device_b;
-    float *c, *device_c;
-
-    a = (float*) malloc(sizeof(float) * NxN);
-    b = (float*) malloc(sizeof(float) * NxN);
-    c = (float*) malloc(sizeof(float) * NxN);
-
-    for (int i = 0; i < NxN; i++) {
-        a[i] = (float) i / 2.0f;
-        b[i] = (float) -i / 4.0f;
-    }
-
-    cudaMalloc(&device_a, sizeof(float) * NxN);
-    cudaMalloc(&device_b, sizeof(float) * NxN);
-    cudaMalloc(&device_c, sizeof(float) * NxN);
-
-    cudaMemcpy(device_a, a, sizeof(float) * NxN, cudaMemcpyHostToDevice);
-    cudaMemcpy(device_b, b, sizeof(float) * NxN, cudaMemcpyHostToDevice);
-
-    dim3 blocks(N / THREADS_PER_BLOCK, N / THREADS_PER_BLOCK);
-    dim3 threads(THREADS_PER_BLOCK, THREADS_PER_BLOCK);
-
-    kernelAdd<<<blocks, threads>>>(N, device_a, device_b, device_c);
-
-    cudaDeviceSynchronize();
-    cudaMemcpy(c, device_c, sizeof(float) * NxN, cudaMemcpyDeviceToHost);
-
-    for (int i = 0; i < NxN; i++) {
-        ASSERT_EQ(c[i], a[i] + b[i]);
-    }
-
-    cudaFree(device_a);
-    cudaFree(device_b);
-    cudaFree(device_c);
-
-    free(a);
-    free(b);
-    free(c);
-}
-
-SPBLA_GTEST_MAIN
+#endif //SPBLA_CUDA_INSTANCE_HPP

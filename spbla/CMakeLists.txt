@@ -16,6 +16,24 @@ if (SPBLA_WITH_OPENCL)
     message(STATUS "Add OpenCL backend for GPGPU computations")
 endif()
 
+set(TARGET_NAME spbla)
+set(TARGET_FILE_NAME)
+set(DEFINES_LIST)
+
+# Platform checks
+if(APPLE)
+    list(APPEND DEFINES_LIST SPBLA_PLATFORM_MACOS)
+    set(TARGET_FILE_NAME "lib${TARGET_NAME}.dylib")
+elseif(UNIX)
+    list(APPEND DEFINES_LIST SPBLA_PLATFORM_LINUX)
+    set(TARGET_FILE_NAME "lib${TARGET_NAME}.so")
+elseif(WIN32)
+    list(APPEND DEFINES_LIST SPBLA_PLATFORM_WIN)
+    set(TARGET_FILE_NAME "${TARGET_NAME}.dll")
+else()
+    message(FATAL_ERROR "Platform not specified")
+endif()
+
 # Library sources
 set(SPBLA_SOURCES
     sources/core/config.hpp
@@ -72,9 +90,9 @@ if (SPBLA_WITH_CUDA)
     set(SPBLA_CUDA_SOURCES
         sources/cuda/cuda_backend.hpp
         sources/cuda/cuda_backend.cu
-        sources/cuda/instance.hpp
-        sources/cuda/instance.cu
-        sources/cuda/instance.cpp
+        sources/cuda/cuda_instance.hpp
+        sources/cuda/cuda_instance.cu
+        sources/cuda/cuda_instance.cpp
         sources/cuda/cuda_matrix.hpp
         sources/cuda/cuda_matrix.cu
         sources/cuda/cuda_matrix_build.cu
@@ -160,6 +178,11 @@ target_compile_options(spbla PRIVATE $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAG
 set_target_properties(spbla PROPERTIES CXX_STANDARD 17)
 set_target_properties(spbla PROPERTIES CXX_STANDARD_REQUIRED ON)
 
+# Platform defines
+foreach(DEFINE ${DEFINES_LIST})
+    target_compile_definitions(spbla PUBLIC ${DEFINE})
+endforeach()
+
 # Cuda specifics
 if (SPBLA_WITH_CUDA)
     set_target_properties(spbla PROPERTIES CUDA_STANDARD 14)
@@ -168,7 +191,7 @@ if (SPBLA_WITH_CUDA)
 
     target_compile_options(spbla PRIVATE $<$<COMPILE_LANGUAGE:CUDA>: -use_fast_math -Xptxas -O2>)
 
-    target_compile_definitions(spbla PRIVATE SPBLA_WITH_CUDA)
+    target_compile_definitions(spbla PUBLIC SPBLA_WITH_CUDA)
     target_link_libraries(spbla PRIVATE nsparse)
 endif()
 
@@ -176,13 +199,12 @@ endif()
 if (SPBLA_WITH_OPENCL)
     # required flags and deps goes here
 
-    target_compile_definitions(spbla PRIVATE SPBLA_WITH_OPENCL)
-    target_link_libraries(spbla PUBLIC clbool)
+    target_compile_definitions(spbla PUBLIC SPBLA_WITH_OPENCL)
 endif()
 
 # Sequential Cpu based backend
 if (SPBLA_WITH_SEQUENTIAL)
-    target_compile_definitions(spbla PRIVATE SPBLA_WITH_SEQUENTIAL)
+    target_compile_definitions(spbla PUBLIC SPBLA_WITH_SEQUENTIAL)
 endif()
 
 # If tests enabled, add tests sources to the build
@@ -196,34 +218,9 @@ if (SPBLA_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
-
-if(WIN32 AND SPBLA_BUILD_TESTS)
-    set(CLBOOL_LIBRARY_FILE_NAME "libclbool.dll")
-    set(SPBLA_LIBRARY_FILE_NAME "libspbla.dll")
-    add_custom_command(
-            TARGET spbla POST_BUILD
-            COMMAND "${CMAKE_COMMAND}" -E
-            copy
-            "${CMAKE_BINARY_DIR}/deps/clbool/${CLBOOL_LIBRARY_FILE_NAME}"
-            "${CMAKE_BINARY_DIR}/spbla/tests"
-            "${CMAKE_BINARY_DIR}/deps/clbool/${CLBOOL_LIBRARY_FILE_NAME}.a"
-            "${CMAKE_BINARY_DIR}/spbla/tests"
-            "${CMAKE_BINARY_DIR}/spbla/${SPBLA_LIBRARY_FILE_NAME}"
-            "${CMAKE_BINARY_DIR}/spbla/tests"
-            "${CMAKE_BINARY_DIR}/spbla/${SPBLA_LIBRARY_FILE_NAME}.a"
-            "${CMAKE_BINARY_DIR}/spbla/tests"
-            COMMENT "Copy spbla and clbool compiled libs into test folder"
-    )
-endif()
-
-
 # Copy spbla library after build if allowed
 if (SPBLA_COPY_TO_PY_PACKAGE)
-    if(WIN32)
-        set(LIBRARY_FILE_NAME "libspbla.dll")
-    else()
-        set(LIBRARY_FILE_NAME "libspbla.so")
-    endif()
+    set(LIBRARY_FILE_NAME ${TARGET_FILE_NAME})
 
     add_custom_command(
         TARGET spbla POST_BUILD
@@ -231,5 +228,5 @@ if (SPBLA_COPY_TO_PY_PACKAGE)
         copy
         "${CMAKE_BINARY_DIR}/spbla/${LIBRARY_FILE_NAME}"
         "${CMAKE_BINARY_DIR}/python/pyspbla"
-        COMMENT "Copy spbla compiled lib into python folder")
+        COMMENT "Copy ${LIBRARY_FILE_NAME} compiled lib into python folder")
 endif()

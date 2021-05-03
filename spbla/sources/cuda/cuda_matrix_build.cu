@@ -27,7 +27,7 @@
 
 namespace spbla {
 
-    void MatrixCsr::build(const index *rows, const index *cols, size_t nvals, bool isSorted, bool noDuplicates) {
+    void CudaMatrix::build(const index *rows, const index *cols, size_t nvals, bool isSorted, bool noDuplicates) {
         if (nvals == 0) {
             mMatrixImpl.zero_dim();  // no content, empty matrix
             return;

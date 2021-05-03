@@ -25,7 +25,7 @@
 #ifndef SPBLA_HOST_ALLOCATOR_HPP
 #define SPBLA_HOST_ALLOCATOR_HPP
 
-#include <cuda/instance.hpp>
+#include <cuda/cuda_instance.hpp>
 #include <core/error.hpp>
 
 namespace spbla {
@@ -44,7 +44,7 @@ namespace spbla {
             template <class U>
             struct rebind { typedef HostAllocator<U> other; };
 
-            explicit HostAllocator(): mInstanceRef(Instance::getInstanceRef()) {
+            explicit HostAllocator(): mInstanceRef(CudaInstance::getInstanceRef()) {
 
             }
 
@@ -80,7 +80,7 @@ namespace spbla {
             }
 
         private:
-            Instance& mInstanceRef;
+            CudaInstance& mInstanceRef;
         };
 
     }

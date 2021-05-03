@@ -22,7 +22,7 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
-#include <cuda/instance.hpp>
+#include <cuda/cuda_instance.hpp>
 #include <core/error.hpp>
 #include <string>
 #include <cstring>
@@ -31,14 +31,14 @@
 
 namespace spbla {
 
-    Instance::~Instance() {
+    CudaInstance::~CudaInstance() {
         assert(mHostAllocCount == 0);
         assert(mDeviceAllocCount == 0);
 
         gInstance = nullptr;
     }
 
-    void Instance::allocateOnGpu(void* &ptr, size_t size) const {
+    void CudaInstance::allocateOnGpu(void* &ptr, size_t size) const {
         cudaError error;
 
         switch (mMemoryType) {
@@ -60,7 +60,7 @@ namespace spbla {
         mDeviceAllocCount++;
     }
 
-    void Instance::deallocateOnGpu(void* ptr) const {
+    void CudaInstance::deallocateOnGpu(void* ptr) const {
         cudaError error = cudaFree(ptr);
 
         if (error != cudaSuccess) {
@@ -71,7 +71,7 @@ namespace spbla {
         mDeviceAllocCount--;
     }
 
-    void Instance::syncHostDevice() const {
+    void CudaInstance::syncHostDevice() const {
         cudaError error = cudaDeviceSynchronize();
 
         if (error != cudaSuccess) {
@@ -80,13 +80,13 @@ namespace spbla {
         }
     }
 
-    bool Instance::isCudaDeviceSupported() {
+    bool CudaInstance::isCudaDeviceSupported() {
         int device;
         cudaError error = cudaGetDevice(&device);
         return error == cudaSuccess;
     }
 
-    void Instance::queryDeviceCapabilities(spbla_DeviceCaps &deviceCaps) {
+    void CudaInstance::queryDeviceCapabilities(spbla_DeviceCaps &deviceCaps) {
         const unsigned long long KiB = 1024;
 
         int device;

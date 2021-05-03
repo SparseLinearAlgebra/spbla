@@ -27,9 +27,9 @@
 
 namespace spbla {
 
-    void MatrixCsr::eWiseAdd(const MatrixBase &aBase, const MatrixBase &bBase, bool checkTime) {
-        auto a = dynamic_cast<const MatrixCsr*>(&aBase);
-        auto b = dynamic_cast<const MatrixCsr*>(&bBase);
+    void CudaMatrix::eWiseAdd(const MatrixBase &aBase, const MatrixBase &bBase, bool checkTime) {
+        auto a = dynamic_cast<const CudaMatrix*>(&aBase);
+        auto b = dynamic_cast<const CudaMatrix*>(&bBase);
 
         CHECK_RAISE_ERROR(a != nullptr, InvalidArgument, "Passed matrix does not belong to csr matrix class");
         CHECK_RAISE_ERROR(b != nullptr, InvalidArgument, "Passed matrix does not belong to csr matrix class");

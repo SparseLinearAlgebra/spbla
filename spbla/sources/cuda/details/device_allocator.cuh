@@ -25,7 +25,7 @@
 #ifndef SPBLA_DEVICE_ALLOCATOR_CUH
 #define SPBLA_DEVICE_ALLOCATOR_CUH
 
-#include <cuda/instance.hpp>
+#include <cuda/cuda_instance.hpp>
 #include <core/error.hpp>
 #include <thrust/system/cuda/memory.h>
 #include <thrust/device_malloc_allocator.h>
@@ -54,7 +54,7 @@ namespace spbla {
             template <class U>
             struct rebind { typedef DeviceAllocator<U> other; };
 
-            __host__ explicit DeviceAllocator() : mInstanceRef(Instance::getInstanceRef()) { }
+            __host__ explicit DeviceAllocator() : mInstanceRef(CudaInstance::getInstanceRef()) { }
 
             __host__ DeviceAllocator(const DeviceAllocator<T> &other) : mInstanceRef(other.mInstanceRef) { }
 
@@ -85,7 +85,7 @@ namespace spbla {
             }
 
         private:
-            Instance &mInstanceRef;
+            CudaInstance &mInstanceRef;
         };
     }
 }

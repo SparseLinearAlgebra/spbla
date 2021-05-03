@@ -39,6 +39,10 @@ _hint_log_all = 512
 _hint_no_duplicates = 1024
 _hint_time_check = 2048
 
+_backend_name_cpu = "cpu"
+_backend_name_cuda = "cuda"
+_backend_name_opencl = "opencl"
+
 
 def get_log_hints(default=True, error=False, warning=False):
     hints = _hint_no
@@ -53,13 +57,17 @@ def get_log_hints(default=True, error=False, warning=False):
     return hints
 
 
-def get_init_hints(force_cpu_backend, is_gpu_mem_managed):
+def get_init_hints(backend_type: str):
+    assert backend_type
+
     hints = _hint_relaxed_release
 
-    if force_cpu_backend:
+    if backend_type == _backend_name_cpu:
         hints |= _hint_cpu_backend
-    if is_gpu_mem_managed:
-        hints |= _hint_gpu_mem_managed
+    elif backend_type == _backend_name_cuda:
+        hints |= _hint_cuda_backend
+    elif backend_type == _backend_name_opencl:
+        hints |= _hint_opencl_backend
 
     return hints
 
@@ -280,7 +288,7 @@ def load_and_configure(cubool_lib_path: str):
 
 
 """
-/** Possible status codes that can be returned from cubool api */
+/** Possible status codes that can be returned from spbla api */
 
 /** Successful execution of the function */
 SPBLA_STATUS_SUCCESS,

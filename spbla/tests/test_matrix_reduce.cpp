@@ -46,34 +46,57 @@ void testMatrixReduce(spbla_Index m, spbla_Index n, float density, spbla_Hints f
 
 void testRun(spbla_Index m, spbla_Index n, float step, spbla_Hints setup) {
     // Setup library
-    EXPECT_EQ(spbla_Initialize(setup), SPBLA_STATUS_SUCCESS);
+    ASSERT_EQ(spbla_Initialize(setup), SPBLA_STATUS_SUCCESS);
 
     for (size_t i = 0; i < 10; i++) {
         testMatrixReduce(m, n, 0.01f + step * ((float) i), SPBLA_HINT_NO);
     }
 
     // Finalize library
-    EXPECT_EQ(spbla_Finalize(), SPBLA_STATUS_SUCCESS);
+    ASSERT_EQ(spbla_Finalize(), SPBLA_STATUS_SUCCESS);
 }
 
-TEST(spbla_Matrix, ReduceSmall) {
+#ifdef SPBLA_WITH_CUDA
+TEST(spbla_Matrix, ReduceSmallCuda) {
     spbla_Index m = 100, n = 200;
     float step = 0.05f;
-    testRun(m, n, step, SPBLA_HINT_NO);
+    testRun(m, n, step, SPBLA_HINT_CUDA_BACKEND);
 }
 
-TEST(spbla_Matrix, ReduceMedium) {
+TEST(spbla_Matrix, ReduceMediumCuda) {
     spbla_Index m = 400, n = 700;
     float step = 0.05f;
-    testRun(m, n, step, SPBLA_HINT_NO);
+    testRun(m, n, step, SPBLA_HINT_CUDA_BACKEND);
 }
 
-TEST(spbla_Matrix, ReduceLarge) {
+TEST(spbla_Matrix, ReduceLargeCuda) {
     spbla_Index m = 2000, n = 4000;
     float step = 0.01f;
-    testRun(m, n, step, SPBLA_HINT_NO);
+    testRun(m, n, step, SPBLA_HINT_CUDA_BACKEND);
+}
+#endif
+
+#ifdef SPBLA_WITH_OPENCL
+TEST(spbla_Matrix, ReduceSmallOpenCL) {
+    spbla_Index m = 100, n = 200;
+    float step = 0.05f;
+    testRun(m, n, step, SPBLA_HINT_OPENCL_BACKEND);
 }
 
+TEST(spbla_Matrix, ReduceMediumOpenCL) {
+    spbla_Index m = 400, n = 700;
+    float step = 0.05f;
+    testRun(m, n, step, SPBLA_HINT_OPENCL_BACKEND);
+}
+
+TEST(spbla_Matrix, ReduceLargeOpenCL) {
+    spbla_Index m = 2000, n = 4000;
+    float step = 0.01f;
+    testRun(m, n, step, SPBLA_HINT_OPENCL_BACKEND);
+}
+#endif
+
+#ifdef SPBLA_WITH_SEQUENTIAL
 TEST(spbla_Matrix, ReduceSmallFallback) {
     spbla_Index m = 100, n = 200;
     float step = 0.05f;
@@ -91,5 +114,6 @@ TEST(spbla_Matrix, ReduceLargeFallback) {
     float step = 0.01f;
     testRun(m, n, step, SPBLA_HINT_CPU_BACKEND);
 }
+#endif
 
 SPBLA_GTEST_MAIN
