@@ -198,7 +198,7 @@ endif()
 # OpenCL specifics
 if (SPBLA_WITH_OPENCL)
     # required flags and deps goes here
-
+    target_link_libraries(spbla PRIVATE clbool)
     target_compile_definitions(spbla PUBLIC SPBLA_WITH_OPENCL)
 endif()
 

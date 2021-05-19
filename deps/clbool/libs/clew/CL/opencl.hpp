@@ -116,7 +116,7 @@
  * However, the old behaviour can be regained for backward compatibility
  * using the CL_HPP_ENABLE_SIZE_T_COMPATIBILITY macro.
  *
- * Finally, the program construction interface used a clumsy vector-of-pairs
+ * Finally, the kernel construction interface used a clumsy vector-of-pairs
  * design in the earlier versions. We have replaced that with a cleaner
  * vector-of-vectors and vector-of-strings design. However, for backward
  * compatibility old behaviour can be regained with the
@@ -192,7 +192,7 @@
  * - CL_HPP_CL_1_2_DEFAULT_BUILD
  *
  *   Default to OpenCL C 1.2 compilation rather than OpenCL C 2.0
- *   applies to use of cl::Program construction and other program
+ *   applies to use of cl::Program construction and other kernel
  *   build variants.
  *
  * - CL_HPP_USE_CL_SUB_GROUPS_KHR
@@ -300,7 +300,7 @@
 
         typedef struct { int *bar; } Foo;
 
-        // Get and run kernel that initializes the program-scope global
+        // Get and run kernel that initializes the kernel-scope global
         // A test for kernels that take no arguments
         auto program2Kernel =
             cl::KernelFunctor<>(vectorAddProgram, "updateGlobal");
@@ -6285,8 +6285,8 @@ public:
         }
 
         /**
-     * Create a program from a vector of source strings and the default context.
-     * Does not compile or link the program.
+     * Create a kernel from a vector of source strings and the default context.
+     * Does not compile or link the kernel.
      */
         Program(
                 const Sources& sources,
@@ -6320,8 +6320,8 @@ public:
         }
 
         /**
-     * Create a program from a vector of source strings and a provided context.
-     * Does not compile or link the program.
+     * Create a kernel from a vector of source strings and a provided context.
+     * Does not compile or link the kernel.
      */
         Program(
                 const Context& context,
@@ -6357,7 +6357,7 @@ public:
 
 #if CL_HPP_TARGET_OPENCL_VERSION >= 210 || (CL_HPP_TARGET_OPENCL_VERSION==200 && defined(CL_HPP_USE_IL_KHR))
         /**
-     * Program constructor to allow construction of program from SPIR-V or another IL.
+     * Program constructor to allow construction of kernel from SPIR-V or another IL.
      * Valid for either OpenCL >= 2.1 or when CL_HPP_USE_IL_KHR is defined.
      */
         Program(
@@ -6411,7 +6411,7 @@ public:
         }
 
         /**
-     * Program constructor to allow construction of program from SPIR-V or another IL
+     * Program constructor to allow construction of kernel from SPIR-V or another IL
      * for a specific context.
      * Valid for either OpenCL >= 2.1 or when CL_HPP_USE_IL_KHR is defined.
      */
@@ -6465,9 +6465,9 @@ public:
 #endif // #if CL_HPP_TARGET_OPENCL_VERSION >= 210
 
         /**
-     * Construct a program object from a list of devices and a per-device list of binaries.
-     * \param context A valid OpenCL context in which to construct the program.
-     * \param devices A vector of OpenCL device objects for which the program will be created.
+     * Construct a kernel object from a list of devices and a per-device list of binaries.
+     * \param context A valid OpenCL context in which to construct the kernel.
+     * \param devices A vector of OpenCL device objects for which the kernel will be created.
      * \param binaries A vector of pairs of a pointer to a binary object and its length.
      * \param binaryStatus An optional vector that on completion will be resized to
      *   match the size of binaries and filled with values to specify if each binary
@@ -6480,7 +6480,7 @@ public:
      *   CL_INVALID_VALUE if the length of devices is zero; or if the length of binaries does not match the length of devices;
      *     or if any entry in binaries is NULL or has length 0.
      *   CL_INVALID_DEVICE if OpenCL devices listed in devices are not in the list of devices associated with context.
-     *   CL_INVALID_BINARY if an invalid program binary was encountered for any device. binaryStatus will return specific status for each device.
+     *   CL_INVALID_BINARY if an invalid kernel binary was encountered for any device. binaryStatus will return specific status for each device.
      *   CL_OUT_OF_HOST_MEMORY if there is a failure to allocate resources required by the OpenCL implementation on the host.
      */
         Program(
@@ -6544,7 +6544,7 @@ public:
 
 #if CL_HPP_TARGET_OPENCL_VERSION >= 120
         /**
-     * Create program using builtin kernels.
+     * Create kernel using builtin kernels.
      * \param kernelNames Semi-colon separated list of builtin kernel names
      */
         Program(
@@ -6750,7 +6750,7 @@ public:
 
         /**
      * Build info function that returns a vector of device/info pairs for the specified
-     * info type and for all devices in the program.
+     * info type and for all devices in the kernel.
      * On an error reading the info for any device, an empty vector of info will be returned.
      */
         template <cl_program_build_info name>
@@ -6825,17 +6825,17 @@ public:
 #if CL_HPP_TARGET_OPENCL_VERSION >= 220
 #if defined(CL_USE_DEPRECATED_OPENCL_2_2_APIS)
         /*! \brief Registers a callback function to be called when destructors for
-     *         program scope global variables are complete and before the
-     *         program is released.
+     *         kernel scope global variables are complete and before the
+     *         kernel is released.
      *
      *  Wraps clSetProgramReleaseCallback().
      *
      *  Each call to this function registers the specified user callback function
-     *  on a callback stack associated with program. The registered user callback
+     *  on a callback stack associated with kernel. The registered user callback
      *  functions are called in the reverse order in which they were registered.
      */
         CL_EXT_PREFIX__VERSION_2_2_DEPRECATED cl_int setReleaseCallback(
-                void (CL_CALLBACK * pfn_notify)(cl_program program, void * user_data),
+                void (CL_CALLBACK * pfn_notify)(cl_program kernel, void * user_data),
                 void * user_data = NULL) CL_EXT_SUFFIX__VERSION_2_2_DEPRECATED
         {
             return detail::errHandler(

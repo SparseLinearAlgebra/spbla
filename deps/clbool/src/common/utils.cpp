@@ -2,8 +2,16 @@
 #include "libutils/fast_random.h"
 
 namespace clbool::utils {
-    void compare_buffers(Controls &controls, const cl::Buffer &buffer_gpu, const cpu_buffer &buffer_cpu, uint32_t size,
+#define RET_FALSE(flag) do {if (!flag) {return false;}} while(0);
+
+    bool compare_buffers(Controls &controls, const cl::Buffer &buffer_gpu, const cpu_buffer &buffer_cpu, uint32_t size,
                          std::string name) {
+        if (size != buffer_cpu.size()) {
+            std::cerr << "size of buffers for " << name << " are different " << std::endl
+                      << size << " on GPU vs " << buffer_cpu.size() << " on CPU " << std::endl;
+            return false;
+        }
+
         cpu_buffer cpu_copy(size);
         try {
             if (size >= 0) {
@@ -18,28 +26,38 @@ namespace clbool::utils {
             if (cpu_copy[i] != buffer_cpu[i]) {
                 uint32_t start = std::max(0, (int) i - 10);
                 uint32_t stop = std::min(size, i + 10);
-                std::cerr << "{ i: (gpu[i], cpu[i]) }" << std::endl;
+                std::cerr << "buffers for " << name << " are different " << std::endl
+                          << "{ i: (gpu[i], cpu[i]) }" << std::endl;
                 for (uint32_t j = start; j < stop; ++j) {
-                    std::cerr << j << ": (" << cpu_copy[j] << ", " << buffer_cpu[j] << "), ";
+                    if (j == i) {
+                    std::cerr << " !!! " << j << ": (" << cpu_copy[j] << ", " << buffer_cpu[j] << "), ";
+                    } else {
+                        std::cerr << j << ": (" << cpu_copy[j] << ", " << buffer_cpu[j] << "), ";
+                    }
                 }
                 std::cerr << std::endl;
-                throw std::runtime_error("buffers for " + name + " are different");
+                std::cerr << "buffers for " << name << " are different";
+                return false;
             }
         }
         LOG << "buffers for " << name << " are equal";
+        return true;
     }
 
-    void compare_matrices(Controls &controls, const matrix_dcsr &m_gpu, const matrix_dcsr_cpu &m_cpu) {
+    bool compare_matrices(Controls &controls, const matrix_dcsr &m_gpu, const matrix_dcsr_cpu &m_cpu) {
         if (m_gpu.nnz() != m_cpu.cols().size()) {
             std::cerr << "diff nnz, gpu: " << m_gpu.nnz() << " vs cpu: " << m_cpu.cols().size() << std::endl;
+            return false;
         }
         if (m_gpu.nnz() == 0) {
             LOG << "Matrix is empty";
-            return;
+            return true;
         }
-        compare_buffers(controls, m_gpu.rpt_gpu(), m_cpu.rpt(), m_gpu.nzr() + 1, "rpt");
-        compare_buffers(controls, m_gpu.rows_gpu(), m_cpu.rows(), m_gpu.nzr(), "rows");
-        compare_buffers(controls, m_gpu.cols_gpu(), m_cpu.cols(), m_gpu.nnz(), "cols");
+
+        return
+                compare_buffers(controls, m_gpu.rpt_gpu(), m_cpu.rpt(), m_gpu.nzr() + 1, "rpt") &&
+                compare_buffers(controls, m_gpu.rows_gpu(), m_cpu.rows(), m_gpu.nzr(), "rows") &&
+                compare_buffers(controls, m_gpu.cols_gpu(), m_cpu.cols(), m_gpu.nnz(), "cols");
     }
 
 
@@ -66,25 +84,8 @@ namespace clbool::utils {
     }
 
     uint32_t calculate_global_size(uint32_t work_group_size, uint32_t n) {
+        if (work_group_size == 0) throw std::runtime_error("ooooops");
         return (n + work_group_size - 1) / work_group_size * work_group_size;
-    }
-
-    Controls create_controls() {
-        std::vector<cl::Platform> platforms;
-        std::vector<cl::Device> devices;
-        std::vector<cl::Kernel> kernels;
-        cl::Program program;
-        cl::Device device;
-        try {
-            cl::Platform::get(&platforms);
-            platforms[0].getDevices(CL_DEVICE_TYPE_GPU, &devices);
-            return Controls(devices[0]);
-
-        } catch (const cl::Error &e) {
-            std::stringstream exception;
-            exception << "\n" << e.what() << " : " << e.err() << "\n";
-            throw std::runtime_error(exception.str());
-        }
     }
 
     std::string mapDeviceType(cl_device_type type) {
@@ -122,29 +123,14 @@ namespace clbool::utils {
         std::cout << "CL_PLATFORM_VENDOR: " << platform.getInfo<CL_PLATFORM_VENDOR>() << std::endl;
 
         platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
-        for (const auto &dev: devices) {
-            printDeviceInfo(dev);
+        for (uint32_t i = 0; i < devices.size(); ++i) {
+            std::cout << "        device id: " << i << "\n";
+            printDeviceInfo(devices[i]);
         }
+
         std::cout << "-----------------------" << std::endl;
     }
 
-    void show_devices() {
-        std::vector<cl::Platform> platforms;
-        std::vector<cl::Kernel> kernels;
-        cl::Program program;
-        cl::Device device;
-        try {
-            cl::Platform::get(&platforms);
-            for (const auto &platform: platforms) {
-                printPlatformInfo(platform);
-            }
-
-        } catch (const cl::Error &e) {
-            std::stringstream exception;
-            exception << "\n" << e.what() << " : " << e.err() << "\n";
-            throw std::runtime_error(exception.str());
-        }
-    }
 
     std::string error_name(cl_int error) {
         switch (error) {
@@ -284,11 +270,14 @@ namespace clbool::utils {
     }
 
 
-    void fill_random_buffer(cpu_buffer &buf, uint32_t mod) {
+    void fill_random_buffer(cpu_buffer &buf, uint32_t max) {
+        if (max <= 0 && max != -1) {
+            throw std::runtime_error("Illegal argument, 13417565323");
+        }
         uint32_t n = buf.size();
         FastRandom r(n);
         for (uint32_t i = 0; i < n; ++i) {
-            buf[i] = r.next() % mod;
+            buf[i] = max != -1 ? r.next(0, max) : r.next();
         }
     }
 

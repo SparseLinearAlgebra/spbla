@@ -1,20 +1,16 @@
 #include "cl_operations.hpp"
-
-#include "../cl/headers/prefix_sum.h"
+#include "kernel.hpp"
 
 namespace clbool {
     void prefix_sum(Controls &controls,
                     cl::Buffer &array,
                     uint32_t &total_sum,
                     uint32_t array_size) {
-        auto scan = program<cl::Buffer, cl::Buffer, cl::Buffer, uint32_t>
-                (prefix_sum_kernel, prefix_sum_kernel_length);
-        scan.set_kernel_name("scan_blelloch");
+        auto scan = kernel<cl::Buffer, cl::Buffer, cl::Buffer, uint32_t>
+                ("prefix_sum", "scan_blelloch");
 
-        auto update = program<cl::Buffer, cl::Buffer, uint32_t, uint32_t>
-                (prefix_sum_kernel, prefix_sum_kernel_length);
-        update.set_kernel_name("update_pref_sum");
-
+        auto update = kernel<cl::Buffer, cl::Buffer, uint32_t, uint32_t>
+                ("prefix_sum", "update_pref_sum");
 
         // число потоков, которое нужно выпустить для обработки массива ядром scan в данном алгоритме
         static auto threads_for_array = [](uint32_t size) -> uint32_t { return (size + 1) / 2; };
@@ -62,7 +58,6 @@ namespace clbool {
 
             scan.set_needed_work_size(threads_for_array(outer));
 
-
             {
                 START_TIMING
                 scan.run(controls, *b_gpu_ptr, *a_gpu_ptr, total_sum_gpu, outer).wait();
@@ -71,7 +66,6 @@ namespace clbool {
 
 
             update.set_needed_work_size(array_size - leaf_size);
-
 
             {
                 START_TIMING

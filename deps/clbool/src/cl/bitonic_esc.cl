@@ -209,7 +209,7 @@ void set_positions_half_sized(__local const uint *positions, __local const uint 
 }
 
 
-// Выделить половину от грауппы на ряд, но не менее 32, ибо менее 32 не имеет смысла
+// Выделить половину от группы на ряд, но не менее 32, ибо менее 32 не имеет смысла
 __kernel void bitonic_esc(__global const unsigned int *indices,
                           unsigned int group_start,
                           unsigned int group_length,

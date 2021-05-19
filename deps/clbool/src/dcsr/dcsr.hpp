@@ -4,8 +4,9 @@
 #include <matrix_coo.hpp>
 #include <matrix_dcsr.hpp>
 #include <matrices_conversions.hpp>
+#include <kernel.hpp>
 
-namespace clbool {
+namespace clbool::dcsr {
 
     void submatrix(Controls &controls,
                    matrix_dcsr &matrix_out,
@@ -25,5 +26,16 @@ namespace clbool {
                                matrix_dcsr &matrix_out,
                                const matrix_dcsr &a,
                                const matrix_dcsr &b);
+
+
+    void matrix_multiplication_hash(Controls &controls,
+                           matrix_dcsr &matrix_out,
+                           const matrix_dcsr &a,
+                           const matrix_dcsr &b);
+
+    void kronecker_product(Controls &controls,
+                           matrix_dcsr& matrix_c,
+                           const matrix_dcsr& matrix_a,
+                           const matrix_dcsr& matrix_b);
 
 }

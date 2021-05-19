@@ -1,7 +1,7 @@
 #include "dcsr.hpp"
 #include "utils.hpp"
 
-namespace clbool {
+namespace clbool::dcsr {
     void transpose(Controls &controls, matrix_dcsr &matrix_out, const matrix_dcsr &matrix_in) {
 
         matrix_coo m_coo = &matrix_out == &matrix_in ? dcsr_to_coo_shallow(controls, const_cast<matrix_dcsr&>(matrix_in))

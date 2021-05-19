@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../common/cl_includes.hpp"
-#include "../library_classes/controls.hpp"
-namespace clbool {
+#include "controls.hpp"
+namespace clbool::coo{
     void check_pref_correctness(const std::vector<uint32_t>& result,
                                 const std::vector<uint32_t>& before);
 

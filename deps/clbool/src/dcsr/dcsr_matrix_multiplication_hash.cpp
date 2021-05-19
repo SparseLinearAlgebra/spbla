@@ -1,19 +1,12 @@
 #include <numeric>
 #include "dcsr_matrix_multiplication.hpp"
 #include "dcsr_matrix_multiplication_hash.hpp"
-#include "../coo/coo_matrix_addition.hpp"
 #include "../coo/coo_utils.hpp"
-#include "../cl/headers/count_workload.h"
-#include "../cl/headers/prepare_positions.h"
-#include "../cl/headers/set_positions.h"
-#include "../cl/headers/hash_pwarp.h"
-#include "../cl/headers/hash_tb.h"
-#include "../cl/headers/hash_global.h"
 
 const uint32_t BINS_NUM = 8;
 const uint32_t MAX_GROUP_ID = BINS_NUM - 1;
 #define PWARP 4
-namespace clbool {
+namespace clbool::dcsr {
     
     namespace hash_details {
 
@@ -129,22 +122,18 @@ namespace clbool {
                    const cl::Buffer &global_hash_tables_offset
 
     ) {
-        auto hash_pwarp = program<cl::Buffer, uint32_t, uint32_t, cl::Buffer,
+        auto hash_pwarp = kernel<cl::Buffer, uint32_t, uint32_t, cl::Buffer,
                 cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer,
-                uint32_t>(hash_pwarp_kernel, hash_pwarp_kernel_length)
-                .set_kernel_name("hash_symbolic_pwarp")
-                .set_async(true);
-        auto hash_tb = program<cl::Buffer, uint32_t, uint32_t,
+                uint32_t>("hash/hash_pwarp", "hash_symbolic_pwarp");
+        hash_pwarp.set_async(true);
+        auto hash_tb = kernel<cl::Buffer, uint32_t, uint32_t,
                 cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer,
-                uint32_t>(hash_tb_kernel, hash_tb_kernel_length)
-                .set_kernel_name("hash_symbolic_tb")
-                .set_async(true);
-        auto hash_global = program<cl::Buffer, uint32_t, uint32_t,
+                uint32_t>("hash/hash_tb", "hash_symbolic_tb");
+        hash_tb.set_async(true);
+        auto hash_global = kernel<cl::Buffer, uint32_t, uint32_t,
                 cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer,
-                uint32_t, cl::Buffer, cl::Buffer>(hash_global_kernel, hash_global_kernel_length)
-                .set_kernel_name("hash_symbolic_global")
-                .set_async(true);
-
+                uint32_t, cl::Buffer, cl::Buffer>("hash/hash_global", "hash_symbolic_global");
+        hash_global.set_async(true);
 
         std::vector<cl::Event> events;
         for (uint32_t bin_id = 0; bin_id < BINS_NUM; ++bin_id) {
@@ -216,21 +205,18 @@ namespace clbool {
         prefix_sum(controls, pre_matrix_rows_pointers, c_nnz, a.nzr() + 1);
         cl::Buffer c_cols(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * c_nnz);
 
-        auto hash_pwarp = program<cl::Buffer, uint32_t, uint32_t, cl::Buffer,
+        auto hash_pwarp = kernel<cl::Buffer, uint32_t, uint32_t, cl::Buffer,
                 cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer,
-                uint32_t>(hash_pwarp_kernel, hash_pwarp_kernel_length)
-                .set_kernel_name("hash_numeric_pwarp")
-                .set_async(true);
-        auto hash_tb = program<cl::Buffer, uint32_t, cl::Buffer,
+                uint32_t>("hash/hash_pwarp", "hash_numeric_pwarp");
+        hash_pwarp.set_async(true);
+        auto hash_tb = kernel<cl::Buffer, uint32_t, cl::Buffer,
                 cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer,
-                uint32_t>(hash_tb_kernel, hash_tb_kernel_length)
-                .set_kernel_name("hash_numeric_tb")
-                .set_async(true);
-        auto hash_global = program<cl::Buffer, uint32_t,
-                cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer>(hash_global_kernel, hash_global_kernel_length)
-                .set_kernel_name("hash_numeric_global")
-                .set_async(true);
-
+                uint32_t>("hash/hash_tb", "hash_numeric_tb");
+        hash_tb.set_async(true);
+        auto hash_global = kernel<cl::Buffer, uint32_t,
+                cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer>
+                ("hash/hash_global", "hash_numeric_global");
+        hash_global.set_async(true);
 
         std::vector<cl::Event> events;
         for (uint32_t bin_id = 0; bin_id < BINS_NUM; ++bin_id) {

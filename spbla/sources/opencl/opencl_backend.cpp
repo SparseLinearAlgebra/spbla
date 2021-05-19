@@ -24,15 +24,16 @@
 
 #include <opencl/opencl_backend.hpp>
 #include <core/error.hpp>
-#include <library_classes/controls.hpp>
-#include <common/utils.hpp>
-
+#include <controls.hpp>
+#include <utils.hpp>
+#include <env.hpp>
 #include <opencl/opencl_matrix.hpp>
 
 namespace spbla {
 
     void OpenCLBackend::initialize(hints initHints) {
-        controls = std::make_shared<clbool::Controls>(clbool::utils::create_controls());
+        controls = std::make_shared<clbool::Controls>(clbool::create_controls());
+        OpenCLMatrix::clboolState = controls;
     }
 
     void OpenCLBackend::finalize() {

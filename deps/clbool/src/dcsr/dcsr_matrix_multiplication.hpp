@@ -1,10 +1,10 @@
 #pragma once
 
 #include "dcsr.hpp"
-
-#include "../library_classes/controls.hpp"
-#include "../library_classes/matrix_coo.hpp"
-#include "../library_classes/matrix_dcsr.hpp"
+#include "kernel.hpp"
+#include "controls.hpp"
+#include "matrix_coo.hpp"
+#include "matrix_dcsr.hpp"
 #include "../common/matrices_conversions.hpp"
 
 #define MERGE_ALGORITHM 1
@@ -12,7 +12,7 @@
 
 
 
-namespace clbool {
+namespace clbool::dcsr {
     void prepare_positions(Controls &controls,
                            cl::Buffer &positions,
                            const cl::Buffer &array,
@@ -89,4 +89,5 @@ namespace clbool {
                        uint32_t old_nzr,
                        uint32_t c_nzr
     );
+
 }

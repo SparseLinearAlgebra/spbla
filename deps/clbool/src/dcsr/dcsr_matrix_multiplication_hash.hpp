@@ -2,7 +2,7 @@
 
 #include "dcsr.hpp"
 
-namespace clbool {
+namespace clbool::dcsr {
     void build_groups_and_allocate_hash(Controls &controls,
                                         std::vector<cpu_buffer> &cpu_workload_groups,
                                         cl::Buffer &nnz_estimation,

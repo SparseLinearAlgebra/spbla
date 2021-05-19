@@ -1,9 +1,5 @@
 #include "matrices_conversions.hpp"
 
-#include "../cl/headers/dscr_to_coo.h"
-#include "../cl/headers/prepare_positions.h"
-#include "../cl/headers/set_positions.h"
-
 namespace clbool {
     namespace {
     #define CONV_GROUP_SIZE 64
@@ -20,9 +16,9 @@ namespace clbool {
 
             cl::Buffer positions(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * size);
 
-            auto prepare_positions = program<cl::Buffer, cl::Buffer, uint32_t>(prepare_positions_kernel, prepare_positions_kernel_length)
-                    .set_kernel_name("prepare_array_for_rows_positions")
-                    .set_needed_work_size(size);
+            auto prepare_positions = kernel<cl::Buffer, cl::Buffer, uint32_t>
+                    ("prepare_positions", "prepare_array_for_rows_positions");
+            prepare_positions.set_needed_work_size(size);
 
             prepare_positions.run(controls, positions, rows, size);
 
@@ -31,9 +27,9 @@ namespace clbool {
             cl::Buffer rows_pointers(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * (nzr + 1));
             cl::Buffer rows_compressed(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * nzr);
 
-            auto set_positions = program<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, uint32_t, uint32_t>(
-                     set_positions_kernel, set_positions_kernel_length)
-                    .set_kernel_name("set_positions_rows")
+            auto set_positions = kernel<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, uint32_t, uint32_t>
+                    ("set_positions", "set_positions_rows");
+            set_positions.set_kernel_name("set_positions_rows")
                     .set_needed_work_size(size);
 
             set_positions.run(controls, rows_pointers, rows_compressed, rows, positions, size, nzr);
@@ -49,9 +45,9 @@ namespace clbool {
     matrix_coo dcsr_to_coo_shallow(Controls &controls, matrix_dcsr &a) {
         cl::Buffer c_rows(controls.context, CL_MEM_READ_WRITE, sizeof(matrix_dcsr::index_type) * a.nnz());
 
-        auto dscr_to_coo = program<cl::Buffer, cl::Buffer, cl::Buffer>(dscr_to_coo_kernel, dscr_to_coo_kernel_length)
-                .set_kernel_name("dscr_to_coo")
-                .set_block_size(CONV_GROUP_SIZE)
+        auto dscr_to_coo = kernel<cl::Buffer, cl::Buffer, cl::Buffer>
+                ("dscr_to_coo", "dscr_to_coo");
+        dscr_to_coo.set_block_size(CONV_GROUP_SIZE)
                 .set_needed_work_size(a.nzr() * CONV_GROUP_SIZE);
 
         dscr_to_coo.run(controls, a.rpt_gpu(), a.rows_gpu(), c_rows);
@@ -62,9 +58,9 @@ namespace clbool {
         cl::Buffer c_rows(controls.context, CL_MEM_READ_WRITE, sizeof(matrix_dcsr::index_type) * a.nnz());
         cl::Buffer c_cols(controls.context, CL_MEM_READ_WRITE, sizeof(matrix_dcsr::index_type) * a.nnz());
         controls.queue.enqueueCopyBuffer(a.cols_gpu(), c_cols, 0, 0, sizeof(matrix_dcsr::index_type) * a.nnz());
-        auto dscr_to_coo = program<cl::Buffer, cl::Buffer, cl::Buffer>(dscr_to_coo_kernel, dscr_to_coo_kernel_length)
-                .set_kernel_name("dscr_to_coo")
-                .set_block_size(CONV_GROUP_SIZE)
+        auto dscr_to_coo = kernel<cl::Buffer, cl::Buffer, cl::Buffer>
+                ("dscr_to_coo", "dscr_to_coo");
+        dscr_to_coo.set_block_size(CONV_GROUP_SIZE)
                 .set_needed_work_size(a.nzr() * CONV_GROUP_SIZE);
 
         dscr_to_coo.run(controls, a.rpt_gpu(), a.rows_gpu(), c_rows);
@@ -84,11 +80,14 @@ namespace clbool {
         );
     }
 
-    matrix_dcsr matrix_dcsr_from_cpu(Controls &controls, matrix_dcsr_cpu &m, uint32_t size) {
+    matrix_dcsr matrix_dcsr_from_cpu(Controls &controls, const matrix_dcsr_cpu &m, uint32_t size) {
 
-        cl::Buffer rows_pointers(controls.context, m.rpt().begin(), m.rpt().end(), false);
-        cl::Buffer rows_compressed(controls.context, m.rows().begin(), m.rows().end(), false);
-        cl::Buffer cols_indices(controls.context, m.cols().begin(), m.cols().end(), false);
+        cl::Buffer rows_pointers(controls.context,
+                                 (const_cast<matrix_dcsr_cpu&>(m)).rpt().begin(), (const_cast<matrix_dcsr_cpu&>(m)).rpt().end(), false);
+        cl::Buffer rows_compressed(controls.context,
+                                   (const_cast<matrix_dcsr_cpu&>(m)).rows().begin(), (const_cast<matrix_dcsr_cpu&>(m)).rows().end(), false);
+        cl::Buffer cols_indices(controls.context,
+                                (const_cast<matrix_dcsr_cpu&>(m)).cols().begin(), (const_cast<matrix_dcsr_cpu&>(m)).cols().end(), false);
 
         return matrix_dcsr(rows_pointers, rows_compressed, cols_indices,
                            size, size, m.cols().size(), m.rows().size());
@@ -119,6 +118,7 @@ namespace clbool {
         return matrix_dcsr_cpu(rows_pointers, rows_compressed, cols_indices);
 
     }
+
 
     matrix_coo_cpu matrix_coo_from_gpu(Controls &controls, matrix_coo &m) {
 

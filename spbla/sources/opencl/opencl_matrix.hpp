@@ -25,9 +25,10 @@
 #ifndef SPBLA_OPENCL_MATRIX_HPP
 #define SPBLA_OPENCL_MATRIX_HPP
 
-#include <>
+#include <memory>
 #include <backend/matrix_base.hpp>
 #include <library_classes/matrix_dcsr.hpp>
+#include "opencl_backend.hpp"
 
 namespace spbla {
 
@@ -58,11 +59,19 @@ namespace spbla {
     private:
 
         MatrixImplType mMatrixImpl;
-
+        friend spbla::OpenCLBackend;
+        static std::shared_ptr<clbool::Controls> clboolState;
 
         size_t mNrows = 0;
         size_t mNcols = 0;
         size_t mNvals = 0;
+
+        // TODO как-то оформить в общем духе
+        void checkState() {
+            if (clboolState == nullptr) {
+                throw std::runtime_error("clbool library state is not initialized!");
+            }
+        }
     };
 
 }

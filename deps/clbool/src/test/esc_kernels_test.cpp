@@ -3,7 +3,7 @@
 
 #include "coo_tests.hpp"
 #include "../common/cl_includes.hpp"
-#include "../library_classes/controls.hpp"
+#include "controls.hpp"
 #include "../coo/coo_utils.hpp"
 #include "../dcsr/dcsr_matrix_multiplication.hpp"
 

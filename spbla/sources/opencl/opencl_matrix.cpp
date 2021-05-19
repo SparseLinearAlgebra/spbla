@@ -52,7 +52,6 @@ namespace spbla {
         size_t M = other->getNrows();
         size_t N = other->getNcols();
 
-        //TODO: rassert?
         assert(this->getNrows() == M);
         assert(this->getNcols() == N);
 

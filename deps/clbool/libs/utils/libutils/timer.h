@@ -1,4 +1,4 @@
-// taken from https://github.com/mkarpenkospb/GPGPUTasks2020/tree/task03/libs/utils/libutils
+// taken from https://github.com/GPGPUCourse/GPGPUTasks2020/blob/task01/libs/utils/libutils/fast_random.h
 
 #pragma once
 

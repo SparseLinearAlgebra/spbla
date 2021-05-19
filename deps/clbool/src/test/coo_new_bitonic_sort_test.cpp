@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "../common/cl_includes.hpp"
 #include "coo_tests.hpp"
-#include "../library_classes/controls.hpp"
+#include "controls.hpp"
 #include "../coo/coo_utils.hpp"
 #include "../cl/headers/bitonic_sort_new.h"
 

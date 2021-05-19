@@ -7,19 +7,27 @@
 
 const uint MAX_VAL = 4294967295;
 
-__kernel void merge_path_count(const uint* a_rows_pointers,
+
+// see merge_path_count by Artem Khoroshev
+__kernel void merge_path_count(uint* c_rpt,
+
+                               const uint* a_rpt,
                                const uint* a_cols,
-                               const uint* b_rows_pointers,
+
+                               const uint* b_rpt,
                                const uint* b_cols,
-                               const uint* c_rows_length) {
 
-    const uint row = get_global_id(0);
+                               const uint* permutation
+                               const uint bin_offset
+                               ) {
 
-    const T global_offset_a = a_rows_pointers[row];
-    const T sz_a = a_rows_pointers[row + 1] - global_offset_a;
+    const uint row = (permutation + bin_offset)[get_global_id(0)];
 
-    const T global_offset_b = b_rows_pointers[row];
-    const T sz_b = b_rows_pointers[row + 1] - global_offset_b;
+    const T global_offset_a = a_rpt[row];
+    const T sz_a = a_rpt[row + 1] - global_offset_a;
+
+    const T global_offset_b = b_rpt[row];
+    const T sz_b = b_rpt[row + 1] - global_offset_b;
 
     const T block_count = (sz_a + sz_b + block_size - 1) / block_size;
 
@@ -131,7 +139,7 @@ __kernel void merge_path_count(const uint* a_rows_pointers,
 
         dir = !dir;
 
-        atomicAdd(c_rows_length.get() + row, counter);
+        atomicAdd(c_rpt.get() + row, counter);
 
         begin_a += max_x_index;
         begin_b += max_y_index;

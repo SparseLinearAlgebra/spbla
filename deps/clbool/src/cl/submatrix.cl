@@ -58,14 +58,16 @@ __kernel void submatrix_count_nnz(__global uint *out_rows_nnz, // size = nzr_tmp
                                   __global const uint *m_cols,
                                   const uint m_nzr,
 
+                                  // positions of submatrix rows in m_rpt
                                   const uint rows_begin,
                                   const uint rows_end,
 
-                                  const uint j,
-                                  const uint ncols
+                                  const uint j, // start for each subrow
+                                  const uint ncols // length of each subrow
 ) {
     uint local_id = get_local_id(0);
     uint global_id = get_global_id(0);
+    // temporary nzr for result matrix, final nzr might be less because of empty rows
     uint nzr_tmp = rows_end - rows_begin;
     if (local_id == 0) {
         out_rows_nnz[nzr_tmp] = 0;
@@ -75,8 +77,8 @@ __kernel void submatrix_count_nnz(__global uint *out_rows_nnz, // size = nzr_tmp
 
     uint row_pos = rows_begin + global_id; // pos in m_rpt and m_rows
     uint row_start = m_rpt[row_pos];
-
     uint row_length = m_rpt[row_pos + 1] - row_start;
+
     uint subrow_start = lower_bound_unique(m_cols + row_start, row_length, j);
     uint subrow_end = lower_bound_unique(m_cols + row_start, row_length, j + ncols);
     out_rows_nnz[global_id] = subrow_end - subrow_start;

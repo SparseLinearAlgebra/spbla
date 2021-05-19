@@ -1,8 +1,8 @@
 #include <cstdint>
 #include "coo_utils.hpp"
-#include "../library_classes/matrix_coo.hpp"
+#include "matrix_coo.hpp"
 #include "libutils/fast_random.h"
-#include "../library_classes/matrix_dcsr.hpp"
+#include "matrix_dcsr.hpp"
 #include <vector>
 #include <iostream>
 #include <algorithm>
@@ -36,7 +36,7 @@ namespace clbool::coo_utils {
                 rows_compressed.push_back(i); // ох ну и пусть
                 cpu_buffer curr_row(random_to_fit);
                 for (uint32_t j = 0; j < random_to_fit; ++j) {
-                    curr_row[j] = r.next() % max_size;
+                    curr_row[j] = r.next(0, max_size);
                 }
                 std::sort(curr_row.begin(), curr_row.end());
                 curr_row.erase(std::unique(curr_row.begin(), curr_row.end()), curr_row.end());
@@ -96,7 +96,7 @@ namespace clbool::coo_utils {
                 rows_compressed.push_back(i); // ох ну и пусть
                 cpu_buffer curr_row(random_to_fit);
                 for (uint32_t j = 0; j < random_to_fit; ++j) {
-                    curr_row[j] = r.next() % max_size;
+                    curr_row[j] = r.next(0, max_size);
                 }
                 std::sort(curr_row.begin(), curr_row.end());
                 curr_row.erase(std::unique(curr_row.begin(), curr_row.end()), curr_row.end());
@@ -135,11 +135,14 @@ namespace clbool::coo_utils {
 
 
     void fill_random_matrix(cpu_buffer &rows, cpu_buffer &cols, uint32_t max_size) {
-        uint32_t n = rows.size();
-        FastRandom r(n);
-        for (uint32_t i = 0; i < n; ++i) {
-            rows[i] = r.next() % max_size;
-            cols[i] = r.next() % max_size;
+        if (max_size < 1) {
+            throw std::runtime_error("Incorrect generation");
+        }
+        uint32_t nnz = rows.size();
+        FastRandom r(nnz);
+        for (uint32_t i = 0; i < nnz; ++i) {
+            rows[i] = r.next(0, max_size - 1);
+            cols[i] = r.next(0, max_size - 1);
         }
     }
 
@@ -147,17 +150,17 @@ namespace clbool::coo_utils {
         uint32_t n = pairs.size();
         FastRandom r(n);
         for (uint32_t i = 0; i < n; ++i) {
-            pairs[i].first = r.next() % max_size;
-            pairs[i].second = r.next() % max_size;
+            pairs[i].first = r.next(0, max_size);
+            pairs[i].second = r.next(0, max_size);
         }
     }
 
     void
     form_cpu_matrix(matrix_coo_cpu_pairs &matrix_out, const cpu_buffer &rows, const cpu_buffer &cols) {
         matrix_out.resize(rows.size());
-        std::transform(rows.begin(), rows.end(), cols.begin(), matrix_out.begin(),
-                       [](uint32_t i, uint32_t j) -> coordinates { return {i, j}; });
-
+        for (uint32_t i = 0; i < rows.size(); ++i) {
+            matrix_out[i] = {rows[i], cols[i]};
+        }
     }
 
     void get_vectors_from_cpu_matrix(cpu_buffer &rows_out, cpu_buffer &cols_out,
@@ -249,7 +252,6 @@ namespace clbool::coo_utils {
             position++;
         }
         rows_pointers.push_back(position);
-
         return matrix_dcsr_cpu(rows_pointers, rows_compressed, cols_indices);
     }
 
@@ -261,16 +263,16 @@ namespace clbool::coo_utils {
 
         cpu_buffer rows_pointers;
         cpu_buffer rows_compressed;
-        cpu_buffer cols_indices(matrix_coo.cols());
+        const cpu_buffer& cols_indices(matrix_coo.cols());
 
         size_t position = 0;
         uint32_t curr_row = matrix_coo.rows()[0];
         rows_compressed.push_back(curr_row);
         rows_pointers.push_back(position);
 
-        for (cpu_buffer::size_type i = 0; i < matrix_coo.rows().size(); ++i) {
-            if (matrix_coo.rows()[i] != curr_row) {
-                curr_row = matrix_coo.rows()[i];
+        for (unsigned int i : matrix_coo.rows()) {
+            if (i != curr_row) {
+                curr_row = i;
                 rows_compressed.push_back(curr_row);
                 rows_pointers.push_back(position);
             }
@@ -282,14 +284,15 @@ namespace clbool::coo_utils {
     }
 
 
-    matrix_coo matrix_coo_from_cpu(Controls &controls, const matrix_coo_cpu_pairs &m_cpu) {
+    matrix_coo matrix_coo_from_cpu(Controls &controls, const matrix_coo_cpu_pairs &m_cpu,
+                                   uint32_t nrows, uint32_t ncols) {
         cpu_buffer rows;
         cpu_buffer cols;
 
         get_vectors_from_cpu_matrix(rows, cols, m_cpu);
 
-        uint32_t n_rows = *std::max_element(rows.begin(), rows.end());
-        uint32_t n_cols = *std::max_element(cols.begin(), cols.end());
+        uint32_t n_rows = nrows == -1 ? *std::max_element(rows.begin(), rows.end()) : nrows;
+        uint32_t n_cols = ncols ==  -1 ? *std::max_element(cols.begin(), cols.end()) : ncols;
         uint32_t nnz = m_cpu.size();
 
         return matrix_coo(controls, n_rows, n_cols, nnz, rows.data(), cols.data(), true);
@@ -308,27 +311,19 @@ namespace clbool::coo_utils {
 
     void
     kronecker_product_cpu(matrix_coo_cpu_pairs &matrix_out, const matrix_coo_cpu_pairs &matrix_a,
-                          const matrix_coo_cpu_pairs &matrix_b) {
-        auto less_for_rows = [](const coordinates &a, const coordinates &b) -> bool {
-            return a.first < b.first;
-        };
-        auto less_for_cols = [](const coordinates &a, const coordinates &b) -> bool {
-            return a.second < b.second;
-        };
-
-        uint32_t matrix_b_nRows = std::max_element(matrix_b.begin(), matrix_b.end(), less_for_rows)->first;
-        uint32_t matrix_b_nCols = std::max_element(matrix_b.begin(), matrix_b.end(), less_for_cols)->second;
+                          const matrix_coo_cpu_pairs &matrix_b, uint32_t b_nrows, uint32_t b_ncols) {
 
         matrix_out.resize(matrix_a.size() * matrix_b.size());
 
         uint32_t i = 0;
         for (const auto &coord_a: matrix_a) {
             for (const auto &coord_b: matrix_b) {
-                matrix_out[i] = coordinates(coord_a.first * matrix_b_nRows + coord_b.first,
-                                            coord_a.second * matrix_b_nCols + coord_b.second);
+                matrix_out[i] = coordinates(coord_a.first * b_nrows + coord_b.first,
+                                            coord_a.second * b_ncols + coord_b.second);
                 ++i;
             }
         }
+
         std::sort(matrix_out.begin(), matrix_out.end());
     }
 

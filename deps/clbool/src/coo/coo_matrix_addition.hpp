@@ -1,11 +1,12 @@
 #pragma once
+#include "coo.hpp"
 
-#include "../library_classes/controls.hpp"
+#include "controls.hpp"
+#include "matrix_coo.hpp"
 #include "../common/cl_includes.hpp"
 #include "../common/utils.hpp"
-#include "../library_classes/matrix_coo.hpp"
 
-namespace clbool {
+namespace clbool::coo {
 
     void matrix_addition(
             Controls &controls,
@@ -37,12 +38,6 @@ namespace clbool {
             uint32_t merged_size
     );
 
-    void prefix_sum(
-            Controls &controls,
-            cl::Buffer &array,
-            uint32_t &total_sum,
-            uint32_t array_size
-    );
 
 
     void set_positions(

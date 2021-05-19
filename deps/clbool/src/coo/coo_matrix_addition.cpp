@@ -1,14 +1,13 @@
 
-#include "../library_classes/controls.hpp"
-#include "../library_classes/program.hpp"
+#include "controls.hpp"
+#include "kernel.hpp"
 #include "../common/utils.hpp"
+#include "../common/cl_operations.hpp"
 #include "coo_utils.hpp"
 #include "coo_matrix_addition.hpp"
-#include "../cl/headers/merge_path.h"
-#include "../cl/headers/prepare_positions.h"
-#include "../cl/headers/set_positions.h"
 
-namespace clbool {
+
+namespace clbool::coo {
 
     void matrix_addition(Controls &controls,
                          matrix_coo &matrix_out,
@@ -35,12 +34,10 @@ namespace clbool {
 
         uint32_t merged_size = a.nnz() + b.nnz();
 
-        auto coo_merge = program<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer,
+        auto coo_merge = kernel<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer,
                         uint32_t, uint32_t>
-                        (merge_path_kernel, merge_path_kernel_length)
-                        .set_needed_work_size(merged_size)
-                        .set_kernel_name("merge");
-
+                        ("merge_path", "merge");
+        coo_merge.set_needed_work_size(merged_size);
 
         cl::Buffer merged_rows(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * merged_size);
         cl::Buffer merged_cols(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * merged_size);
@@ -90,10 +87,9 @@ namespace clbool {
                            cl::Buffer &merged_cols,
                            uint32_t merged_size
     ) {
-        auto prepare_positions = program<cl::Buffer, cl::Buffer, cl::Buffer, uint32_t>
-                (prepare_positions_kernel, prepare_positions_kernel_length)
-                .set_needed_work_size(merged_size)
-                .set_kernel_name("prepare_array_for_positions");
+        auto prepare_positions = kernel<cl::Buffer, cl::Buffer, cl::Buffer, uint32_t>
+                ("prepare_positions", "prepare_array_for_positions");
+        prepare_positions.set_needed_work_size(merged_size);
 
         prepare_positions.run(controls, positions, merged_rows, merged_cols, merged_size);
     }
@@ -107,12 +103,11 @@ namespace clbool {
                        cl::Buffer &positions,
                        uint32_t merged_size) {
 
-        auto set_positions = program<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, unsigned int>
-                (set_positions_kernel, set_positions_kernel_length)
-                .set_needed_work_size(merged_size)
-                .set_kernel_name("set_positions");
+        auto set_positions = kernel<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, unsigned int>
+                ("set_positions", "set_positions");
+        set_positions.set_needed_work_size(merged_size);
 
-        set_positions.run(controls, new_rows, new_cols, merged_rows, merged_cols, positions, merged_size);
+        set_positions.run(controls, new_rows, new_cols, merged_rows, merged_cols, positions, merged_size).wait();
     }
 
 

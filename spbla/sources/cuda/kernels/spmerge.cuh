@@ -53,7 +53,7 @@ namespace spbla {
                 assert(a.m_cols == b.m_cols);
 
                 IndexType rows = a.m_rows;
-                IndexType cols = a.m_rows;
+                IndexType cols = a.m_cols;
 
                 constexpr auto config_merge =
                     make_bin_seq<
