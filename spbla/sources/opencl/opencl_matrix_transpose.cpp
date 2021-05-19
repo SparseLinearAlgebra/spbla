@@ -24,11 +24,21 @@
 
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
+#include <dcsr/dcsr.hpp>
 
 namespace spbla {
 
     void OpenCLMatrix::transpose(const MatrixBase &otherBase, bool checkTime) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        CHECK_RAISE_ERROR(clboolState != nullptr, InvalidState, "Clbool state isn't initialized!")
+
+        auto other = dynamic_cast<const clbool::matrix_dcsr *>(&otherBase);
+
+        CHECK_RAISE_ERROR(other != nullptr, InvalidArgument,
+                          "Passed matrix does not belong to clbool::matrix_dcsr class")
+
+        clbool::dcsr::transpose(*clboolState, mMatrixImpl, *other);
+
+        updateFromImpl();
     }
 
 }

@@ -1,7 +1,5 @@
 #include <numeric>
 #include "dcsr_matrix_multiplication.hpp"
-#include "../coo/coo_matrix_addition.hpp"
-#include "../coo/coo_utils.hpp"
 
 namespace clbool::dcsr {
     const uint32_t BINS_NUM = 38;

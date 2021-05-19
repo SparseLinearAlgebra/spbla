@@ -46,7 +46,7 @@ namespace spbla {
     void OpenCLMatrix::clone(const MatrixBase &otherBase) {
         auto other = dynamic_cast<const OpenCLMatrix*>(&otherBase);
 
-        CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Passed matrix does not belong to csr matrix class");
+        CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Passed matrix does not belong to OpenCLMatrix class");
         CHECK_RAISE_ERROR(other != this, InvalidArgument, "Matrices must differ");
 
         size_t M = other->getNrows();

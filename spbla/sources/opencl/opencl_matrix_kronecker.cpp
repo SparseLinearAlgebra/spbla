@@ -24,11 +24,21 @@
 
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
+#include <dcsr/dcsr.hpp>
 
 namespace spbla {
 
     void OpenCLMatrix::kronecker(const MatrixBase &aBase, const MatrixBase &bBase, bool checkTime) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        CHECK_RAISE_ERROR(clboolState != nullptr, InvalidState, "Clbool state isn't initialized!")
+
+        auto a = dynamic_cast<const clbool::matrix_dcsr*>(&aBase);
+        auto b = dynamic_cast<const clbool::matrix_dcsr*>(&bBase);
+
+        CHECK_RAISE_ERROR(a != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class");
+        CHECK_RAISE_ERROR(b != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class");
+
+        clbool::dcsr::kronecker_product(*clboolState, mMatrixImpl, *a, *b);
+        updateFromImpl();
     }
 
 }

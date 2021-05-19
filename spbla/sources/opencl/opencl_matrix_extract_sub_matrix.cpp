@@ -24,11 +24,18 @@
 
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
+#include <dcsr/dcsr.hpp>
 
 namespace spbla {
 
     void OpenCLMatrix::extractSubMatrix(const MatrixBase &otherBase, index i, index j, index nrows, index ncols, bool checkTime) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        CHECK_RAISE_ERROR(clboolState != nullptr, InvalidState, "Clbool state isn't initialized!")
+
+        auto otherDcsr = dynamic_cast<const clbool::matrix_dcsr*>(&otherBase);
+        CHECK_RAISE_ERROR(otherDcsr != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class");
+
+        clbool::dcsr::submatrix(*clboolState, mMatrixImpl, *otherDcsr, i, j, nrows, ncols);
+        updateFromImpl();
     }
 
 }

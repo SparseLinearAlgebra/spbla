@@ -56,8 +56,8 @@ Logg &&operator<<(Logg &&wrap, T const &whatever) {
     return ::std::move(wrap);
 }
 
-void handle_run(cl_int) {}
-void handle_run(const cl::Event& e) {
+inline void handle_run(cl_int) {}
+inline void handle_run(const cl::Event& e) {
     e.wait();
 }
 

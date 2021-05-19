@@ -25,10 +25,29 @@
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
 
+#include <matrices_conversions.hpp>
+#include <coo.hpp>
+#include <matrices_conversions.hpp>
+
 namespace spbla {
 
     void OpenCLMatrix::eWiseAdd(const MatrixBase &aBase, const MatrixBase &bBase, bool checkTime) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
-    }
+        CHECK_RAISE_ERROR(clboolState != nullptr, InvalidState, "Clbool state isn't initialized!")
 
+        auto a = dynamic_cast<const clbool::matrix_dcsr*>(&aBase);
+        auto b = dynamic_cast<const clbool::matrix_dcsr*>(&bBase);
+
+        CHECK_RAISE_ERROR(a != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class");
+        CHECK_RAISE_ERROR(b != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class");
+
+        auto aCoo = clbool::dcsr_to_coo_shallow(*clboolState, *const_cast<clbool::matrix_dcsr*>(a));
+        auto bCoo = clbool::dcsr_to_coo_shallow(*clboolState, *const_cast<clbool::matrix_dcsr*>(b));
+
+        clbool::matrix_coo resCoo;
+        clbool::coo::matrix_addition(*clboolState, resCoo, aCoo, bCoo);
+
+        mMatrixImpl = clbool::coo_to_dcsr_gpu_shallow(*clboolState, resCoo);
+
+        updateFromImpl();
+    }
 }

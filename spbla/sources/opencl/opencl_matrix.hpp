@@ -66,11 +66,10 @@ namespace spbla {
         size_t mNcols = 0;
         size_t mNvals = 0;
 
-        // TODO как-то оформить в общем духе
-        void checkState() {
-            if (clboolState == nullptr) {
-                throw std::runtime_error("clbool library state is not initialized!");
-            }
+        void updateFromImpl() {
+            mNrows = mMatrixImpl.nrows();
+            mNcols = mMatrixImpl.ncols();
+            mNvals = mMatrixImpl.nnz();
         }
     };
 

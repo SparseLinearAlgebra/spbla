@@ -28,7 +28,16 @@
 namespace spbla {
 
     void OpenCLMatrix::extract(index *rows, index *cols, size_t &nvals) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        CHECK_RAISE_ERROR(clboolState != nullptr, InvalidState, "Clbool state isn't initialized!")
+
+        cl::Event evRow, evCol;
+        clboolState->queue.enqueueReadBuffer(mMatrixImpl.rows_gpu(), false, 0, sizeof(index) * nvals,
+                                              rows, nullptr, &evRow);
+        clboolState->queue.enqueueReadBuffer(mMatrixImpl.cols_gpu(), false, 0, sizeof(index) * nvals,
+                                              cols, nullptr, &evCol);
+        evRow.wait(); evCol.wait();
+
+        updateFromImpl();
     }
 
 }
