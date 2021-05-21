@@ -31,9 +31,9 @@
 namespace spbla {
 
     void OpenCLMatrix::extract(index *rows, index *cols, size_t &nvals) {
-        if (nvals == 0) {
+        if (nvals == 0)
             return;
-        }
+
         cl::Event evRow, evCol;
         clbool::matrix_coo mCoo = clbool::dcsr_to_coo_shallow(*clboolState, mMatrixImpl);
 

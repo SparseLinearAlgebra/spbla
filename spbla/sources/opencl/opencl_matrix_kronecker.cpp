@@ -25,18 +25,23 @@
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
 #include <dcsr/dcsr.hpp>
+#include <cassert>
 
 namespace spbla {
 
     void OpenCLMatrix::kronecker(const MatrixBase &aBase, const MatrixBase &bBase, bool checkTime) {
         auto a = dynamic_cast<const OpenCLMatrix*>(&aBase);
         auto b = dynamic_cast<const OpenCLMatrix*>(&bBase);
+        assert(this->getNrows() == a->getNrows() * b->getNrows());
+        assert(this->getNcols() == a->getNcols() * b->getNcols());
 
         CHECK_RAISE_ERROR(a != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class");
         CHECK_RAISE_ERROR(b != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class");
 
         clbool::dcsr::kronecker_product(*clboolState, mMatrixImpl, a->mMatrixImpl, b->mMatrixImpl);
         updateFromImpl();
+
+        assert(this->getNvals() == a->getNvals() * b->getNvals());
     }
 
 }

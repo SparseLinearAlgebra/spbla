@@ -25,6 +25,7 @@
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
 #include <dcsr/dcsr.hpp>
+#include <cassert>
 
 namespace spbla {
 
@@ -36,6 +37,10 @@ namespace spbla {
 
         clbool::dcsr::reduce(*clboolState, mMatrixImpl, other->mMatrixImpl);
         updateFromImpl();
+
+        assert(this->getNcols() == 1);
+        assert(this->getNrows() == otherBase.getNrows());
+        assert(this->getNvals() == otherBase.getNrows());
     }
 
 }

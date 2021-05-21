@@ -28,6 +28,7 @@
 #include <matrices_conversions.hpp>
 #include <coo.hpp>
 #include <matrices_conversions.hpp>
+#include <cassert>
 
 namespace spbla {
 
@@ -35,6 +36,11 @@ namespace spbla {
 
         auto a = dynamic_cast<const OpenCLMatrix*>(&aBase);
         auto b = dynamic_cast<const OpenCLMatrix*>(&bBase);
+
+        assert(this->getNrows() == a->getNrows());
+        assert(b->getNrows() == a->getNrows());
+        assert(this->getNcols() == a->getNcols());
+        assert(b->getNcols() == a->getNcols());
 
         CHECK_RAISE_ERROR(a != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class");
         CHECK_RAISE_ERROR(b != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class");

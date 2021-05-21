@@ -25,15 +25,19 @@
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
 #include <dcsr/dcsr.hpp>
+#include <cassert>
 
 namespace spbla {
 
     void OpenCLMatrix::extractSubMatrix(const MatrixBase &otherBase, index i, index j, index nrows, index ncols, bool checkTime) {
+        assert(this->getNrows() == nrows);
+        assert(this->getNcols() == ncols);
+
         auto otherDcsr = dynamic_cast<const OpenCLMatrix*>(&otherBase);
+
         CHECK_RAISE_ERROR(otherDcsr != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class");
 
         clbool::dcsr::submatrix(*clboolState, mMatrixImpl, otherDcsr->mMatrixImpl, i, j, nrows, ncols);
         updateFromImpl();
     }
-
 }

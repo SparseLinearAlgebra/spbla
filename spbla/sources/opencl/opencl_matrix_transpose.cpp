@@ -25,6 +25,7 @@
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
 #include <dcsr/dcsr.hpp>
+#include <cassert>
 
 namespace spbla {
 
@@ -37,5 +38,9 @@ namespace spbla {
         clbool::dcsr::transpose(*clboolState, mMatrixImpl, other->mMatrixImpl);
 
         updateFromImpl();
+
+        assert(this->getNrows() == other->getNcols());
+        assert(this->getNcols() == other->getNrows());
+        assert(this->getNvals() == other->getNvals());
     }
 }

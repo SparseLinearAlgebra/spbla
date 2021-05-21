@@ -51,13 +51,12 @@ namespace spbla {
         CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Passed matrix does not belong to OpenCLMatrix class");
         CHECK_RAISE_ERROR(other != this, InvalidArgument, "Matrices must differ");
 
-        size_t M = other->getNrows();
-        size_t N = other->getNcols();
-
-        assert(this->getNrows() == M);
-        assert(this->getNcols() == N);
-
         this->mMatrixImpl = other->mMatrixImpl;
+        updateFromImpl();
+
+        assert(this->getNrows() == other->getNrows());
+        assert(this->getNcols() == other->getNcols());
+        assert(this->getNvals() == other->getNvals());
     }
 
     index OpenCLMatrix::getNrows() const {
@@ -70,5 +69,12 @@ namespace spbla {
 
     index OpenCLMatrix::getNvals() const {
         return mNvals;
+    }
+
+    OpenCLMatrix::OpenCLMatrix(clbool::Controls *controls, MatrixImplType clbool_matrix)
+    : mMatrixImpl(std::move(clbool_matrix))
+    , clboolState(controls)
+    {
+        updateFromImpl();
     }
 }

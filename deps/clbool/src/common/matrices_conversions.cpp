@@ -69,7 +69,8 @@ namespace clbool {
         cl::Buffer rpt;
         cl::Buffer rows;
         uint32_t nzr;
-        create_rows_pointers(controls, rpt, rows, a.rows_gpu(), a.nnz(), nzr);
+        if (a.nnz() != 0)
+            create_rows_pointers(controls, rpt, rows, a.rows_gpu(), a.nnz(), nzr);
 
         return matrix_dcsr(rpt, rows, a.cols_gpu(),
                            a.nrows(), a.ncols(), a.nnz(), nzr
