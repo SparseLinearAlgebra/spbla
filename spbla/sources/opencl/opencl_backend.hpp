@@ -28,7 +28,7 @@
 #include <memory>
 
 #include <backend/backend_base.hpp>
-#include <library_classes/controls.hpp>
+#include <core/controls.hpp>
 
 namespace spbla {
 
@@ -48,7 +48,6 @@ namespace spbla {
 
         void queryCapabilities(spbla_DeviceCaps &caps) override;
 
-    private:
         std::shared_ptr<clbool::Controls> controls;
     };
 

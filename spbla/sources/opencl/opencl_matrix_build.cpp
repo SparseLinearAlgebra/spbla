@@ -25,17 +25,17 @@
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
 
-#include <library_classes/matrix_coo.hpp>
-#include <library_classes/matrix_dcsr.hpp>
+#include <core/matrix_coo.hpp>
+#include <core/matrix_dcsr.hpp>
 #include <common/matrices_conversions.hpp>
 #include <kernel.hpp>
 
 namespace spbla {
 
     void OpenCLMatrix::build(const index *rows, const index *cols, size_t nvals, bool isSorted, bool noDuplicates) {
-        CHECK_RAISE_ERROR(clboolState != nullptr, InvalidState, "Clbool state isn't initialized!")
         mNvals = nvals;
         clbool::matrix_coo matrixCoo(*clboolState, mNrows, mNcols, nvals, rows, cols, isSorted, noDuplicates);
         mMatrixImpl = clbool::coo_to_dcsr_gpu_shallow(*clboolState, matrixCoo);
+        updateFromImpl();
     }
 }

@@ -12,7 +12,9 @@ __kernel void prepare_array_for_positions(__global uint* result,
                                           ) {
 
     unsigned int global_id = get_global_id(0);
-
+    if (global_id == 0) {
+        result[size] = 0;
+    }
     if (global_id >= size) {
         return;
     }

@@ -33,7 +33,6 @@ namespace spbla {
 
     void OpenCLBackend::initialize(hints initHints) {
         controls = std::make_shared<clbool::Controls>(clbool::create_controls());
-        OpenCLMatrix::clboolState = controls;
     }
 
     void OpenCLBackend::finalize() {
@@ -45,7 +44,7 @@ namespace spbla {
     }
 
     MatrixBase* OpenCLBackend::createMatrix(size_t nrows, size_t ncols) {
-        return new OpenCLMatrix(nrows, ncols);
+        return new OpenCLMatrix(controls.get(), nrows, ncols);
     }
 
     void OpenCLBackend::releaseMatrix(MatrixBase *matrixBase) {

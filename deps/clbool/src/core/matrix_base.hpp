@@ -49,6 +49,10 @@ namespace clbool {
             index_type nnz() {
                 return _nnz;
             };
+
+            bool empty() const {
+                return _nnz == 0;
+            }
         };
     }
 }

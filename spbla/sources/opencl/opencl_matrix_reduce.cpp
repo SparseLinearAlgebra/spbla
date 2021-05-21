@@ -29,14 +29,12 @@
 namespace spbla {
 
     void OpenCLMatrix::reduce(const MatrixBase &otherBase, bool checkTime) {
-        CHECK_RAISE_ERROR(clboolState != nullptr, InvalidState, "Clbool state isn't initialized!")
-
-        auto other = dynamic_cast<const clbool::matrix_dcsr *>(&otherBase);
+        auto other = dynamic_cast<const OpenCLMatrix*>(&otherBase);
 
         CHECK_RAISE_ERROR(other != nullptr, InvalidArgument,
                           "Passed matrix does not belong to clbool::matrix_dcsr class")
 
-        clbool::dcsr::reduce(*clboolState, mMatrixImpl, *other);
+        clbool::dcsr::reduce(*clboolState, mMatrixImpl, other->mMatrixImpl);
         updateFromImpl();
     }
 

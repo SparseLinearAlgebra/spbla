@@ -27,7 +27,7 @@
 
 #include <memory>
 #include <backend/matrix_base.hpp>
-#include <library_classes/matrix_dcsr.hpp>
+#include <core/matrix_dcsr.hpp>
 #include "opencl_backend.hpp"
 
 namespace spbla {
@@ -36,7 +36,7 @@ namespace spbla {
     public:
         using MatrixImplType = clbool::matrix_dcsr;
 
-        OpenCLMatrix(size_t nrows, size_t ncols);
+        OpenCLMatrix(clbool::Controls *controls, size_t nrows, size_t ncols);
         ~OpenCLMatrix() override;
 
         void setElement(index i, index j) override;
@@ -60,7 +60,7 @@ namespace spbla {
 
         MatrixImplType mMatrixImpl;
         friend spbla::OpenCLBackend;
-        static std::shared_ptr<clbool::Controls> clboolState;
+        clbool::Controls *clboolState = nullptr;
 
         size_t mNrows = 0;
         size_t mNcols = 0;
@@ -72,7 +72,6 @@ namespace spbla {
             mNvals = mMatrixImpl.nnz();
         }
     };
-
 }
 
 #endif //SPBLA_OPENCL_MATRIX_HPP

@@ -29,15 +29,13 @@
 namespace spbla {
 
     void OpenCLMatrix::multiply(const MatrixBase &aBase, const MatrixBase &bBase, bool accumulate, bool checkTime) {
-        CHECK_RAISE_ERROR(clboolState != nullptr, InvalidState, "Clbool state isn't initialized!")
-
-        auto a = dynamic_cast<const clbool::matrix_dcsr*>(&aBase);
-        auto b = dynamic_cast<const clbool::matrix_dcsr*>(&bBase);
+        auto a = dynamic_cast<const OpenCLMatrix*>(&aBase);
+        auto b = dynamic_cast<const OpenCLMatrix*>(&bBase);
 
         CHECK_RAISE_ERROR(a != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class")
         CHECK_RAISE_ERROR(b != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class")
 
-        clbool::dcsr::matrix_multiplication_hash(*clboolState, mMatrixImpl, *a, *b);
+        clbool::dcsr::matrix_multiplication_hash(*clboolState, mMatrixImpl, a->mMatrixImpl, b->mMatrixImpl);
         updateFromImpl();
     }
 

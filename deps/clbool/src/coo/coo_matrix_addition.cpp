@@ -28,9 +28,7 @@ namespace clbool::coo {
                       merged_rows, merged_cols,
                       a.rows_gpu(), a.cols_gpu(),
                       b.rows_gpu(), b.cols_gpu(),
-                      a.nnz(), b.nnz());
-
-    //        check_merge_correctness(controls, merged_rows, merged_cols, merged_size);
+                      a.nnz(), b.nnz()).wait();
 
         merged_rows_out = std::move(merged_rows);
         merged_cols_out = std::move(merged_cols);
@@ -43,9 +41,8 @@ namespace clbool::coo {
 
         cl::Buffer merged_rows;
         cl::Buffer merged_cols;
-        uint32_t new_size;
 
         merge(controls, merged_rows, merged_cols, a, b);
-        matrix_out = matrix_coo(controls, a.nrows(), a.ncols(), new_size, merged_rows, merged_cols, true, false);
+        matrix_out = matrix_coo(controls, a.nrows(), a.ncols(), a.nnz() + b.nnz(), merged_rows, merged_cols, true, false);
     }
 }

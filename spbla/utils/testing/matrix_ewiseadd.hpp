@@ -75,8 +75,8 @@ namespace testing {
                     }
                 }
 
-                nvalsInRow += (size_t)(arend - ar);
-                nvalsInRow += (size_t)(brend - br);
+                nvalsInRow += (spbla_Index)(arend - ar);
+                nvalsInRow += (spbla_Index)(brend - br);
 
                 nvals += nvalsInRow;
                 out.rowOffsets[i] = nvalsInRow;

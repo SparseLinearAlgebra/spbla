@@ -4,8 +4,6 @@ namespace clbool {
     namespace {
     #define CONV_GROUP_SIZE 64
 
-
-
         void create_rows_pointers(Controls &controls,
                                   cl::Buffer &rows_pointers_out,
                                   cl::Buffer &rows_compressed_out,
@@ -66,8 +64,6 @@ namespace clbool {
         dscr_to_coo.run(controls, a.rpt_gpu(), a.rows_gpu(), c_rows);
         return matrix_coo(a.nrows(), a.ncols(), a.nnz(), c_rows, c_cols);
     }
-
-
 
     matrix_dcsr coo_to_dcsr_gpu_shallow(Controls &controls, const matrix_coo &a) {
         cl::Buffer rpt;

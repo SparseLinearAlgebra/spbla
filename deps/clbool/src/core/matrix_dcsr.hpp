@@ -41,7 +41,14 @@ namespace clbool {
         , _nzr(nzr)
         {};
 
+        matrix_dcsr(uint32_t n_rows,
+                    uint32_t n_cols
+                    )
+        : details::matrix_base(n_rows, n_cols, 0)
+        {}
 
+
+        // -------------------------------------- getters -----------------------------
         const auto &rpt_gpu() const {
             return _rpt_gpu;
         }

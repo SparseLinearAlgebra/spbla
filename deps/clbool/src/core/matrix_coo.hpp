@@ -15,6 +15,9 @@ namespace clbool {
         cl::Buffer _rows;
         cl::Buffer _cols;
 
+    private:
+        void reduce_duplicates(Controls& controls);
+
     public:
 
         // -------------------------------------- constructors -----------------------------
@@ -39,8 +42,8 @@ namespace clbool {
                    index_type nnz,
                    const index_type *rows_indices,
                    const index_type *cols_indices,
-                   bool sorted = false,
-                   bool noDuplicates = false
+                   bool sorted = true,
+                   bool noDuplicates = true
                    );
 
         matrix_coo(Controls &controls,
@@ -49,8 +52,8 @@ namespace clbool {
                    index_type nnz,
                    cl::Buffer &rows,
                    cl::Buffer &cols,
-                   bool sorted = false,
-                   bool noDuplicates = false
+                   bool sorted = true,
+                   bool noDuplicates = true
                    );
 
         matrix_coo(matrix_coo const &other) = default;

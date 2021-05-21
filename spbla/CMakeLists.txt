@@ -9,7 +9,7 @@ endif()
 if (SPBLA_WITH_SEQUENTIAL)
     message(STATUS "Add CPU sequential fallback backend")
 endif()
-if (SPBLA_WITH_CUDA)
+    if (SPBLA_WITH_CUDA)
     message(STATUS "Add CUDA backend for GPGPU computations")
 endif()
 if (SPBLA_WITH_OPENCL)
@@ -33,6 +33,8 @@ elseif(WIN32)
 else()
     message(FATAL_ERROR "Platform not specified")
 endif()
+
+
 
 # Library sources
 set(SPBLA_SOURCES
@@ -220,7 +222,7 @@ endif()
 
 # Copy spbla library after build if allowed
 if (SPBLA_COPY_TO_PY_PACKAGE)
-    set(LIBRARY_FILE_NAME ${TARGET_FILE_NAME})
+    set(LIBRARY_FILE_NAME lib${TARGET_FILE_NAME})
 
     add_custom_command(
         TARGET spbla POST_BUILD
@@ -229,4 +231,18 @@ if (SPBLA_COPY_TO_PY_PACKAGE)
         "${CMAKE_BINARY_DIR}/spbla/${LIBRARY_FILE_NAME}"
         "${CMAKE_BINARY_DIR}/python/pyspbla"
         COMMENT "Copy ${LIBRARY_FILE_NAME} compiled lib into python folder")
+endif()
+
+
+if(WIN32 AND SPBLA_WITH_OPENCL AND SPBLA_BUILD_TESTS)
+    add_custom_command(
+            TARGET spbla POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E
+            copy
+            "${CMAKE_BINARY_DIR}/deps/clbool/libclbool.dll"
+            "${CMAKE_BINARY_DIR}/spbla/tests"
+            "${CMAKE_BINARY_DIR}/spbla/libspbla.dll"
+            "${CMAKE_BINARY_DIR}/spbla/tests"
+            COMMENT "Copy spbla and clbool compiled libs into test directory"
+    )
 endif()

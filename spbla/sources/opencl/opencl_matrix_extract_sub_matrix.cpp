@@ -29,12 +29,10 @@
 namespace spbla {
 
     void OpenCLMatrix::extractSubMatrix(const MatrixBase &otherBase, index i, index j, index nrows, index ncols, bool checkTime) {
-        CHECK_RAISE_ERROR(clboolState != nullptr, InvalidState, "Clbool state isn't initialized!")
-
-        auto otherDcsr = dynamic_cast<const clbool::matrix_dcsr*>(&otherBase);
+        auto otherDcsr = dynamic_cast<const OpenCLMatrix*>(&otherBase);
         CHECK_RAISE_ERROR(otherDcsr != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class");
 
-        clbool::dcsr::submatrix(*clboolState, mMatrixImpl, *otherDcsr, i, j, nrows, ncols);
+        clbool::dcsr::submatrix(*clboolState, mMatrixImpl, otherDcsr->mMatrixImpl, i, j, nrows, ncols);
         updateFromImpl();
     }
 

@@ -9,9 +9,8 @@
 #define CL_HPP_TARGET_OPENCL_VERSION 110
 #include "CL/opencl.hpp"
 
-#define FPGA
-#define DEBUG_ENABLE 1
-#define LEVEL1 1
+#define DEBUG_ENABLE 0
+#define LEVEL1 0
 #define LEVEL2 0
 
 

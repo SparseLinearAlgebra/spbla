@@ -28,7 +28,7 @@ namespace clbool::coo {
                   ).wait();
 
             matrix_out = matrix_coo(controls, matrix_a.nrows() * matrix_b.nrows(), matrix_a.ncols() * matrix_b.ncols(),
-                                    res_size, res_rows, res_cols, false);
+                                    res_size, res_rows, res_cols, false, true);
         } catch (const cl::Error &e) {
             std::stringstream exception;
             exception << "\n" << e.what() << " : " << utils::error_name(e.err()) << "\n";

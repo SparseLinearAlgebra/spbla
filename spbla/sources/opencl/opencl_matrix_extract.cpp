@@ -24,16 +24,19 @@
 
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
+#include <matrix_coo.hpp>
+#include <utils.hpp>
+#include <matrices_conversions.hpp>
 
 namespace spbla {
 
     void OpenCLMatrix::extract(index *rows, index *cols, size_t &nvals) {
-        CHECK_RAISE_ERROR(clboolState != nullptr, InvalidState, "Clbool state isn't initialized!")
-
         cl::Event evRow, evCol;
-        clboolState->queue.enqueueReadBuffer(mMatrixImpl.rows_gpu(), false, 0, sizeof(index) * nvals,
+        clbool::matrix_coo mCoo = clbool::dcsr_to_coo_shallow(*clboolState, mMatrixImpl);
+
+        clboolState->queue.enqueueReadBuffer(mCoo.rows_gpu(), false, 0, sizeof(index) * nvals,
                                               rows, nullptr, &evRow);
-        clboolState->queue.enqueueReadBuffer(mMatrixImpl.cols_gpu(), false, 0, sizeof(index) * nvals,
+        clboolState->queue.enqueueReadBuffer(mCoo.cols_gpu(), false, 0, sizeof(index) * nvals,
                                               cols, nullptr, &evCol);
         evRow.wait(); evCol.wait();
 

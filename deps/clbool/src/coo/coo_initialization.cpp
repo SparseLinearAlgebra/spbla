@@ -28,8 +28,7 @@ namespace clbool::coo {
             for (unsigned int i = segment_length / 2; i > controls.block_size * 2; i >>= 1) {
                 bitonic_global_step.run(controls, rows_gpu, cols_gpu, i, 0, n);
             }
-            last = bitonic_end.run(controls, rows_gpu, cols_gpu, n);
+            bitonic_end.run(controls, rows_gpu, cols_gpu, n);
         }
-        last.wait();
     }
 }

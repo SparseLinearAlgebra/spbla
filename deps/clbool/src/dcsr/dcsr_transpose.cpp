@@ -9,7 +9,7 @@ namespace clbool::dcsr {
 
         matrix_coo m_coo_tr = matrix_coo(controls, m_coo.ncols(), m_coo.nrows(), m_coo.nnz(),
                                          m_coo.cols_gpu(), m_coo.rows_gpu(),
-                                         false);
+                                         false, true);
         matrix_out = coo_to_dcsr_gpu_shallow(controls, m_coo_tr);
     }
 }

@@ -16,14 +16,7 @@ __kernel void set_positions(__global uint *newRows,
 ) {
     uint global_id = get_global_id(0);
 
-    if (global_id == size - 1 && positions[global_id] != size) {
-        newRows[positions[global_id]] = rows[global_id];
-        newCols[positions[global_id]] = cols[global_id];
-        return;
-    }
-
     if (global_id >= size) return;
-
     if (positions[global_id] != positions[global_id + 1]) {
         newRows[positions[global_id]] = rows[global_id];
         newCols[positions[global_id]] = cols[global_id];
