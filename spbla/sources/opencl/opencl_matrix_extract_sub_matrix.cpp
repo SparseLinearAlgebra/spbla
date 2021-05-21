@@ -35,7 +35,7 @@ namespace spbla {
 
         auto otherDcsr = dynamic_cast<const OpenCLMatrix*>(&otherBase);
 
-        CHECK_RAISE_ERROR(otherDcsr != nullptr, InvalidArgument, "Passed matrix does not belong to clbool::matrix_dcsr class");
+        CHECK_RAISE_ERROR(otherDcsr != nullptr, InvalidArgument, "Passed matrix does not belong to OpenCLMatrix class");
 
         clbool::dcsr::submatrix(*clboolState, mMatrixImpl, otherDcsr->mMatrixImpl, i, j, nrows, ncols);
         updateFromImpl();

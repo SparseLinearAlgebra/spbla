@@ -51,12 +51,13 @@ namespace spbla {
         CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Passed matrix does not belong to OpenCLMatrix class");
         CHECK_RAISE_ERROR(other != this, InvalidArgument, "Matrices must differ");
 
-        this->mMatrixImpl = other->mMatrixImpl;
-        updateFromImpl();
-
         assert(this->getNrows() == other->getNrows());
         assert(this->getNcols() == other->getNcols());
         assert(this->getNvals() == other->getNvals());
+
+        this->mMatrixImpl = other->mMatrixImpl;
+        updateFromImpl();
+
     }
 
     index OpenCLMatrix::getNrows() const {
