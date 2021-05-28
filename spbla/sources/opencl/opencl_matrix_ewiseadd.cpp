@@ -51,7 +51,7 @@ namespace spbla {
         clbool::matrix_coo resCoo;
         clbool::coo::matrix_addition(*clboolState, resCoo, aCoo, bCoo);
 
-        mMatrixImpl = clbool::coo_to_dcsr_gpu_shallow(*clboolState, resCoo);
+        mMatrixImpl = clbool::coo_to_dcsr_shallow(*clboolState, resCoo);
 
         updateFromImpl();
     }

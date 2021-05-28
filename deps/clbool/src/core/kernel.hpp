@@ -70,6 +70,7 @@ namespace clbool {
 
 
         cl::Event run(Controls &controls, Args ... args) {
+            SET_TIMER
             check_completeness(controls);
             std::string build_options = options_str + " -D RUN  -D GROUP_SIZE=" + std::to_string(_block_size);
             try {
@@ -80,8 +81,8 @@ namespace clbool {
                 cl::EnqueueArgs eargs(_async ? controls.async_queue : controls.queue,
                                       cl::NDRange(utils::calculate_global_size(_block_size, _needed_work_size)),
                                       cl::NDRange(_block_size));
-                cl::Event run_event = functor(eargs, args...);
-                return run_event;
+
+                return functor(eargs, args...);
             } catch (const cl::Error &e) {
                 utils::program_handler(e, details::KernelCache::get_program(controls, build_options), controls.device, _kernel_name);
             }

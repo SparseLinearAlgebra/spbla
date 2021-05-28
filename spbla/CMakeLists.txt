@@ -239,10 +239,8 @@ if(WIN32 AND SPBLA_WITH_OPENCL AND SPBLA_BUILD_TESTS)
             TARGET spbla POST_BUILD
             COMMAND "${CMAKE_COMMAND}" -E
             copy
-            "${CMAKE_BINARY_DIR}/deps/clbool/libclbool.dll"
-            "${CMAKE_BINARY_DIR}/spbla/tests"
             "${CMAKE_BINARY_DIR}/spbla/libspbla.dll"
             "${CMAKE_BINARY_DIR}/spbla/tests"
-            COMMENT "Copy spbla and clbool compiled libs into test directory"
+            COMMENT "Copy spbla compiled libs into test directory"
     )
 endif()

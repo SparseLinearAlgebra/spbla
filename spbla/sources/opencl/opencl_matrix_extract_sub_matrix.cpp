@@ -33,11 +33,11 @@ namespace spbla {
         assert(this->getNrows() == nrows);
         assert(this->getNcols() == ncols);
 
-        auto otherDcsr = dynamic_cast<const OpenCLMatrix*>(&otherBase);
+        auto other = dynamic_cast<const OpenCLMatrix*>(&otherBase);
 
-        CHECK_RAISE_ERROR(otherDcsr != nullptr, InvalidArgument, "Passed matrix does not belong to OpenCLMatrix class");
+        CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Passed matrix does not belong to OpenCLMatrix class");
 
-        clbool::dcsr::submatrix(*clboolState, mMatrixImpl, otherDcsr->mMatrixImpl, i, j, nrows, ncols);
+        clbool::dcsr::submatrix(*clboolState, mMatrixImpl, other->mMatrixImpl, i, j, nrows, ncols);
         updateFromImpl();
     }
 }

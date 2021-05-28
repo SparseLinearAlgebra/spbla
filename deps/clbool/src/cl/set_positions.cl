@@ -43,31 +43,25 @@ __kernel void set_positions1d(__global uint *output,
 }
 
 
-__kernel void set_positions_pointers_and_rows(__global uint *newRowsPosition,
-                                              __global uint *newRows,
-                                              __global const uint *rowsPositions,
-                                              __global const uint *rows,
+__kernel void set_positions_pointers_and_rows(__global uint *c_rpt,
+                                              __global uint *c_rows,
+                                              __global const uint *pre_rpt,
+                                              __global const uint *pre_rows,
                                               __global const uint *positions,
-                                              uint nnz, // old nzr
-                                              uint old_nzr,
-                                              uint new_nzr
+                                              uint a_nzr
 ) {
     uint global_id = get_global_id(0);
 
-    if (global_id >= old_nzr) return;
+    if (global_id >= a_nzr) return;
 
-    if (global_id == old_nzr - 1) {
-        if (positions[global_id] != old_nzr) {
-            newRowsPosition[positions[global_id]] = rowsPositions[global_id];
-            newRows[positions[global_id]] = rows[global_id];
-        }
-        newRowsPosition[new_nzr] = nnz;
-        return;
+    // c_rpt has one more value
+    if (global_id == 0) {
+        c_rpt[positions[a_nzr]] = pre_rpt[a_nzr];
     }
 
     if (positions[global_id] != positions[global_id + 1]) {
-        newRowsPosition[positions[global_id]] = rowsPositions[global_id];
-        newRows[positions[global_id]] = rows[global_id];
+        c_rpt[positions[global_id]] = pre_rpt[global_id];
+        c_rows[positions[global_id]] = pre_rows[global_id];
     }
 }
 

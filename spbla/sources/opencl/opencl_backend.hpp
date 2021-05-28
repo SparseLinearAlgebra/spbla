@@ -48,7 +48,9 @@ namespace spbla {
 
         void queryCapabilities(spbla_DeviceCaps &caps) override;
 
-        std::shared_ptr<clbool::Controls> controls;
+        void queryAvailableDevices();
+
+        static std::shared_ptr<clbool::Controls> controls;
     };
 
 

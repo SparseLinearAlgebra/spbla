@@ -102,6 +102,10 @@ namespace clbool::dcsr {
 
     void submatrix(Controls &controls, matrix_dcsr &matrix_out, const matrix_dcsr &matrix_in,
                    uint32_t i, uint32_t j, uint32_t nrows, uint32_t ncols) {
+        if (matrix_in.empty()) {
+            matrix_out = matrix_dcsr(nrows, ncols);
+        }
+
         SET_TIMER
 
         if (matrix_in.nnz() == 0) {

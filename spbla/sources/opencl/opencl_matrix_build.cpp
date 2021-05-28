@@ -29,13 +29,15 @@
 #include <core/matrix_dcsr.hpp>
 #include <common/matrices_conversions.hpp>
 #include <kernel.hpp>
+#include <env.hpp>
 
 namespace spbla {
 
     void OpenCLMatrix::build(const index *rows, const index *cols, size_t nvals, bool isSorted, bool noDuplicates) {
-        mNvals = nvals;
+
         clbool::matrix_coo matrixCoo(*clboolState, mNrows, mNcols, nvals, rows, cols, isSorted, noDuplicates);
         mMatrixImpl = clbool::coo_to_dcsr_gpu_shallow(*clboolState, matrixCoo);
+
         updateFromImpl();
     }
 }

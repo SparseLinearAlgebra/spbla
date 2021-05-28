@@ -26,7 +26,7 @@ namespace clbool::dcsr {
                                const matrix_dcsr &a,
                                const matrix_dcsr &b) {
         if (a.nnz() == 0 || b.nnz() == 0) {
-            std::cout << "empty result\n";
+            matrix_out = matrix_dcsr(a.nrows(), b.ncols());
             return;
         }
         cl::Buffer nnz_estimation;
@@ -35,7 +35,6 @@ namespace clbool::dcsr {
         std::vector<cpu_buffer> cpu_workload_groups(BINS_NUM, cpu_buffer());
         cpu_buffer groups_pointers(BINS_NUM + 1);
         cpu_buffer groups_length(BINS_NUM);
-
 
         cl::Buffer aux_37_group_mem_pointers;
         cl::Buffer aux_37_group_mem;
@@ -76,8 +75,8 @@ namespace clbool::dcsr {
 
                              const matrix_dcsr &a
                              ) {
-        cl::Buffer c_rows_pointers;
-        cl::Buffer c_rows_compressed;
+        cl::Buffer c_rpt;
+        cl::Buffer c_rows;
         cl::Buffer c_cols_indices;
 
         uint32_t c_nnz;
@@ -124,19 +123,18 @@ namespace clbool::dcsr {
             throw std::runtime_error(exception.str());
         }
 
-        cl::Buffer positions(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * a.nzr());
+        cl::Buffer positions(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * (a.nzr() + 1));
 
         prepare_positions(controls, positions, nnz_estimation, a.nzr(), "prepare_for_shift_empty_rows");
 
         // ------------------------------------  get rid of empty rows_gpu -------------------------------
 
-        prefix_sum(controls, positions, c_nzr, a.nzr());
-        c_rows_pointers = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * (c_nzr + 1));
-        c_rows_compressed = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * c_nzr);
-        set_positions(controls, c_rows_pointers, c_rows_compressed, nnz_estimation, a.rows_gpu(), positions,
-                      c_nnz, a.nzr(), c_nzr);
+        prefix_sum(controls, positions, c_nzr, a.nzr() + 1);
+        c_rpt = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * (c_nzr + 1));
+        c_rows = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * c_nzr);
+        set_positions(controls, c_rpt, c_rows, nnz_estimation, a.rows_gpu(), positions, a.nzr());
 
-        c = matrix_dcsr(c_rows_pointers, c_rows_compressed, c_cols_indices, pre.nrows(), pre.ncols(), c_nnz, c_nzr);
+        c = matrix_dcsr(c_rpt, c_rows, c_cols_indices, pre.nrows(), pre.ncols(), c_nnz, c_nzr);
     }
 
     void write_bins_info(Controls &controls,
@@ -332,7 +330,7 @@ namespace clbool::dcsr {
 
         cl::Buffer pre_rows_pointers = cl::Buffer(controls.queue, rows_pointers_cpu.begin(), rows_pointers_cpu.end(), false);
         cl::Buffer pre_cols_indices_gpu = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * pre_nnz);
-
+        std::cout << "aux_mem_size: " << aux << std::endl;
         if (aux != 0) {
             aux_pointers = cl::Buffer(controls.queue, aux_pointers_cpu.begin(), aux_pointers_cpu.end(),
                                       true);
@@ -342,6 +340,8 @@ namespace clbool::dcsr {
 
         pre = matrix_dcsr(pre_rows_pointers, a.rows_gpu(), pre_cols_indices_gpu,
                           a.nrows(), b_cols, pre_nnz, a.nzr());
+
+        std::cout << "pre_nnz: " << pre_nnz << std::endl;
     }
 
 
@@ -390,21 +390,18 @@ namespace clbool::dcsr {
 
 
     void set_positions(Controls &controls,
-                       cl::Buffer &c_rows_pointers,
-                       cl::Buffer &c_rows_compressed,
+                       cl::Buffer &c_rpt,
+                       cl::Buffer &c_rows,
                        const cl::Buffer &nnz_estimation,
-                       const cl::Buffer &a_rows_compressed,
+                       const cl::Buffer &a_rows,
                        const cl::Buffer &positions,
-                       uint32_t c_nnz,
-                       uint32_t old_nzr,
-                       uint32_t c_nzr
+                       uint32_t a_nzr
     ) {
-        auto set_positions = kernel<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer,
-                uint32_t, uint32_t, uint32_t>
+        auto set_positions = kernel<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, uint32_t>
                 ("set_positions", "set_positions_pointers_and_rows");
-        set_positions.set_needed_work_size(old_nzr);
-        set_positions.run(controls, c_rows_pointers, c_rows_compressed,
-                      nnz_estimation, a_rows_compressed, positions,
-                      c_nnz, old_nzr, c_nzr).wait();
+        set_positions.set_needed_work_size(a_nzr);
+        set_positions.run(controls, c_rpt, c_rows,
+                          nnz_estimation, a_rows, positions,
+                          a_nzr).wait();
     }
 }

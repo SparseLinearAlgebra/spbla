@@ -11,6 +11,10 @@ namespace clbool::coo {
                            const matrix_coo& matrix_b) {
         try {
             uint32_t res_size = matrix_a.nnz() * matrix_b.nnz();
+            if (res_size == 0) {
+                matrix_out = matrix_coo(matrix_a.nrows() * matrix_b.nrows(), matrix_a.ncols() * matrix_b.ncols());
+                return;
+            }
 
             auto kronecker = kernel<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer,
                             uint32_t, uint32_t, uint32_t, uint32_t>

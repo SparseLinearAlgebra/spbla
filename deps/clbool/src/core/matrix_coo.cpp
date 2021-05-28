@@ -3,15 +3,10 @@
 #include "kernel.hpp"
 
 namespace clbool {
-    matrix_coo::matrix_coo(Controls &controls,
-                           index_type nrows,
-                           index_type ncols,
-                           index_type nnz)
-        : matrix_base(nrows, ncols, nnz) {
-        if (_nnz == 0) return;
-        _rows = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(index_type) * _nnz);
-        _cols = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(index_type) * _nnz);
-        }
+    matrix_coo::matrix_coo(index_type nrows,
+                           index_type ncols)
+        : matrix_base(nrows, ncols, 0)
+        {}
 
     matrix_coo::matrix_coo(index_type nrows,
                            index_type ncols,
@@ -88,7 +83,7 @@ namespace clbool {
         }
     }
 
-    matrix_coo &matrix_coo::operator=(matrix_coo other) {
+    matrix_coo &matrix_coo::operator=(const matrix_coo &other) {
         _ncols = other._ncols;
         _nrows = other._nrows;
         _nnz = other._nnz;

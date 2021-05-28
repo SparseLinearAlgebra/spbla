@@ -8,7 +8,7 @@
 
 namespace clbool::coo {
 
-        void merge(Controls &controls,
+    void merge(Controls &controls,
                cl::Buffer &merged_rows_out,
                cl::Buffer &merged_cols_out,
                const matrix_coo &a,
@@ -17,8 +17,8 @@ namespace clbool::coo {
         uint32_t merged_size = a.nnz() + b.nnz();
 
         auto coo_merge = kernel<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer,
-                        uint32_t, uint32_t>
-                        ("merge_path", "merge");
+                uint32_t, uint32_t>
+                ("merge_path", "merge");
         coo_merge.set_needed_work_size(merged_size);
 
         cl::Buffer merged_rows(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * merged_size);
@@ -39,10 +39,31 @@ namespace clbool::coo {
                          const matrix_coo &a,
                          const matrix_coo &b) {
 
+
+        if (a.empty() && b.empty()) {
+            matrix_out = matrix_coo(a.nrows(), a.ncols());
+            return;
+        }
+
+        if(a.empty() || b.empty()) {
+            const matrix_coo &empty = a.empty() ? a : b;
+            const matrix_coo &filled = a.empty() ? b : a;
+
+            if (&matrix_out == &filled) return;
+
+            cl::Buffer rows(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * filled.nnz());
+            cl::Buffer cols(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * filled.nnz());
+            controls.queue.enqueueCopyBuffer(filled.rows_gpu(), rows, 0, 0, sizeof(uint32_t) * filled.nnz());
+            controls.queue.enqueueCopyBuffer(filled.cols_gpu(), cols, 0, 0, sizeof(uint32_t) * filled.nnz());
+            matrix_out = matrix_coo(filled.nrows(), filled.ncols(), filled.nnz(), rows, cols);
+        }
+
+
         cl::Buffer merged_rows;
         cl::Buffer merged_cols;
 
         merge(controls, merged_rows, merged_cols, a, b);
-        matrix_out = matrix_coo(controls, a.nrows(), a.ncols(), a.nnz() + b.nnz(), merged_rows, merged_cols, true, false);
+        matrix_out = matrix_coo(controls, a.nrows(), a.ncols(), a.nnz() + b.nnz(), merged_rows, merged_cols, true,
+                                false);
     }
 }

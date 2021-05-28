@@ -50,7 +50,6 @@ namespace clbool::dcsr {
                                     matrix_dcsr &matrix_out,
                                     const matrix_dcsr &a,
                                     const matrix_dcsr &b) {
-
         SET_TIMER
         if (a.nnz() == 0 || b.nnz() == 0) {
             std::cout << "empty result\n";
@@ -263,17 +262,16 @@ namespace clbool::dcsr {
             throw std::runtime_error(exception.str());
         }
 
-        cl::Buffer positions(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * a.nzr());
+        cl::Buffer positions(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * (a.nzr() + 1));
         prepare_positions(controls, positions, pre_matrix_rows_pointers, a.nzr(), "prepare_for_shift_empty_rows");
 
         uint32_t c_nzr;
-        prefix_sum(controls, positions, c_nzr, a.nzr());
+        prefix_sum(controls, positions, c_nzr, a.nzr() + 1);
 
         cl::Buffer c_rpt = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * (c_nzr + 1));
         cl::Buffer c_rows = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * c_nzr);
 
-        set_positions(controls, c_rpt, c_rows, pre_matrix_rows_pointers, a.rows_gpu(), positions,
-                      c_nnz, a.nzr(), c_nzr);
+        set_positions(controls, c_rpt, c_rows, pre_matrix_rows_pointers, a.rows_gpu(), positions, a.nzr());
 
         c = matrix_dcsr(c_rpt, c_rows, c_cols, a.nrows(), b.ncols(), c_nnz, c_nzr);
     }

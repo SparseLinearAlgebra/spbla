@@ -14,7 +14,7 @@ namespace clbool::utils {
 
         cpu_buffer cpu_copy(size);
         try {
-            if (size >= 0) {
+            if (size > 0) {
                 controls.queue.enqueueReadBuffer(buffer_gpu, CL_TRUE, 0, sizeof(uint32_t) * cpu_copy.size(),
                                                  cpu_copy.data());
             }

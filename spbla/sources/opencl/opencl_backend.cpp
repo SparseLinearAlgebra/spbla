@@ -31,12 +31,14 @@
 
 namespace spbla {
 
+    std::shared_ptr<clbool::Controls> OpenCLBackend::controls = nullptr;
+
     void OpenCLBackend::initialize(hints initHints) {
-        controls = std::make_shared<clbool::Controls>(clbool::create_controls());
+        if (!isInitialized())
+            controls = std::make_shared<clbool::Controls>(clbool::create_controls(0, 0));
     }
 
     void OpenCLBackend::finalize() {
-        controls.reset();
     }
 
     bool OpenCLBackend::isInitialized() const {
@@ -52,7 +54,12 @@ namespace spbla {
     }
 
     void OpenCLBackend::queryCapabilities(spbla_DeviceCaps &caps) {
-        clbool::utils::printDeviceInfo(controls->device);
+        if (controls != nullptr)
+            clbool::utils::printDeviceInfo(controls->device);
+    }
+
+    void OpenCLBackend::queryAvailableDevices() {
+        clbool::show_devices();
     }
 
 }

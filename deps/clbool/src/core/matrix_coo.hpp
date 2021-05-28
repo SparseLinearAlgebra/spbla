@@ -24,10 +24,8 @@ namespace clbool {
 
         matrix_coo() = default;
 
-        matrix_coo(Controls &controls,
-                   index_type nrows,
-                   index_type ncols,
-                   index_type nnz);
+        matrix_coo(index_type nrows,
+                   index_type ncols);
 
         matrix_coo(index_type nrows,
                    index_type ncols,
@@ -60,7 +58,7 @@ namespace clbool {
 
         matrix_coo(matrix_coo &&other) noexcept = default;
 
-        matrix_coo &operator=(matrix_coo other);
+        matrix_coo &operator=(const matrix_coo &other);
 
         const auto &rows_gpu() const {
             return _rows;

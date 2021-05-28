@@ -59,6 +59,7 @@ __kernel void prepare_array_for_shift(__global uint* result,
 
     // if on global_id - 1 we have the same value, we write 1 in result,
     // otherwise 0
+
     result[global_id] = global_id == 0 ? global_id :
                         (cols[global_id] == cols[global_id - 1]) && (rows[global_id] == rows[global_id - 1]) ?
                         1 : 0;
@@ -75,10 +76,9 @@ __kernel void prepare_for_shift_empty_rows(__global unsigned int* result,
     if (global_id >= size) {
         return;
     }
-    //  TODO: должен быть global_id - 1, проверить, где используется.
-    result[global_id] = nnz_estimation[global_id] == nnz_estimation[global_id + 1]  ? 0 : 1;
-
     if (global_id == 0) {
         result[size] = 0;
     }
+
+    result[global_id] = nnz_estimation[global_id] == nnz_estimation[global_id + 1]  ? 0 : 1;
 }

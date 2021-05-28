@@ -135,6 +135,12 @@ namespace clbool::coo_utils {
 
 
     void fill_random_matrix(cpu_buffer &rows, cpu_buffer &cols, uint32_t max_size) {
+        if (max_size == 0) {
+            if (!rows.empty() || !cols.empty()) {
+                throw std::runtime_error("Incorrect generation");
+            }
+            return;
+        }
         if (max_size < 1) {
             throw std::runtime_error("Incorrect generation");
         }
@@ -165,6 +171,8 @@ namespace clbool::coo_utils {
 
     void get_vectors_from_cpu_matrix(cpu_buffer &rows_out, cpu_buffer &cols_out,
                                      const matrix_coo_cpu_pairs &matrix) {
+        if (matrix.empty()) return;
+
         uint32_t n = matrix.size();
 
         rows_out.resize(matrix.size());
@@ -233,6 +241,10 @@ namespace clbool::coo_utils {
     }
 
     matrix_dcsr_cpu coo_pairs_to_dcsr_cpu(const matrix_coo_cpu_pairs &matrix_coo) {
+        if (matrix_coo.empty()) {
+            return matrix_dcsr_cpu{};
+        }
+
         cpu_buffer rows_pointers;
         cpu_buffer rows_compressed;
         cpu_buffer cols_indices;
@@ -286,6 +298,10 @@ namespace clbool::coo_utils {
 
     matrix_coo matrix_coo_from_cpu(Controls &controls, const matrix_coo_cpu_pairs &m_cpu,
                                    uint32_t nrows, uint32_t ncols) {
+        if (m_cpu.empty()) {
+            return matrix_coo(nrows, ncols);
+        }
+
         cpu_buffer rows;
         cpu_buffer cols;
 

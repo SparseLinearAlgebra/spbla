@@ -36,12 +36,13 @@ namespace spbla {
                           "Passed matrix does not belong to OpenCLMatrix class")
 
         assert(this->getNcols() == 1);
-        assert(this->getNrows() == otherBase.getNrows());
-        assert(this->getNvals() == otherBase.getNrows());
+        assert(this->getNrows() == other->getNrows());
+
 
         clbool::dcsr::reduce(*clboolState, mMatrixImpl, other->mMatrixImpl);
         updateFromImpl();
 
+        assert(this->getNvals() == other->mMatrixImpl.nzr());
     }
 
 }

@@ -45,6 +45,7 @@ namespace spbla {
         RAISE_ERROR(NotImplemented, "This function is not supported for this matrix class");
     }
 
+    // shallow copy
     void OpenCLMatrix::clone(const MatrixBase &otherBase) {
         auto other = dynamic_cast<const OpenCLMatrix*>(&otherBase);
 
@@ -53,7 +54,6 @@ namespace spbla {
 
         assert(this->getNrows() == other->getNrows());
         assert(this->getNcols() == other->getNcols());
-        assert(this->getNvals() == other->getNvals());
 
         this->mMatrixImpl = other->mMatrixImpl;
         updateFromImpl();
@@ -74,8 +74,7 @@ namespace spbla {
 
     OpenCLMatrix::OpenCLMatrix(clbool::Controls *controls, MatrixImplType clbool_matrix)
     : mMatrixImpl(std::move(clbool_matrix))
-    , clboolState(controls)
-    {
+    , clboolState(controls) {
         updateFromImpl();
     }
 }

@@ -80,14 +80,12 @@ namespace clbool::dcsr {
                                const matrix_dcsr &b);
 
     void set_positions(Controls &controls,
-                       cl::Buffer &c_rows_pointers,
-                       cl::Buffer &c_rows_compressed,
+                       cl::Buffer &c_rpt,
+                       cl::Buffer &c_rows,
                        const cl::Buffer &nnz_estimation,
-                       const cl::Buffer &a_rows_compressed,
+                       const cl::Buffer &a_rows,
                        const cl::Buffer &positions,
-                       uint32_t c_nnz,
-                       uint32_t old_nzr,
-                       uint32_t c_nzr
+                       uint32_t a_nzr
     );
 
 }

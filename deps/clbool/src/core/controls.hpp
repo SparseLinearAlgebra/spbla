@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cl_includes.hpp>
+#include "../common/cl_includes.hpp"
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -13,9 +13,9 @@ namespace clbool {
     struct Controls {
         const cl::Device device;
         const cl::Context context;
+        uint32_t max_wg_size;
         cl::CommandQueue queue;
         cl::CommandQueue async_queue;
-        uint32_t max_wg_size;
         const uint32_t block_size = uint32_t(256);
 
         Controls(cl::Device device, uint32_t max_wg_size = 256) :
