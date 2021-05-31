@@ -18,7 +18,7 @@ namespace clbool::dcsr {
 
             auto find_range_program = kernel<cl::Buffer, cl::Buffer,
                     uint32_t, uint32_t, uint32_t>("submatrix", "rows_range");
-            find_range_program.set_needed_work_size(2)
+            find_range_program.set_work_size(2)
                     .set_block_size(WARP_SIZE);
 
             find_range_program.run(controls, rows_begin_end_gpu, matrix_in.rows_gpu(), matrix_in.nzr(), i, nrows).wait();
@@ -44,7 +44,7 @@ namespace clbool::dcsr {
                     ("submatrix", "submatrix_count_nnz");
 
             count_program.set_block_size(controls.block_size)
-                    .set_needed_work_size(nzr_tmp);
+                    .set_work_size(nzr_tmp);
 
             count_program.run(controls, subrows_nnz,
                               matrix_in.rpt_gpu(), matrix_in.rows_gpu(), matrix_in.cols_gpu(), matrix_in.nzr(),
@@ -61,7 +61,7 @@ namespace clbool::dcsr {
             auto fill_rows_nnz = kernel<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer,
                     uint32_t, uint32_t>("submatrix", "submatrix_fill_nnz");
 
-            fill_rows_nnz.set_needed_work_size(nzr_tmp * FILL_WG_SIZE)
+            fill_rows_nnz.set_work_size(nzr_tmp * FILL_WG_SIZE)
                     .set_block_size(FILL_WG_SIZE);
             fill_rows_nnz.run(controls, subrows_nnz, cols_out, matrix_in.rpt_gpu(), matrix_in.cols_gpu(),
                               rows_begin, j).wait();
@@ -78,7 +78,7 @@ namespace clbool::dcsr {
             auto prepare_pos_program = kernel<cl::Buffer, cl::Buffer, uint32_t>
                     ("prepare_positions", "prepare_for_shift_empty_rows");
             prepare_pos_program.set_block_size(controls.block_size)
-                    .set_needed_work_size(nzr_tmp);
+                    .set_work_size(nzr_tmp);
 
             prepare_pos_program.run(controls, positions, subrows_nnz, nzr_tmp).wait();
 
@@ -92,7 +92,7 @@ namespace clbool::dcsr {
             rows_out = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * nzr_out);
 
             set_pos_program.set_block_size(controls.block_size)
-                    .set_needed_work_size(nzr_tmp);
+                    .set_work_size(nzr_tmp);
             set_pos_program.run(controls, rpt_out, rows_out,
                                 matrix_in.rows_gpu(), subrows_nnz, positions,
                                 nzr_tmp, nnz_out, nzr_out, rows_begin, i).wait();
@@ -106,7 +106,6 @@ namespace clbool::dcsr {
             matrix_out = matrix_dcsr(nrows, ncols);
         }
 
-        SET_TIMER
 
         if (matrix_in.nnz() == 0) {
             matrix_out = matrix_dcsr();

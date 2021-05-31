@@ -16,7 +16,6 @@ namespace clbool::dcsr {
                            uint32_t &new_size,
                            uint32_t merged_size);
 
-
     // --------------------------------------------------------------------
 
     // TODO: добавить assert на размеры матрицы
@@ -41,8 +40,6 @@ namespace clbool::dcsr {
         uint32_t nzr;
         reduce_duplicates(controls, rpt, nzr, merged_size);
 
-
-
     }
 
     void merge(Controls& controls,
@@ -52,7 +49,7 @@ namespace clbool::dcsr {
                uint32_t nzr_a,
                uint32_t nzr_b) {
         auto merge_program = kernel<cl::Buffer, cl::Buffer, cl::Buffer, uint32_t, uint32_t>("merge_path1d", "merge");
-        merge_program.set_needed_work_size(nzr_a + nzr_b);
+        merge_program.set_work_size(nzr_a + nzr_b);
         merge_program.run(controls, rpt_c, rpt_a, rpt_b, nzr_a, nzr_b);
     }
 
@@ -71,7 +68,7 @@ namespace clbool::dcsr {
 
         auto prepare_positions = kernel<cl::Buffer, cl::Buffer, uint32_t>
                 ("prepare_positions", "prepare_array_for_rows_positions");
-        prepare_positions.set_needed_work_size(merged_size);
+        prepare_positions.set_work_size(merged_size);
 
         // ------------------------------------ calculate positions, get new_size -----------------------------------
 
@@ -82,7 +79,7 @@ namespace clbool::dcsr {
 
         auto set_positions = kernel<cl::Buffer, cl::Buffer, cl::Buffer, uint32_t>
                 ("set_positions", "set_positions1d");
-        set_positions.set_needed_work_size(merged_size);
+        set_positions.set_work_size(merged_size);
         set_positions.run(controls, new_data, data, positions, merged_size);
         data = std::move(new_data);
     }

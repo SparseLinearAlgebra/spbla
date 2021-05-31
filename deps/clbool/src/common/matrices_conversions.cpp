@@ -16,7 +16,7 @@ namespace clbool {
 
             auto prepare_positions = kernel<cl::Buffer, cl::Buffer, uint32_t>
                     ("prepare_positions", "prepare_array_for_rows_positions");
-            prepare_positions.set_needed_work_size(size);
+            prepare_positions.set_work_size(size);
 
             prepare_positions.run(controls, positions, rows, size);
 
@@ -28,7 +28,7 @@ namespace clbool {
             auto set_positions = kernel<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, uint32_t, uint32_t>
                     ("set_positions", "set_positions_rows");
             set_positions.set_kernel_name("set_positions_rows")
-                    .set_needed_work_size(size);
+                    .set_work_size(size);
 
             set_positions.run(controls, rows_pointers, rows_compressed, rows, positions, size, nzr);
 
@@ -50,7 +50,7 @@ namespace clbool {
         auto dscr_to_coo = kernel<cl::Buffer, cl::Buffer, cl::Buffer>
                 ("dscr_to_coo", "dscr_to_coo");
         dscr_to_coo.set_block_size(CONV_GROUP_SIZE);
-        dscr_to_coo.set_needed_work_size(a.nzr() * CONV_GROUP_SIZE);
+        dscr_to_coo.set_work_size(a.nzr() * CONV_GROUP_SIZE);
 
         dscr_to_coo.run(controls, a.rpt_gpu(), a.rows_gpu(), c_rows);
         return matrix_coo(a.nrows(), a.ncols(), a.nnz(), c_rows, a.cols_gpu());
@@ -69,7 +69,7 @@ namespace clbool {
         auto dscr_to_coo = kernel<cl::Buffer, cl::Buffer, cl::Buffer>
                 ("dscr_to_coo", "dscr_to_coo");
         dscr_to_coo.set_block_size(CONV_GROUP_SIZE)
-                .set_needed_work_size(a.nzr() * CONV_GROUP_SIZE);
+                .set_work_size(a.nzr() * CONV_GROUP_SIZE);
 
         dscr_to_coo.run(controls, a.rpt_gpu(), a.rows_gpu(), c_rows);
         return matrix_coo(a.nrows(), a.ncols(), a.nnz(), c_rows, c_cols);
@@ -77,7 +77,7 @@ namespace clbool {
 
     matrix_dcsr coo_to_dcsr_shallow(Controls &controls, const matrix_coo &a) {
         if (a.empty()) {
-            return matrix_dcsr(a.ncols(), a.nrows());
+            return matrix_dcsr(a.nrows(), a.ncols());
         }
         cl::Buffer rpt;
         cl::Buffer rows;

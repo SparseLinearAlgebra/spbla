@@ -17,6 +17,7 @@ namespace clbool {
 
     private:
         void reduce_duplicates(Controls& controls);
+        void reduce_duplicates2(Controls &controls);
 
     public:
 

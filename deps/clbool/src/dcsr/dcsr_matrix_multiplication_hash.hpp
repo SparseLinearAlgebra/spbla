@@ -4,6 +4,7 @@
 
 namespace clbool::dcsr {
     void build_groups_and_allocate_hash(Controls &controls,
+                                        uint32_t &pre_nnz_out,
                                         std::vector<cpu_buffer> &cpu_workload_groups,
                                         cl::Buffer &nnz_estimation,
                                         const matrix_dcsr &a,
@@ -40,9 +41,4 @@ namespace clbool::dcsr {
                   const cl::Buffer &global_hash_tables,
                   cl::Buffer &global_hash_tables_offset
     );
-
-    void matrix_multiplication_hash(Controls &controls,
-                                    matrix_dcsr &matrix_out,
-                                    const matrix_dcsr &a,
-                                    const matrix_dcsr &b);
 }

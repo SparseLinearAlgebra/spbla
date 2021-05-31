@@ -1,4 +1,5 @@
 #include <numeric>
+#include <sstream>
 #include "dcsr_matrix_multiplication.hpp"
 #include "dcsr_matrix_multiplication_hash.hpp"
 #include "../coo/coo_utils.hpp"
@@ -20,7 +21,8 @@ namespace clbool::dcsr {
             if (bin_id == 5) return 256;
             if (bin_id == 6) return 256;
             if (bin_id == 7) return 256;
-            throw std::runtime_error("Unknown bin id. error 24642342152");
+            CLB_RAISE("Invalid bin_id: " + std::to_string(bin_id) + ". Possible values from 0 to 7 inc.",
+                            CLBOOL_INVALID_ARGUMENT, 5535243);
         }
 
         uint32_t get_group(uint32_t size) {
@@ -41,7 +43,8 @@ namespace clbool::dcsr {
             if (bin_id == 4) return 1024;
             if (bin_id == 5) return 2048;
             if (bin_id == 6) return 4096;
-            throw std::runtime_error("Table size is only valid for 1 - 5 bin. error 34422334");
+            CLB_RAISE("Invalid bin_id: " + std::to_string(bin_id) + ". Possible values from 1 to 6 inc.",
+                            CLBOOL_INVALID_ARGUMENT, 46307362);
         }
     }
 
@@ -50,12 +53,20 @@ namespace clbool::dcsr {
                                     matrix_dcsr &matrix_out,
                                     const matrix_dcsr &a,
                                     const matrix_dcsr &b) {
-        SET_TIMER
+
+        if (a.ncols() != b.nrows()) {
+            std::stringstream s;
+            s << "Invalid input matrix size! a : " << a.nrows() << " x " << a.ncols()
+            << ", b: " << b.nrows() << " x " << b.ncols();
+            CLB_RAISE(s.str(), CLBOOL_INVALID_ARGUMENT, 93481);
+        }
+
+        
         if (a.nnz() == 0 || b.nnz() == 0) {
-            std::cout << "empty result\n";
+            matrix_out = matrix_dcsr(a.nrows(), b.ncols());
             return;
         }
-        // TODO добавтиь rassert на размеры
+
         cl::Buffer nnz_estimation;
 
         {
@@ -71,15 +82,17 @@ namespace clbool::dcsr {
 
         cl::Buffer global_hash_tables;
         cl::Buffer global_hash_tables_offset;
-
+        uint32_t pre_nnz;
         {
             START_TIMING
-            build_groups_and_allocate_hash(controls, cpu_workload_groups, nnz_estimation, a,
+            build_groups_and_allocate_hash(controls, pre_nnz, cpu_workload_groups, nnz_estimation, a,
                                            global_hash_tables, global_hash_tables_offset);
             END_TIMING("build_groups_and_allocate_hash: ")
         }
-
-
+        if (pre_nnz == 0) {
+            matrix_out = matrix_dcsr(a.nrows(), b.ncols());
+            return;
+        }
 
         cl::Buffer gpu_workload_groups(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * a.nzr());
 
@@ -143,47 +156,49 @@ namespace clbool::dcsr {
             LOG << "\n[count_nnz] group " << bin_id << ", size " << groups_length[bin_id];
 
             if (bin_id == 0) {
-                hash_pwarp.set_needed_work_size(groups_length[bin_id] * PWARP);
-                events.push_back(
-                        hash_pwarp.run(controls, gpu_workload_groups, groups_pointers[bin_id], groups_length[bin_id],
+                hash_pwarp.set_work_size(groups_length[bin_id] * PWARP);
+                cl::Event ev;
+                CLB_RUN(
+                ev = hash_pwarp.run(controls, gpu_workload_groups, groups_pointers[bin_id], groups_length[bin_id],
                                        nnz_estimation, a.rpt_gpu(), a.cols_gpu(),
                                        b.rpt_gpu(), b.rows_gpu(), b.cols_gpu(),
-                                       b.nzr()
-                        ));
+                                       b.nzr()), 453674611);
+
+                events.push_back(ev);
                 continue;
             }
 
             if (bin_id != MAX_GROUP_ID) {
+
                 hash_tb.set_block_size(block_size);
                 hash_tb.add_option("TABLE_SIZE", hash_details::get_table_size(bin_id));
-                hash_tb.set_needed_work_size(block_size * groups_length[bin_id]);
-                events.push_back(hash_tb.run(controls, gpu_workload_groups, groups_pointers[bin_id], groups_length[bin_id],
+                hash_tb.set_work_size(block_size * groups_length[bin_id]);
+
+                cl::Event ev;
+                CLB_RUN(
+                ev = hash_tb.run(controls, gpu_workload_groups, groups_pointers[bin_id], groups_length[bin_id],
                                              nnz_estimation, a.rpt_gpu(), a.cols_gpu(),
                                              b.rpt_gpu(), b.rows_gpu(), b.cols_gpu(),
-                                             b.nzr()
-                ));
+                                             b.nzr()), 62837465)
+
+                events.push_back(ev);
                 continue;
             }
 
             hash_global.set_block_size(block_size);
-            hash_global.set_needed_work_size(block_size * groups_length[bin_id]);
-            events.push_back(hash_global.run(controls, gpu_workload_groups, groups_pointers[bin_id], groups_length[bin_id],
+            hash_global.set_work_size(block_size * groups_length[bin_id]);
+
+            cl::Event ev;
+            CLB_RUN(
+            ev = hash_global.run(controls, gpu_workload_groups, groups_pointers[bin_id], groups_length[bin_id],
                                              nnz_estimation, a.rpt_gpu(), a.cols_gpu(),
                                              b.rpt_gpu(), b.rows_gpu(), b.cols_gpu(),
                                              b.nzr(),
-                                             global_hash_tables, global_hash_tables_offset
-            ));
+                                             global_hash_tables, global_hash_tables_offset), 3567327352)
+            events.push_back(ev);
         }
 
-        try {
-            cl::Event::waitForEvents(events);
-        } catch (const cl::Error &e) {
-            std::stringstream exception;
-            exception << "\n" << e.what() << " : " << utils::error_name(e.err()) << " in " << "run_kernels" << " \n";
-            throw std::runtime_error(exception.str());
-        }
-
-
+        CLB_WAIT(cl::Event::waitForEvents(events), 642794);
     }
 
     void fill_nnz(Controls &controls,
@@ -222,54 +237,62 @@ namespace clbool::dcsr {
             if (groups_length[bin_id] == 0) continue;
 
             uint32_t block_size = hash_details::get_block_size(bin_id);
-    //        std::cout << "\n[fill_nnz] group " << bin_id << ", size " << groups_length[bin_id] << std::endl;
             if (bin_id == 0) {
-                hash_pwarp.set_needed_work_size(groups_length[bin_id] * PWARP);
-                events.push_back(
-                        hash_pwarp.run(controls, gpu_workload_groups, groups_pointers[bin_id], groups_length[bin_id],
+                hash_pwarp.set_work_size(groups_length[bin_id] * PWARP);
+                cl::Event ev;
+                CLB_RUN(
+                ev = hash_pwarp.run(controls, gpu_workload_groups, groups_pointers[bin_id], groups_length[bin_id],
                                        pre_matrix_rows_pointers, c_cols, a.rpt_gpu(), a.cols_gpu(),
                                        b.rpt_gpu(), b.rows_gpu(), b.cols_gpu(),
-                                       b.nzr()
-                        ));
+                                       b.nzr()), 8347272);
+
+                events.push_back(ev);
                 continue;
             }
 
             if (bin_id != MAX_GROUP_ID) {
+
                 hash_tb.set_block_size(block_size);
                 hash_tb.add_option("TABLE_SIZE", hash_details::get_table_size(bin_id));
-                hash_tb.set_needed_work_size(block_size * groups_length[bin_id]);
-                events.push_back(hash_tb.run(controls, gpu_workload_groups, groups_pointers[bin_id],
+                hash_tb.set_work_size(block_size * groups_length[bin_id]);
+
+                cl::Event ev;
+                CLB_RUN(
+                ev = hash_tb.run(controls, gpu_workload_groups, groups_pointers[bin_id],
                                              pre_matrix_rows_pointers, c_cols, a.rpt_gpu(), a.cols_gpu(),
                                              b.rpt_gpu(), b.rows_gpu(), b.cols_gpu(),
-                                             b.nzr()
-                ));
+                                             b.nzr()), 63572001);
+
+                events.push_back(ev);
+
                 continue;
             }
 
             hash_global.set_block_size(block_size);
-            hash_global.set_needed_work_size(block_size * groups_length[bin_id]);
-            events.push_back(hash_global.run(controls, gpu_workload_groups, groups_pointers[bin_id],
+            hash_global.set_work_size(block_size * groups_length[bin_id]);
+
+            cl::Event ev;
+            CLB_RUN(ev = hash_global.run(controls, gpu_workload_groups, groups_pointers[bin_id],
                                              pre_matrix_rows_pointers, c_cols,
-                                             global_hash_tables, global_hash_tables_offset
-            ));
+                                             global_hash_tables, global_hash_tables_offset), 60637713);
+            events.push_back(ev);
         }
 
-        try {
-            cl::Event::waitForEvents(events);
-        } catch (const cl::Error &e) {
-            std::stringstream exception;
-            exception << "\n" << e.what() << " : " << utils::error_name(e.err()) << " in " << "run_kernels" << " \n";
-            throw std::runtime_error(exception.str());
-        }
+        CLB_WAIT(cl::Event::waitForEvents(events), CLBOOL_EVENT_WAITING_ERROR);
 
-        cl::Buffer positions(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * (a.nzr() + 1));
+        cl::Buffer positions;
+        CLB_CREATE_BUF(positions = utils::create_buffer(controls, a.nzr() + 1), 87468538);
+
         prepare_positions(controls, positions, pre_matrix_rows_pointers, a.nzr(), "prepare_for_shift_empty_rows");
 
         uint32_t c_nzr;
         prefix_sum(controls, positions, c_nzr, a.nzr() + 1);
 
-        cl::Buffer c_rpt = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * (c_nzr + 1));
-        cl::Buffer c_rows = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * c_nzr);
+        cl::Buffer c_rpt;
+        CLB_CREATE_BUF(c_rpt =  utils::create_buffer(controls, c_nzr + 1), 98655201);
+
+        cl::Buffer c_rows;
+        CLB_CREATE_BUF(c_rows = utils::create_buffer(controls, c_nzr), 76686881);
 
         set_positions(controls, c_rpt, c_rows, pre_matrix_rows_pointers, a.rows_gpu(), positions, a.nzr());
 
@@ -277,6 +300,7 @@ namespace clbool::dcsr {
     }
 
     void build_groups_and_allocate_hash(Controls &controls,
+                                        uint32_t &pre_nnz_out,
                                         std::vector<cpu_buffer> &cpu_workload_groups,
                                         cl::Buffer &nnz_estimation,
                                         const matrix_dcsr &a,
@@ -289,8 +313,10 @@ namespace clbool::dcsr {
         uint32_t global_hash_mem_size = 0;
 
         cpu_buffer cpu_workload(a.nzr());
-        controls.queue.enqueueReadBuffer(nnz_estimation, CL_TRUE, 0, sizeof(uint32_t) * a.nzr(), cpu_workload.data()
-                /*, nullptr, &event*/);
+
+        CLB_READ_BUF(controls.queue.enqueueReadBuffer(nnz_estimation, CL_TRUE, 0, sizeof(uint32_t) * a.nzr(), cpu_workload.data()),
+                     19523453);
+
         uint32_t pre_nnz;
         for (uint32_t i = 0; i < a.nzr(); ++i) {
             uint32_t current_workload = cpu_workload[i];
@@ -303,19 +329,20 @@ namespace clbool::dcsr {
                 global_hash_mem_size += current_workload;
             }
         }
-
+        pre_nnz_out = pre_nnz;
         if (pre_nnz == 0) {
-            std::cout << "empty result\n";
             return;
         }
 
         global_hash_tables_offset_cpu.push_back(global_hash_mem_size);
 
         if (global_hash_mem_size != 0) {
-            global_hash_tables_offset = cl::Buffer(controls.queue, global_hash_tables_offset_cpu.begin(),
-                                            global_hash_tables_offset_cpu.end(), true);
-            global_hash_tables = cl::Buffer(controls.context, CL_MEM_READ_WRITE,
-                                                   sizeof(uint32_t) * global_hash_mem_size);
+
+            CLB_CREATE_BUF(
+                    global_hash_tables_offset = utils::create_buffer(controls, global_hash_tables_offset_cpu, true),
+                    97543737);
+
+            CLB_CREATE_BUF (global_hash_tables = utils::create_buffer(controls, global_hash_mem_size), 93453821);
         }
 
     }

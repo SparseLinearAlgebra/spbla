@@ -38,6 +38,7 @@ list(APPEND KERNELS
         count_workload
         for_test/new_merge
         dcsr_kronecker
+        coo_reduce_duplicates
         )
 
 foreach(KERNEL ${KERNELS})
@@ -98,3 +99,7 @@ if(WIN32 AND SPBLA_BUILD_TESTS)
             COMMENT "Copy clbool compiled libs into test directory"
     )
 endif()
+
+target_compile_definitions(clbool PUBLIC CL_HPP_ENABLE_EXCEPTIONS)
+target_compile_definitions(clbool PUBLIC CL_HPP_MINIMUM_OPENCL_VERSION=110)
+target_compile_definitions(clbool PUBLIC CL_HPP_TARGET_OPENCL_VERSION=110)

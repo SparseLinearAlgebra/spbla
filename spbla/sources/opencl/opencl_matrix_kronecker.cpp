@@ -43,6 +43,8 @@ namespace spbla {
         updateFromImpl();
 
         assert(this->getNvals() == a->getNvals() * b->getNvals());
+        assert(this->getNrows() == a->getNrows() * b->getNrows());
+        assert(this->getNcols() == a->getNcols() * b->getNcols());
     }
 
 }

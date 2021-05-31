@@ -13,9 +13,9 @@ namespace clbool {
     struct Controls {
         const cl::Device device;
         const cl::Context context;
-        uint32_t max_wg_size;
         cl::CommandQueue queue;
         cl::CommandQueue async_queue;
+        uint32_t max_wg_size;
         const uint32_t block_size = uint32_t(256);
 
         Controls(cl::Device device, uint32_t max_wg_size = 256) :
@@ -26,9 +26,6 @@ namespace clbool {
         , max_wg_size(max_wg_size)
         {}
 
-        cl::Program create_program_from_source(const char * kernel, uint32_t length) const {
-            return cl::Program(context, {{kernel, length}});
-        }
     };
 }
 
