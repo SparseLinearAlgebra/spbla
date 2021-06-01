@@ -80,7 +80,7 @@ list(APPEND CLBOOL_SOURCES
         src/common/env.cpp
         )
 
-add_library(clbool SHARED ${CLBOOL_SOURCES})
+add_library(clbool STATIC ${CLBOOL_SOURCES})
 target_link_libraries (clbool PUBLIC ${OpenCL_LIBRARY})
 target_include_directories(clbool PUBLIC "libs/clew" ${LIB_CLASSES} ${CLBOOL_DIRS})
 
@@ -89,14 +89,14 @@ target_include_directories(clbool PUBLIC "libs/clew" ${LIB_CLASSES} ${CLBOOL_DIR
 # to use as submodule
 target_include_directories(clbool PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src/)
 
-if(WIN32 AND SPBLA_BUILD_TESTS)
+if(SPBLA_BUILD_TESTS)
     add_custom_command(
             TARGET clbool POST_BUILD
             COMMAND "${CMAKE_COMMAND}" -E
             copy
-            "${CMAKE_BINARY_DIR}/deps/clbool/libclbool.dll"
+            "${CMAKE_BINARY_DIR}/deps/clbool/libclbool.a"
             "${CMAKE_BINARY_DIR}/spbla/tests"
-            COMMENT "Copy clbool compiled libs into test directory"
+            COMMENT "Copy clbool static lib into test directory"
     )
 endif()
 
