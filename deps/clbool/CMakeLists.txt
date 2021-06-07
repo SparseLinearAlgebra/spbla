@@ -72,6 +72,9 @@ list(APPEND CLBOOL_SOURCES
         src/dcsr/dcsr_reduce.cpp
         src/dcsr/dcsr_kronecker_product.cpp
 
+        #csr
+        src/csr/csr_addition.cpp
+
         #common
         src/common/matrices_conversions.cpp
         src/common/cl_operations.cpp

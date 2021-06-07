@@ -28,8 +28,14 @@
 #include <utils.hpp>
 #include <env.hpp>
 #include <opencl/opencl_matrix.hpp>
+#include <regex>
 
 namespace spbla {
+
+    namespace oclDetails {
+        template<int size>
+        int getNameMaxLength(char(&)[size]){return size;}
+    }
 
     std::shared_ptr<clbool::Controls> OpenCLBackend::controls = nullptr;
 
@@ -53,9 +59,78 @@ namespace spbla {
         delete matrixBase;
     }
 
+    std::pair<int, int> OpenCLBackend::getVersion() {
+        int major = -1;
+        int minor = -1;
+        // OpenCL 1.2 CUDA
+        auto versonStr = controls->device.getInfo<CL_DEVICE_VERSION>();
+
+        std::string::size_type pos = versonStr.find(' ');
+        if (pos == std::string::npos) return {major, minor};
+        // 1.2 CUDA
+        versonStr = versonStr.substr(pos + 1);
+
+        pos = versonStr.find(' ');
+        if (pos == std::string::npos) return {major, minor};
+        // 1.2
+        versonStr = versonStr.substr(0, pos);
+
+        pos = versonStr.find('.');
+        if (pos == std::string::npos) return {major, minor};
+
+        try {
+            major = std::stoi(versonStr.substr(0, pos));
+        } catch (...) {
+            return {major, minor};
+        }
+
+        try {
+            minor = std::stoi(versonStr.substr(pos + 1));
+        } catch (...) {
+            return {major, minor};
+        }
+
+        return {major, minor};
+    }
+
+    int OpenCLBackend::getWarp() {
+        static std::regex nvidiaRegex("NVIDIA", std::regex_constants::icase);
+        static std::regex amdRegex("AMD", std::regex_constants::icase);
+        std::string vendor = controls->device.getInfo<CL_DEVICE_VENDOR>();
+        if (std::regex_search(vendor, nvidiaRegex)) return OpenCLBackend::NVIDIA_WARP;
+        if (std::regex_search(vendor, amdRegex)) return OpenCLBackend::AMD_WARP;
+        return -1;
+    }
+
     void OpenCLBackend::queryCapabilities(spbla_DeviceCaps &caps) {
-        if (controls != nullptr)
-            clbool::utils::printDeviceInfo(controls->device);
+        if (controls != nullptr) {
+
+            {
+                int maxNameLength = oclDetails::getNameMaxLength(caps.name);
+                std::string nameStr = controls->device.getInfo<CL_DEVICE_NAME>();
+                for (int i = 0; i < std::min(maxNameLength, (int) nameStr.size()); ++i) {
+                    caps.name[i] = nameStr[i];
+                }
+                for (int i = std::min(maxNameLength, (int) nameStr.size()); i < maxNameLength; ++i) {
+                    caps.name[i] = '\0';
+                }
+            }
+
+            caps.cudaSupported = false;
+            caps.openclSupported = true;
+
+
+            auto version = getVersion();
+            caps.major = version.first;
+            caps.minor = version.second;
+
+            caps.warp = getWarp();
+
+            caps.globalMemoryKiBs = controls->device.getInfo<CL_DEVICE_GLOBAL_MEM_SIZE>() / 1024;
+            caps.sharedMemoryPerBlockKiBs = controls->device.getInfo<CL_DEVICE_LOCAL_MEM_SIZE>() / 1024;
+            caps.sharedMemoryPerMultiProcKiBs = caps.sharedMemoryPerBlockKiBs;
+
+        }
     }
 
     void OpenCLBackend::queryAvailableDevices() {

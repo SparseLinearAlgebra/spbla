@@ -33,6 +33,9 @@
 namespace spbla {
 
     class OpenCLBackend: public BackendBase {
+    private:
+        static std::pair<int, int> getVersion();
+        static int getWarp();
     public:
         ~OpenCLBackend() override = default;
 
@@ -51,6 +54,9 @@ namespace spbla {
         void queryAvailableDevices();
 
         static std::shared_ptr<clbool::Controls> controls;
+
+        static const int NVIDIA_WARP = 32;
+        static const int AMD_WARP = 64;
     };
 
 

@@ -107,11 +107,19 @@ namespace clbool::utils {
     }
 
     void printDeviceInfo(const cl::Device &device) {
+        auto x = device.getInfo<CL_DEVICE_VERSION>();
+        auto v1 = x.substr(x.find(' ') + 1);
+        auto v2 = v1.substr(0, v1.find(' '));
+        auto major = std::stoi(v2.substr(0, v1.find('.')));
+        auto minor = std::stoi(v2.substr(v1.find('.') + 1));
+
+        std::cout << "        CL_DEVICE_NAME: " << device.getInfo<CL_DEVICE_NAME>() << std::endl;
+        std::cout << "        CL_DEVICE_VERSION: " << major << "|" << minor << std::endl;
         std::cout << "        CL_DEVICE_TYPE: " << mapDeviceType(device.getInfo<CL_DEVICE_TYPE>()) << std::endl;
         std::cout << "        CL_DEVICE_AVAILABLE: " << device.getInfo<CL_DEVICE_AVAILABLE>() << std::endl;
         std::cout << "        CL_DEVICE_LOCAL_MEM_SIZE: " << device.getInfo<CL_DEVICE_LOCAL_MEM_SIZE>() << std::endl;
         std::cout << "        CL_DEVICE_GLOBAL_MEM_SIZE: "
-                  << device.getInfo<CL_DEVICE_GLOBAL_MEM_SIZE>() / (1024 * 1024) << std::endl;
+                  << device.getInfo<CL_DEVICE_GLOBAL_MEM_SIZE>() / 1024  << std::endl;
         std::cout << "        CL_DEVICE_MAX_WORK_GROUP_SIZE: " << device.getInfo<CL_DEVICE_MAX_WORK_GROUP_SIZE>()
                   << std::endl;
         std::cout << "        CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS: "

@@ -219,7 +219,7 @@ namespace clbool {
         {
             auto prepare_pos = kernel<cl::Buffer, cl::Buffer, uint32_t>
                     ("prepare_positions", "prepare_for_shift_empty_rows");
-            prepare_pos.set_block_size(controls.max_wg_size);
+//            prepare_pos.set_block_size(controls.max_wg_size);
             prepare_pos.set_work_size(m.nrows());
 
             CLB_RUN(prepare_pos.run(controls, positions, m.rpt_gpu(), m.nrows()))
@@ -235,7 +235,7 @@ namespace clbool {
         {
             auto set_positions = kernel<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer, uint32_t>
                     ("set_positions", "set_positions_pointers_and_rows_csr");
-            set_positions.set_block_size(controls.max_wg_size);
+//            set_positions.set_block_size(controls.max_wg_size);
             set_positions.set_work_size(m.nrows());
             CLB_RUN(set_positions.run(controls, c_rpt, c_rows, m.rpt_gpu(), positions, m.nrows()));
         }
@@ -256,7 +256,7 @@ namespace clbool {
         {
             auto set_rsize = kernel<cl::Buffer, cl::Buffer, uint32_t, cl::Buffer>
                     ("conversions", "dcsr_to_csr_set_size");
-            set_rsize.set_block_size(controls.max_wg_size);
+            set_rsize.set_block_size(controls.block_size);
             set_rsize.set_work_size(m.nzr());
 
             CLB_RUN(set_rsize.run(controls, m.rpt_gpu(), m.rows_gpu(), m.nzr(), c_rpt));
