@@ -1,6 +1,5 @@
 #include "dcsr.hpp"
-#include "utils.hpp"
-#include "reduce.h"
+
 
 namespace clbool::dcsr {
     void reduce(Controls &controls, matrix_dcsr &matrix_out, const matrix_dcsr &matrix_in) {
@@ -11,7 +10,7 @@ namespace clbool::dcsr {
         }
 
         cl::Buffer rpt;
-        CLB_CREATE_BUF(rpt = utils::create_buffer(controls, matrix_in.nzr() + 1), 87341834);
+        CLB_CREATE_BUF(rpt = utils::create_buffer(controls, matrix_in.nzr() + 1));
         cl::Buffer cols(controls.context, CL_MEM_READ_WRITE, sizeof (uint32_t) * matrix_in.nzr());
         cl::Buffer rows;
 

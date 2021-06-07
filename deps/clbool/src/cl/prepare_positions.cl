@@ -67,7 +67,7 @@ __kernel void prepare_array_for_shift(__global uint* result,
 
 
 __kernel void prepare_for_shift_empty_rows(__global unsigned int* result,
-                                           __global const unsigned int* nnz_estimation, // !!! with prefix sum on it!, size+1
+                                           __global const unsigned int* rpt,
                                            unsigned int size
 ) {
 
@@ -80,5 +80,5 @@ __kernel void prepare_for_shift_empty_rows(__global unsigned int* result,
         result[size] = 0;
     }
 
-    result[global_id] = nnz_estimation[global_id] == nnz_estimation[global_id + 1]  ? 0 : 1;
+    result[global_id] = rpt[global_id] == rpt[global_id + 1]  ? 0 : 1;
 }

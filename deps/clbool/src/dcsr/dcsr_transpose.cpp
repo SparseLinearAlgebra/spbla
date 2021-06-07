@@ -1,5 +1,5 @@
 #include "dcsr.hpp"
-#include "utils.hpp"
+
 
 namespace clbool::dcsr {
     void transpose(Controls &controls, matrix_dcsr &matrix_out, const matrix_dcsr &matrix_in) {

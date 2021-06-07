@@ -1,9 +1,11 @@
 #pragma once
 
-#include "controls.hpp"
-#include "matrix_coo.hpp"
-#include "matrix_dcsr.hpp"
-#include "cpu_matrices.hpp"
+#include "libutils/fast_random.h"
+#include "../core/matrix_csr.hpp"
+#include "../core/controls.hpp"
+#include "../core/matrix_coo.hpp"
+#include "../core/matrix_dcsr.hpp"
+#include "../core/cpu_matrices.hpp"
 
 
 namespace clbool::utils {
@@ -35,6 +37,9 @@ namespace clbool::utils {
     bool compare_buffers(Controls &controls, const cl::Buffer &buffer_gpu, const cpu_buffer &buffer_cpu, uint32_t size,
                          std::string name = "");
 
+    bool compare_matrices(Controls &controls, const matrix_csr &m_gpu, const matrix_csr_cpu &m_cpu);
+
     cl::Buffer create_buffer(Controls &controls, uint32_t size);
     cl::Buffer create_buffer(Controls &controls, cpu_buffer &cpuBuffer, bool readonly = false);
+    cl::Event read_buffer(Controls &controls, cpu_buffer &result, const cl::Buffer &source);
 }

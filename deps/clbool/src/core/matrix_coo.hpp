@@ -28,19 +28,22 @@ namespace clbool {
         matrix_coo(index_type nrows,
                    index_type ncols);
 
-        matrix_coo(index_type nrows,
+        matrix_coo(cl::Buffer &rows,
+                   cl::Buffer &cols,
+
+                   index_type nrows,
                    index_type ncols,
-                   index_type nnz,
-                   cl::Buffer &rows,
-                   cl::Buffer &cols
+                   index_type nnz
         );
 
         matrix_coo(Controls &controls,
+                   const index_type *rows_indices,
+                   const index_type *cols_indices,
+
                    index_type nrows,
                    index_type ncols,
                    index_type nnz,
-                   const index_type *rows_indices,
-                   const index_type *cols_indices,
+
                    bool sorted = true,
                    bool noDuplicates = true
                    );

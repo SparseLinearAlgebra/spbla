@@ -15,7 +15,6 @@ __kernel void scan_blelloch_half(
     __local uint tmp[GROUP_SIZE * 2];
     uint local_id = get_local_id(0);
     uint local_id_second_half = local_id + GROUP_SIZE;
-    uint group_id = get_group_id(0);
     uint block_size = get_local_size(0);
     uint doubled_block_size = get_local_size(0) * 2;
 

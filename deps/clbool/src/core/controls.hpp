@@ -6,7 +6,6 @@
 #include <sstream>
 #include <fstream>
 
-#define WARP_SIZE 32
 
 namespace clbool {
 

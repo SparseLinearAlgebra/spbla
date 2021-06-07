@@ -100,7 +100,7 @@ public:
         std::vector<double> laps = lapsFiltered();
         
         double sum = 0.0;
-        for (int i = 0; i < laps.size(); ++i) {
+        for (size_t i = 0; i < laps.size(); ++i) {
             sum += laps[i];
         }
         if (laps.size() > 0) {
@@ -117,7 +117,7 @@ public:
         std::vector<double> laps = lapsFiltered();
 
         double sum2 = 0.0;
-        for (int i = 0; i < laps.size(); ++i) {
+        for (size_t i = 0; i < laps.size(); ++i) {
             sum2 += laps[i] * laps[i];
         }
         if (laps.size() > 0) {

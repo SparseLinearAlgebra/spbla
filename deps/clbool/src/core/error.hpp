@@ -145,6 +145,7 @@ namespace clbool {
         CLBOOL_CREATE_CONTROLS_ERROR,
 
         CLBOOL_INVALID_ARGUMENT,
+        CLBOOL_INVALID_VALUE,
 
         CLBOOL_INITIALIZATION_ERROR
     };
@@ -171,6 +172,7 @@ namespace clbool {
             INSERT_ELEMENT(CLBOOL_CREATE_CONTROLS_ERROR);
 
             INSERT_ELEMENT(CLBOOL_INVALID_ARGUMENT);
+            INSERT_ELEMENT(CLBOOL_INVALID_VALUE);
 
             INSERT_ELEMENT(CLBOOL_INITIALIZATION_ERROR);
 #undef INSERT_ELEMENT
@@ -183,15 +185,14 @@ namespace clbool {
 
         mutable std::string message;
         Status status;
-        uint32_t fast_find_code;
         std::string file;
         std::string function;
         size_t line;
 
     public:
-        Exception(std::string message, Status status, uint32_t fast_find_code, std::string file,
+        Exception(std::string message, Status status, std::string file,
                   std::string function, size_t line)
-                : message(std::move(message)), status(status), fast_find_code(fast_find_code), file(std::move(file)),
+                : message(std::move(message)), status(status), file(std::move(file)),
                   function(std::move(function)), line(line) {
 
         }
@@ -199,11 +200,15 @@ namespace clbool {
         const char *what() const noexcept override {
             std::stringstream s;
 
-            s << "[" << status << "] " << "\"" << message << "\", fast find: " << fast_find_code << std::endl
+            s << "[" << status << "] " << "\"" << message << "\""<< std::endl
               << file << ": line: " << line << " function: " << function << std::endl;
 
             message = s.str();
             return message.c_str();
+        }
+
+        std::string get_message() const {
+            return message;
         }
     };
 
@@ -226,34 +231,42 @@ namespace clbool {
     }
 
 
-#define CLB_CL(expr, status, fast_find_code) try {                                                        \
+#define CLB_CL(expr, status) try {                                                        \
     expr;                                                                                                   \
     }                                                                                                       \
     catch (const cl::Error &e) {                                                                            \
-         throw clbool::Exception(clError_handler(e), status, fast_find_code,                                        \
+         throw clbool::Exception(clError_handler(e), status,                                        \
          __FILE__, __FUNCTION__, __LINE__);                                                                 \
     }
 
-#define CLB_CHECK(cond, msg, status, fast_find_code) do {                                               \
-            if (!(cond)) throw  Exception(msg, status, fast_find_code, __FILE__, __FUNCTION__, __LINE__); \
+#define CLB_CHECK(cond, msg, status) do {                                               \
+            if (!(cond)) throw  Exception(msg, status, __FILE__, __FUNCTION__, __LINE__); \
 } while (0);
 
-#define CLB_CREATE_BUF(expr, fast_find_code) CLB_CL(expr, CLBOOL_CREATE_BUFFER_ERROR, fast_find_code)
-#define CLB_COPY_BUF(expr, fast_find_code) CLB_CL(expr, CLBOOL_COPY_BUFFER_ERROR, fast_find_code)
+#define CLB_CREATE_BUF(expr) CLB_CL(expr, CLBOOL_CREATE_BUFFER_ERROR)
+#define CLB_COPY_BUF(expr) CLB_CL(expr, CLBOOL_COPY_BUFFER_ERROR)
 
-#define CLB_BUILD(build, fast_find_code) try {                                                                    \
+#define CLB_BUILD(build) try {                                                                    \
     build;                                                                                                          \
     }                                                                                                               \
     catch (const cl::Error &e)  {                                                                                   \
-        throw Exception(program_handler(e, cl_program, program_name, controls.device), CLBOOL_BUILD_PROGRAM_ERROR, fast_find_code,\
+        throw Exception(program_handler(e, cl_program, program_name, controls.device), CLBOOL_BUILD_PROGRAM_ERROR,\
         __FILE__, __FUNCTION__, __LINE__);                                                                          \
     }
 
-#define CLB_RUN(run, fast_find_code) CLB_CL(run, CLBOOL_RUN_KERNEL_FAILURE, fast_find_code)
-#define CLB_WAIT(wait, fast_find_code) CLB_CL(wait, CLBOOL_EVENT_WAITING_ERROR, fast_find_code)
-#define CLB_WRITE_BUF(write, fast_find_code) CLB_CL(write, CLBOOL_WRITE_BUFFER_ERROR, fast_find_code)
-#define CLB_READ_BUF(read, fast_find_code) CLB_CL(read, CLBOOL_READ_BUFFER_ERROR, fast_find_code)
-#define CLB_RAISE(msg, status, fast_find_code) do { \
-      throw Exception(msg, status, fast_find_code, __FILE__, __FUNCTION__, __LINE__);                                           \
+#define CLB_RUN(run) try {                                                                           \
+        run;                                                                                         \
+    } catch (const Exception& e) {                                                                   \
+      throw Exception(e.get_message(), CLBOOL_RUN_KERNEL_FAILURE, __FILE__, __FUNCTION__, __LINE__); \
+} catch (const cl::Error &e) {                                                                       \
+         throw clbool::Exception(clError_handler(e), CLBOOL_RUN_KERNEL_FAILURE,                                         \
+         __FILE__, __FUNCTION__, __LINE__);                                                          \
+                                                                                                     \
+}
+#define CLB_WAIT(wait) CLB_CL(wait, CLBOOL_EVENT_WAITING_ERROR)
+#define CLB_WRITE_BUF(write) CLB_CL(write, CLBOOL_WRITE_BUFFER_ERROR)
+#define CLB_READ_BUF(read) CLB_CL(read, CLBOOL_READ_BUFFER_ERROR)
+#define CLB_RAISE(msg, status) do { \
+      throw Exception(msg, status, __FILE__, __FUNCTION__, __LINE__);                                           \
 } while(0);
 }

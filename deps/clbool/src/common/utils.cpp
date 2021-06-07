@@ -1,5 +1,4 @@
 #include "utils.hpp"
-#include "libutils/fast_random.h"
 
 namespace clbool::utils {
 
@@ -16,7 +15,7 @@ namespace clbool::utils {
         cpu_buffer cpu_copy(size);
 
         CLB_COPY_BUF(controls.queue.enqueueReadBuffer(buffer_gpu, CL_TRUE, 0, sizeof(uint32_t) * cpu_copy.size(),
-                                                 cpu_copy.data()), 1912223411);
+                                                 cpu_copy.data()));
 
         for (uint32_t i = 0; i < size; ++i) {
             if (cpu_copy[i] != buffer_cpu[i]) {
@@ -53,6 +52,21 @@ namespace clbool::utils {
         return
                 compare_buffers(controls, m_gpu.rpt_gpu(), m_cpu.rpt(), m_gpu.nzr() + 1, "rpt") &&
                 compare_buffers(controls, m_gpu.rows_gpu(), m_cpu.rows(), m_gpu.nzr(), "rows") &&
+                compare_buffers(controls, m_gpu.cols_gpu(), m_cpu.cols(), m_gpu.nnz(), "cols");
+    }
+
+    bool compare_matrices(Controls &controls, const matrix_csr &m_gpu, const matrix_csr_cpu &m_cpu) {
+        if (m_gpu.nnz() != m_cpu.cols().size()) {
+            std::cerr << "diff nnz, gpu: " << m_gpu.nnz() << " vs cpu: " << m_cpu.cols().size() << std::endl;
+            return false;
+        }
+        if (m_gpu.nnz() == 0) {
+            LOG << "Matrix is empty";
+            return true;
+        }
+
+        return
+                compare_buffers(controls, m_gpu.rpt_gpu(), m_cpu.rpt(), m_gpu.nrows() + 1, "rpt") &&
                 compare_buffers(controls, m_gpu.cols_gpu(), m_cpu.cols(), m_gpu.nnz(), "cols");
     }
 
@@ -129,6 +143,7 @@ namespace clbool::utils {
         for (auto const &item: cpu_copy) {
             std::cout << counter << ": " << item << ", ";
             counter++;
+            if (counter % 200 == 0) std::cout << std::endl;
         }
         std::cout << std::endl;
     }
@@ -160,6 +175,13 @@ namespace clbool::utils {
 
     cl::Buffer create_buffer(Controls &controls, cpu_buffer &cpuBuffer, bool readonly) {
         return cl::Buffer(controls.queue, cpuBuffer.begin(), cpuBuffer.end(), readonly);
+    }
+
+    cl::Event read_buffer(Controls &controls, cpu_buffer &result, const cl::Buffer &source) {
+        cl::Event ev;
+        controls.queue.enqueueReadBuffer(source, false, 0, sizeof(uint32_t) * result.size(), result.data(),
+                                         nullptr, &ev);
+        return ev;
     }
 
 }

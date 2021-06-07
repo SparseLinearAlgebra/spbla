@@ -65,6 +65,27 @@ __kernel void set_positions_pointers_and_rows(__global uint *c_rpt,
     }
 }
 
+
+__kernel void set_positions_pointers_and_rows_csr(__global uint *c_rpt,
+                                                  __global uint *c_rows,
+                                                  __global const uint *a_rpt,
+                                                  __global const uint *positions,
+                                                  uint nrows) {
+    const uint global_id = get_global_id(0);
+    if (global_id >= nrows) return;
+    if (global_id == 0) {
+        c_rpt[positions[nrows]] = a_rpt[nrows];
+    }
+
+    if (positions[global_id] != positions[global_id + 1]) {
+        c_rpt[positions[global_id]] = a_rpt[global_id];
+        c_rows[positions[global_id]] = global_id;
+    }
+
+}
+
+
+
 __kernel void set_positions_rows(__global uint *rows_pointers,
                                  __global uint *rows_compressed,
                                  __global const uint *rows,

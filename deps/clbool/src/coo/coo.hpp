@@ -1,7 +1,8 @@
 #pragma once
 
-#include <controls.hpp>
-#include <matrix_coo.hpp>
+#include "../core/controls.hpp"
+#include "../core/matrix_coo.hpp"
+#include "../core/kernel.hpp"
 
 namespace clbool::coo {
 
@@ -17,5 +18,4 @@ namespace clbool::coo {
                            const matrix_coo &matrix_a,
                            const matrix_coo &matrix_b
     );
-
 }

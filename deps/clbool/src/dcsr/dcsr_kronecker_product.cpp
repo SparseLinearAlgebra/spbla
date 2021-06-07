@@ -1,6 +1,4 @@
 #include "dcsr.hpp"
-#include "utils.hpp"
-#include "cl_operations.hpp"
 #include <cassert>
 
 namespace clbool::dcsr {
@@ -19,9 +17,9 @@ namespace clbool::dcsr {
             return;
         }
 
-        cl::Buffer c_rpt; CLB_CREATE_BUF(c_rpt = utils::create_buffer(controls, c_nzr + 1), 45671213);
-        cl::Buffer c_rows; CLB_CREATE_BUF(c_rows =utils::create_buffer(controls, c_nzr), 432223412);
-        cl::Buffer c_cols; CLB_CREATE_BUF(c_cols = utils::create_buffer(controls, c_nnz), 234531321);
+        cl::Buffer c_rpt; CLB_CREATE_BUF(c_rpt = utils::create_buffer(controls, c_nzr + 1));
+        cl::Buffer c_rows; CLB_CREATE_BUF(c_rows =utils::create_buffer(controls, c_nzr));
+        cl::Buffer c_cols; CLB_CREATE_BUF(c_cols = utils::create_buffer(controls, c_nnz));
 
         //  -------------------- form rpt and rows -------------------------------
         auto cnt_nnz = kernel<cl::Buffer, cl::Buffer, cl::Buffer, cl::Buffer,
@@ -35,7 +33,7 @@ namespace clbool::dcsr {
                                    matrix_a.rpt_gpu(), matrix_b.rpt_gpu(),
                                    matrix_a.rows_gpu(), matrix_b.rows_gpu(),
                                    c_nzr, matrix_b.nzr(), matrix_b.nrows()).wait()
-                ), 34532112);
+                ) );
 
         // c_rpt becomes an array of pointers after exclusive pref sum
 
@@ -59,7 +57,7 @@ namespace clbool::dcsr {
                        kronecker.run(controls, c_rpt, c_cols, matrix_a.rpt_gpu(), matrix_b.rpt_gpu(),
                                      matrix_a.cols_gpu(), matrix_b.cols_gpu(),
                                      matrix_b.nzr(),
-                                     c_nnz, c_nzr, matrix_b.ncols())), 919112821);
+                                     c_nnz, c_nzr, matrix_b.ncols())));
 
         matrix_c = matrix_dcsr(std::move(c_rpt), std::move(c_rows), std::move(c_cols),
                                c_nrows, c_ncols, c_nnz, c_nzr);

@@ -1,10 +1,12 @@
 #pragma once
 
-#include <controls.hpp>
-#include <matrix_coo.hpp>
-#include <matrix_dcsr.hpp>
-#include <matrices_conversions.hpp>
-#include <kernel.hpp>
+#include "../core/controls.hpp"
+#include "../core/matrix_coo.hpp"
+#include "../core/matrix_dcsr.hpp"
+#include "../core/cpu_matrices.hpp"
+#include "../common/matrices_conversions.hpp"
+#include "../core/kernel.hpp"
+
 
 namespace clbool::dcsr {
 

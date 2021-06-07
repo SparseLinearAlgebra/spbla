@@ -1,8 +1,5 @@
 
-#include "controls.hpp"
-#include "kernel.hpp"
-#include "../common/utils.hpp"
-#include "../common/cl_operations.hpp"
+
 #include "coo_utils.hpp"
 
 
@@ -26,7 +23,7 @@ namespace clbool::coo {
         CLB_RUN(
         TIME_RUN("coo_merge run in: ",
         coo_merge.run(controls, merged_rows, merged_cols, a.rows_gpu(), a.cols_gpu(),
-                      b.rows_gpu(), b.cols_gpu(), a.nnz(), b.nnz()).wait()), 123392990);
+                      b.rows_gpu(), b.cols_gpu(), a.nnz(), b.nnz()).wait()));
 
         merged_rows_out = std::move(merged_rows);
         merged_cols_out = std::move(merged_cols);
@@ -40,7 +37,7 @@ namespace clbool::coo {
             std::stringstream s;
             s << "Invalid matrixes size! a: " << a.nrows() << " x " << a.ncols() <<
               ", b: " << b.nrows() << " x " << b.ncols();
-            CLB_RAISE(s.str(), CLBOOL_INVALID_ARGUMENT, 877511100);
+            CLB_RAISE(s.str(), CLBOOL_INVALID_ARGUMENT);
         }
 
         if (a.empty() && b.empty()) {
@@ -55,13 +52,15 @@ namespace clbool::coo {
             if (&matrix_out == &filled) return;
 
             cl::Buffer rows;
-            CLB_CREATE_BUF(rows = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * filled.nnz()), 765553);
+            CLB_CREATE_BUF(rows = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * filled.nnz()));
             cl::Buffer cols;
-            CLB_CREATE_BUF(cols = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * filled.nnz()), 6657187);
+            CLB_CREATE_BUF(cols = cl::Buffer(controls.context, CL_MEM_READ_WRITE, sizeof(uint32_t) * filled.nnz()));
 
-            CLB_CREATE_BUF(controls.queue.enqueueCopyBuffer(filled.rows_gpu(), rows, 0, 0, sizeof(uint32_t) * filled.nnz()), 4876101);
-            CLB_CREATE_BUF(controls.queue.enqueueCopyBuffer(filled.cols_gpu(), cols, 0, 0, sizeof(uint32_t) * filled.nnz()), 9879711);
-            matrix_out = matrix_coo(filled.nrows(), filled.ncols(), filled.nnz(), rows, cols);
+            CLB_CREATE_BUF(controls.queue.enqueueCopyBuffer(filled.rows_gpu(), rows, 0, 0, sizeof(uint32_t) * filled.nnz()));
+            CLB_CREATE_BUF(controls.queue.enqueueCopyBuffer(filled.cols_gpu(), cols, 0, 0, sizeof(uint32_t) * filled.nnz()));
+            matrix_out = matrix_coo(rows, cols, filled.nrows(), filled.ncols(), filled.nnz());
+
+            return;
         }
 
 

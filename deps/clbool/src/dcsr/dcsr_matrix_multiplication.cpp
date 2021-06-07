@@ -19,7 +19,7 @@ namespace clbool::dcsr {
             default:
                 std::stringstream s;
                 s << "Invalid group: " << group << ". Possible values from 33 to 36 inc.";
-                CLB_RAISE(s.str(), CLBOOL_INVALID_ARGUMENT, 347113);
+                CLB_RAISE(s.str(), CLBOOL_INVALID_ARGUMENT);
         }
     }
 
@@ -32,7 +32,7 @@ namespace clbool::dcsr {
             std::stringstream s;
             s << "Invalid input matrix size! a : " << a.nrows() << " x " << a.ncols()
             << ", b: " << b.nrows() << " x " << b.ncols();
-            CLB_RAISE(s.str(), CLBOOL_INVALID_ARGUMENT, 361621);
+            CLB_RAISE(s.str(), CLBOOL_INVALID_ARGUMENT);
         }
 
         if (a.nnz() == 0 || b.nnz() == 0) {
@@ -67,7 +67,7 @@ namespace clbool::dcsr {
         }
 
         cl::Buffer gpu_workload_groups;
-        CLB_CREATE_BUF(gpu_workload_groups = utils::create_buffer(controls, a.nzr()), 684621);
+        CLB_CREATE_BUF(gpu_workload_groups = utils::create_buffer(controls, a.nzr()));
 
         {
             START_TIMING
@@ -116,7 +116,7 @@ namespace clbool::dcsr {
         uint32_t c_nzr;
 
         prefix_sum(controls, nnz_estimation, c_nnz, a.nzr() + 1);
-        CLB_CREATE_BUF(c_cols_indices = utils::create_buffer(controls, c_nnz), 2808182);
+        CLB_CREATE_BUF(c_cols_indices = utils::create_buffer(controls, c_nnz));
 
         cl::Event e1;
         cl::Event e2;
@@ -129,8 +129,7 @@ namespace clbool::dcsr {
             single_value_rows.set_work_size(groups_length[1]);
             single_value_rows.set_async(true);
             CLB_RUN(e1 = single_value_rows.run(controls, gpu_workload_groups, groups_pointers[1], groups_length[1],
-                                                 nnz_estimation, c_cols_indices, pre.rpt_gpu(), pre.cols_gpu()),
-                      10923842);
+                                                 nnz_estimation, c_cols_indices, pre.rpt_gpu(), pre.cols_gpu()));
         }
 
         uint32_t second_group_length = std::accumulate(groups_length.begin() + 2, groups_length.end(), 0u);
@@ -143,26 +142,26 @@ namespace clbool::dcsr {
             ordinary_rows.set_async(true);
             CLB_RUN(e2 = ordinary_rows.run(controls,
                                              gpu_workload_groups, groups_length[0] + groups_length[1],
-                                             nnz_estimation, c_cols_indices, pre.rpt_gpu(), pre.cols_gpu()), 539423431);
+                                             nnz_estimation, c_cols_indices, pre.rpt_gpu(), pre.cols_gpu()));
         }
 
         if (groups_length[1] != 0) {
-            CLB_WAIT(e1.wait(), 318681);
+            CLB_WAIT(e1.wait());
         }
         if (second_group_length != 0) {
-            CLB_WAIT(e2.wait(), 235681);
+            CLB_WAIT(e2.wait());
         }
 
         cl::Buffer positions;
-        CLB_CREATE_BUF(positions = utils::create_buffer(controls, a.nzr() + 1), 1029421)
+        CLB_CREATE_BUF(positions = utils::create_buffer(controls, a.nzr() + 1))
 
         prepare_positions(controls, positions, nnz_estimation, a.nzr(), "prepare_for_shift_empty_rows");
 
         // ------------------------------------  get rid of empty rows_gpu -------------------------------
 
         prefix_sum(controls, positions, c_nzr, a.nzr() + 1);
-        CLB_CREATE_BUF(c_rpt = utils::create_buffer(controls, c_nzr + 1), 1868261);
-        CLB_CREATE_BUF(c_rows =  utils::create_buffer(controls, c_nzr), 1243111);
+        CLB_CREATE_BUF(c_rpt = utils::create_buffer(controls, c_nzr + 1));
+        CLB_CREATE_BUF(c_rows =  utils::create_buffer(controls, c_nzr));
         set_positions(controls, c_rpt, c_rows, nnz_estimation, a.rows_gpu(), positions, a.nzr());
 
         c = matrix_dcsr(c_rpt, c_rows, c_cols_indices, pre.nrows(), pre.ncols(), c_nnz, c_nzr);
@@ -183,7 +182,7 @@ namespace clbool::dcsr {
             groups_pointers[workload_group_id] = offset;
             groups_length[workload_group_id] = group.size();
             CLB_WRITE_BUF(controls.queue.enqueueWriteBuffer(gpu_workload_groups, CL_TRUE, sizeof(uint32_t) * offset,
-                                                       sizeof(uint32_t) * group.size(), group.data()), 19374532);
+                                                       sizeof(uint32_t) * group.size(), group.data()));
 
             offset += group.size();
         }
@@ -253,7 +252,7 @@ namespace clbool::dcsr {
                                                   pre.rpt_gpu(), pre.cols_gpu(),
                                                   a.rpt_gpu(), a.cols_gpu(),
                                                   b.rpt_gpu(), b.rows_gpu(), b.cols_gpu(),
-                                                  b.nzr()), 9281892);
+                                                  b.nzr()));
 
                 events.push_back(ev);
                 continue;
@@ -272,7 +271,7 @@ namespace clbool::dcsr {
                                               nnz_estimation,
                                               a.rpt_gpu(), a.cols_gpu(),
                                               b.rpt_gpu(), b.rows_gpu(), b.cols_gpu(),
-                                              b.nzr()), 8048904);
+                                              b.nzr()));
                 events.push_back(ev);
 
                 continue;
@@ -294,7 +293,7 @@ namespace clbool::dcsr {
                         nnz_estimation,
                         a.rpt_gpu(), a.cols_gpu(),
                         b.rpt_gpu(), b.rows_gpu(), b.cols_gpu(),
-                        b.nzr()), 143125391)
+                        b.nzr()))
                 events.push_back(ev);
                 continue;
             }
@@ -310,11 +309,11 @@ namespace clbool::dcsr {
                                                 nnz_estimation,
                                                 a.rpt_gpu(), a.cols_gpu(),
                                                 b.rpt_gpu(), b.rows_gpu(), b.cols_gpu(),
-                                                b.nzr()), 648361)
+                                                b.nzr()))
             events.push_back(ev);
         }
 
-        CLB_WAIT(cl::Event::waitForEvents(events), 121343321);
+        CLB_WAIT(cl::Event::waitForEvents(events));
     }
 
     void build_groups_and_allocate_new_matrix(Controls &controls,
@@ -334,7 +333,7 @@ namespace clbool::dcsr {
         cpu_buffer cpu_workload(a.nzr());
 
         CLB_READ_BUF(controls.queue.enqueueReadBuffer(nnz_estimation, CL_TRUE, 0, sizeof(uint32_t) * a.nzr(),
-                                                 cpu_workload.data()), 32453245)
+                                                 cpu_workload.data()))
 
         uint32_t pre_nnz = 0;
         cpu_buffer rows_pointers_cpu(a.nzr() + 1);
@@ -361,14 +360,14 @@ namespace clbool::dcsr {
         rows_pointers_cpu[a.nzr()] = pre_nnz;
 
         cl::Buffer pre_rows_pointers;
-        CLB_CREATE_BUF(pre_rows_pointers = utils::create_buffer(controls, rows_pointers_cpu), 46292371);
+        CLB_CREATE_BUF(pre_rows_pointers = utils::create_buffer(controls, rows_pointers_cpu));
 
         cl::Buffer pre_cols_indices_gpu;
-        CLB_CREATE_BUF(pre_cols_indices_gpu = utils::create_buffer(controls,  pre_nnz), 36571649);
+        CLB_CREATE_BUF(pre_cols_indices_gpu = utils::create_buffer(controls,  pre_nnz));
 
         if (aux != 0) {
-            CLB_CREATE_BUF(aux_pointers = utils::create_buffer(controls, aux_pointers_cpu, true),830183094)
-            CLB_CREATE_BUF(aux_mem = utils::create_buffer(controls, aux), 63912211);
+            CLB_CREATE_BUF(aux_pointers = utils::create_buffer(controls, aux_pointers_cpu, true))
+            CLB_CREATE_BUF(aux_mem = utils::create_buffer(controls, aux));
         }
 
         pre = matrix_dcsr(pre_rows_pointers, a.rows_gpu(), pre_cols_indices_gpu,
@@ -396,10 +395,10 @@ namespace clbool::dcsr {
         count_workload.set_work_size(a.nzr());
 
         cl::Buffer nnz_estimation;
-        CLB_CREATE_BUF(nnz_estimation = utils::create_buffer(controls, a.nzr() + 1), 79569681);
+        CLB_CREATE_BUF(nnz_estimation = utils::create_buffer(controls, a.nzr() + 1));
 
         CLB_RUN(count_workload.run(controls, nnz_estimation, a.rpt_gpu(), a.cols_gpu(),
-                                     b.rows_gpu(), b.rpt_gpu(), a.nzr(), b.nzr()), 2129994)
+                                     b.rows_gpu(), b.rpt_gpu(), a.nzr(), b.nzr()))
 
         nnz_estimation_out = std::move(nnz_estimation);
     }
@@ -415,7 +414,7 @@ namespace clbool::dcsr {
                 ("prepare_positions", program_name)
                 .set_work_size(size);
 
-        CLB_RUN(prepare_positions.run(controls, positions, array, size), 465348324);
+        CLB_RUN(prepare_positions.run(controls, positions, array, size));
     }
 
 
@@ -433,6 +432,6 @@ namespace clbool::dcsr {
 
         CLB_RUN(set_positions.run(controls, c_rpt, c_rows,
                                     nnz_estimation, a_rows, positions,
-                                    a_nzr).wait(), 325441120);
+                                    a_nzr).wait());
     }
 }

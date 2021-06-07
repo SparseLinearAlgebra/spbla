@@ -1,5 +1,4 @@
-#include <utils.hpp>
-#include <kernel.hpp>
+#include "coo_initialization.hpp"
 #include <cstdint>
 
 namespace clbool::coo {
@@ -18,17 +17,17 @@ namespace clbool::coo {
         ("coo_bitonic_sort", "bitonic_local_endings");
         bitonic_end.set_work_size(utils::round_to_power2(n));
 
-        CLB_RUN(bitonic_begin.run(controls, rows_gpu, cols_gpu, n), 937981);
+        CLB_RUN(bitonic_begin.run(controls, rows_gpu, cols_gpu, n));
 
         uint32_t segment_length = controls.block_size * 2;
         cl::Event last;
         while (segment_length < n) {
             segment_length <<= 1;
-            CLB_RUN(bitonic_global_step.run(controls, rows_gpu, cols_gpu, segment_length, 1, n), 3457618);
+            CLB_RUN(bitonic_global_step.run(controls, rows_gpu, cols_gpu, segment_length, 1, n));
             for (unsigned int i = segment_length / 2; i > controls.block_size * 2; i >>= 1) {
-                CLB_RUN(bitonic_global_step.run(controls, rows_gpu, cols_gpu, i, 0, n), 82346262);
+                CLB_RUN(bitonic_global_step.run(controls, rows_gpu, cols_gpu, i, 0, n));
             }
-            CLB_RUN(bitonic_end.run(controls, rows_gpu, cols_gpu, n), 36662611);
+            CLB_RUN(bitonic_end.run(controls, rows_gpu, cols_gpu, n));
         }
     }
 }

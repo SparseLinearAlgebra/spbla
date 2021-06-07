@@ -104,4 +104,67 @@ namespace clbool {
         }
 
     };
+
+    class matrix_csr_cpu {
+        cpu_buffer _rpt;
+        cpu_buffer _cols;
+
+        uint32_t _nrows;
+        uint32_t _ncols;
+
+    public:
+        matrix_csr_cpu(cpu_buffer rpt, cpu_buffer cols, uint32_t nrows, uint32_t ncols)
+                : _rpt(std::move(rpt))
+                ,_cols(std::move(cols))
+                ,_nrows(nrows)
+                ,_ncols(ncols)
+                {}
+
+        matrix_csr_cpu(uint32_t nrows, uint32_t ncols)
+        : _nrows(nrows)
+        , _ncols(ncols)
+        {}
+
+        matrix_csr_cpu() = default;
+
+        matrix_csr_cpu &operator=(matrix_csr_cpu other) {
+            _rpt = std::move(other._rpt);
+            _cols = std::move(other._cols);
+            return *this;
+        }
+
+        cpu_buffer &rpt() {
+            return _rpt;
+        }
+
+        cpu_buffer &cols() {
+            return _cols;
+        }
+
+        const cpu_buffer &rpt() const {
+            return _rpt;
+        }
+
+        const cpu_buffer &cols() const {
+            return _cols;
+        }
+
+        const uint32_t nrows() {
+            return _nrows;
+        }
+
+        const uint32_t ncols() {
+            return _ncols;
+        }
+
+        uint32_t nrows() const {
+            return _nrows;
+        }
+
+        uint32_t ncols() const {
+            return _ncols;
+        }
+
+
+    };
 }

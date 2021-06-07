@@ -28,9 +28,10 @@ namespace clbool {
         std::string options_str;
 
         void check_completeness(const Controls &controls) {
-            if (_program_name == "") throw std::runtime_error("no kernel name");
-            if (_kernel_name == "") throw std::runtime_error("no kernel name");
-            if (_req_work_size == 0) throw std::runtime_error("zero global_work_size");
+            std::string suffix = "in kernel " + _kernel_name + " of program " + _program_name;
+            if (_program_name == "") CLB_RAISE("no program name" + suffix, CLBOOL_INVALID_VALUE);
+            if (_kernel_name == "") CLB_RAISE("no kernel name" + suffix, CLBOOL_INVALID_VALUE);
+            if (_req_work_size == 0) CLB_RAISE("zero global_work_size" + suffix, CLBOOL_INVALID_VALUE);
             if (_block_size == 0) _block_size = controls.block_size;
         }
 

@@ -1,7 +1,4 @@
-#include <coo_kronecker_product.hpp>
-#include <controls.hpp>
-#include <matrix_coo.hpp>
-#include <kernel.hpp>
+#include "coo.hpp"
 
 namespace clbool::coo {
 

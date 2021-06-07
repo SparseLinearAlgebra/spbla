@@ -60,8 +60,12 @@ __kernel void init_duplicates(
             uint size,
             uint duplicates_size
 )  {
+    // duplicates_size = (size + GROUP_SIZE - 1) / GROUP_SIZE
+
     uint global_id = get_global_id(0);
-    uint group_length = global_id == duplicates_size - 1 ? (size & (GROUP_SIZE - 1)) : GROUP_SIZE;
+    uint last_group_size = size & (GROUP_SIZE - 1) ? size & (GROUP_SIZE - 1) : GROUP_SIZE;
+    // size % GROUP_SIZE = size & (GROUP_SIZE - 1)
+    uint group_length = global_id == duplicates_size - 1 ? last_group_size : GROUP_SIZE;
     uint idx = global_id * GROUP_SIZE + group_length - 1;
 
     if (global_id >= duplicates_size) return;
@@ -91,8 +95,9 @@ __kernel void reduce_duplicates_tb(
     uint global_id = get_global_id(0);
     uint group_id = get_group_id(0);
     uint group_shift = group_id * GROUP_SIZE;
-    uint last_group_size = size & (GROUP_SIZE - 1);
     uint last_group_id = get_num_groups(0) - 1;
+    uint last_group_size = size & (GROUP_SIZE - 1) ? size & (GROUP_SIZE - 1) : GROUP_SIZE;
+    uint group_size = group_id == last_group_id ? last_group_size : GROUP_SIZE;
 
     __local uint rows_local[GROUP_SIZE];
     __local uint cols_local[GROUP_SIZE];
@@ -109,7 +114,7 @@ __kernel void reduce_duplicates_tb(
 
     if (global_id >= size) {
         positions[local_id] = 0;
-    } else if (local_id == GROUP_SIZE - 1 || global_id == size - 1) {
+    } else if (local_id == group_size - 1) {
         positions[local_id] = duplicates_per_tb[group_id] ? 0 : 1;
     } else {
         positions[local_id] = (rows_local[local_id] == rows_local[local_id + 1]
@@ -122,14 +127,20 @@ __kernel void reduce_duplicates_tb(
     barrier(CLK_LOCAL_MEM_FENCE | CLK_GLOBAL_MEM_FENCE);
 
     if (local_id == 0) {
-        duplicates_per_tb[group_id] = group_id == last_group_id ?
-                last_group_size - positions[GROUP_SIZE] : GROUP_SIZE - positions[GROUP_SIZE];
-//        printf("duplicates_per_tb: %d\n"
-//               "group_id: %d\n"
-//               "last_group_id: %d\n",
+        duplicates_per_tb[group_id] = group_size - positions[GROUP_SIZE];
+//        printf("duplicates_per_tb[group_id]: %d\n"
+//               "positions[GROUP_SIZE]: %d\n"
+//               "group_size: %d\n"
+//               "size: %d\n"
+//               "GROUP_SIZE: %d\n"
+//               "size & (GROUP_SIZE - 1): %d\n",
 //               duplicates_per_tb[group_id],
-//               group_id,
-//               last_group_id);
+//               positions[GROUP_SIZE],
+//               group_size,
+//               size,
+//               GROUP_SIZE,
+//               size & (GROUP_SIZE - 1)
+//               );
     }
 
     if (global_id < size && (positions[local_id] != positions[local_id + 1])) {
@@ -154,9 +165,10 @@ __kernel void shift_tb(
     uint global_id = get_global_id(0);
     uint group_id = get_group_id(0);
     uint groups_num = get_num_groups(0);
-    uint old_group_length = group_id == groups_num - 1 ? (size & (GROUP_SIZE - 1)) : GROUP_SIZE;
-    uint group_start = GROUP_SIZE * group_id - group_shifts[group_id];
 
+    uint last_group_size = size & (GROUP_SIZE - 1) ? size & (GROUP_SIZE - 1) : GROUP_SIZE;
+    uint old_group_length = group_id == groups_num - 1 ? last_group_size : GROUP_SIZE;
+    uint group_start = GROUP_SIZE * group_id - group_shifts[group_id];
     uint group_length = old_group_length - (group_shifts[group_id + 1] - group_shifts[group_id]);
 
     if (local_id < group_length) {

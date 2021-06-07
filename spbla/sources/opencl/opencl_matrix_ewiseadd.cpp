@@ -27,7 +27,6 @@
 
 #include <matrices_conversions.hpp>
 #include <coo.hpp>
-#include <matrices_conversions.hpp>
 #include <cassert>
 
 namespace spbla {

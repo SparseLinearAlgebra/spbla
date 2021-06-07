@@ -1,8 +1,6 @@
 #include <cstdint>
 #include "coo_utils.hpp"
-#include "matrix_coo.hpp"
 #include "libutils/fast_random.h"
-#include "matrix_dcsr.hpp"
 #include <vector>
 #include <iostream>
 #include <algorithm>
@@ -311,7 +309,7 @@ namespace clbool::coo_utils {
         uint32_t n_cols = ncols ==  -1 ? *std::max_element(cols.begin(), cols.end()) : ncols;
         uint32_t nnz = m_cpu.size();
 
-        return matrix_coo(controls, n_rows, n_cols, nnz, rows.data(), cols.data(), true, true);
+        return matrix_coo(controls, rows.data(), cols.data(), n_rows, n_cols, nnz, true, true);
     }
 
     void

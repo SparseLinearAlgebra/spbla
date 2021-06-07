@@ -1,7 +1,7 @@
 #pragma once
 
-#include "headers_map.hpp"
-#include <error.hpp>
+#include "../cl/headers/headers_map.hpp"
+#include "error.hpp"
 
 namespace clbool::details {
     using program_id = std::string; // kernel name|options
@@ -29,13 +29,13 @@ namespace clbool::details {
             }
 
             auto source_ptr = HeadersMap.find(program_name);
-            CLB_CHECK(source_ptr != HeadersMap.end(), "Cannot find " + program_name, CLBOOL_NO_SUCH_PROGRAM, 1435322);
+            CLB_CHECK(source_ptr != HeadersMap.end(), "Cannot find " + program_name, CLBOOL_NO_SUCH_PROGRAM);
 
             {
                 START_TIMING
                 KernelSource source = source_ptr->second;
-                cl_program = cl::Program(controls.context, {{source.kernel, source.length}});
-                CLB_BUILD(cl_program.build(options.c_str()), 43684673);
+                cl_program = cl::Program(controls.context, std::vector<std::basic_string<char>>{{source.kernel, source.length}});
+                CLB_BUILD(cl_program.build(options.c_str()));
                 KernelCache::programs[program_key] = cl_program;
                 END_TIMING(" kernel " + program_name + " build in: ")
             }
@@ -51,7 +51,7 @@ namespace clbool::details {
                 return kernels[kernelId];
             }
             CLB_CL(kernels[kernelId] = cl::Kernel(cl_program, kernel_name.c_str()),
-                     CLBOOL_CREATE_KERNEL_ERROR, 876123);
+                     CLBOOL_CREATE_KERNEL_ERROR);
             return kernels[kernelId];
         }
 

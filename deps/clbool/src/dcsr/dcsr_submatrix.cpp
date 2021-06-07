@@ -1,9 +1,5 @@
 #include "dcsr.hpp"
 
-#include "../cl/headers/submatrix.h"
-#include "../cl/headers/prepare_positions.h"
-#include "../cl/headers/set_positions.h"
-
 namespace clbool::dcsr {
 
 #define FILL_WG_SIZE 128 // work group size for each row in fill_rows
@@ -18,8 +14,7 @@ namespace clbool::dcsr {
 
             auto find_range_program = kernel<cl::Buffer, cl::Buffer,
                     uint32_t, uint32_t, uint32_t>("submatrix", "rows_range");
-            find_range_program.set_work_size(2)
-                    .set_block_size(WARP_SIZE);
+            find_range_program.set_work_size(2);
 
             find_range_program.run(controls, rows_begin_end_gpu, matrix_in.rows_gpu(), matrix_in.nzr(), i, nrows).wait();
 

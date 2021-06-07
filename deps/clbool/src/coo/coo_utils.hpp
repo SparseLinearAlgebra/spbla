@@ -1,10 +1,10 @@
 #pragma once
 
 #include <vector>
-#include "controls.hpp"
-#include "matrix_coo.hpp"
-#include "matrix_dcsr.hpp"
-#include "cpu_matrices.hpp"
+#include "../core/controls.hpp"
+#include "../core/matrix_coo.hpp"
+#include "../core/matrix_dcsr.hpp"
+#include "../core/cpu_matrices.hpp"
 #include "../common/utils.hpp"
 
 namespace clbool::coo_utils {

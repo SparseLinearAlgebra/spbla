@@ -24,9 +24,9 @@ int main(int argc, char **argv) {
     std::ofstream fout(headerFilename);
     fout << "#include <unordered_map>" << std::endl;
     for (int i = 2; i < argc; ++i) {
-        fout << "#include <";
+        fout << "#include \"";
         replace_slash(fout, argv[i]);
-        fout << ".h>" << std::endl;
+        fout << ".h\"" << std::endl;
     }
     fout << "struct KernelSource {" << std::endl
          << "    const char* kernel;" << std::endl

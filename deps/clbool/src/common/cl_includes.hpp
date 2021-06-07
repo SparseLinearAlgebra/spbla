@@ -7,8 +7,8 @@
 #include <fstream>
 
 #include "CL/opencl.hpp"
-#include <core/error.hpp>
-#define DEBUG_ENABLE  0
+#include "../core/error.hpp"
+#define DEBUG_ENABLE 0
 
 
 #if (defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__))
@@ -18,6 +18,7 @@
 #if DEBUG_ENABLE
 inline std::string LOG_PATH = "C:/Users/mkarp/GitReps/clean_matrix/sparse_boolean_matrix_operations/log/log.txt";
 #endif
+
 
 inline std::ostream & get_log_stream(const std::string& path = "") {
     if (path.empty()) {
