@@ -25,13 +25,18 @@
 #ifndef SPBLA_OPENCL_MATRIX_HPP
 #define SPBLA_OPENCL_MATRIX_HPP
 
+#include <memory>
 #include <backend/matrix_base.hpp>
+#include <core/matrix_dcsr.hpp>
+#include "opencl_backend.hpp"
 
 namespace spbla {
 
     class OpenCLMatrix: public MatrixBase {
     public:
-        OpenCLMatrix(size_t nrows, size_t ncols);
+        using MatrixImplType = clbool::matrix_dcsr;
+
+        OpenCLMatrix(clbool::Controls *controls, size_t nrows, size_t ncols);
         ~OpenCLMatrix() override;
 
         void setElement(index i, index j) override;
@@ -50,8 +55,23 @@ namespace spbla {
         index getNrows() const override;
         index getNcols() const override;
         index getNvals() const override;
-    };
 
+    private:
+        OpenCLMatrix(clbool::Controls *controls, MatrixImplType clbool_matrix);
+        MatrixImplType mMatrixImpl;
+        friend spbla::OpenCLBackend;
+        clbool::Controls *clboolState = nullptr;
+
+        size_t mNrows = 0;
+        size_t mNcols = 0;
+        size_t mNvals = 0;
+
+        void updateFromImpl() {
+            mNrows = mMatrixImpl.nrows();
+            mNcols = mMatrixImpl.ncols();
+            mNvals = mMatrixImpl.nnz();
+        }
+    };
 }
 
 #endif //SPBLA_OPENCL_MATRIX_HPP

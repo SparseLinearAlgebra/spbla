@@ -25,11 +25,17 @@
 #ifndef SPBLA_OPENCL_BACKEND_HPP
 #define SPBLA_OPENCL_BACKEND_HPP
 
+#include <memory>
+
 #include <backend/backend_base.hpp>
+#include <core/controls.hpp>
 
 namespace spbla {
 
     class OpenCLBackend: public BackendBase {
+    private:
+        static std::pair<int, int> getVersion();
+        static int getWarp();
     public:
         ~OpenCLBackend() override = default;
 
@@ -44,7 +50,15 @@ namespace spbla {
         void releaseMatrix(MatrixBase *matrixBase) override;
 
         void queryCapabilities(spbla_DeviceCaps &caps) override;
+
+        void queryAvailableDevices();
+
+        static std::shared_ptr<clbool::Controls> controls;
+
+        static const int NVIDIA_WARP = 32;
+        static const int AMD_WARP = 64;
     };
+
 
 }
 

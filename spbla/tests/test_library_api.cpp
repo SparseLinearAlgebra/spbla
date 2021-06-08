@@ -131,7 +131,12 @@ TEST(spbla, DeviceCaps) {
         << "name: " << caps.name << std::endl
         << "major: " << caps.major << std::endl
         << "minor: " << caps.minor << std::endl
-        << "cuda supported: " << caps.cudaSupported << std::endl;
+        << "cuda supported: " << caps.cudaSupported << std::endl
+        << "opencl supported: " << caps.cudaSupported << std::endl
+        << "warp: " << caps.warp << std::endl
+        << "globalMemoryKiBs: " << caps.globalMemoryKiBs << std::endl
+        << "sharedMemoryPerMultiProcKiBs: " << caps.sharedMemoryPerMultiProcKiBs << std::endl
+        << "sharedMemoryPerBlockKiBs: " << caps.sharedMemoryPerBlockKiBs << std::endl;
 
     ASSERT_EQ(spbla_Finalize(), SPBLA_STATUS_SUCCESS);
 }

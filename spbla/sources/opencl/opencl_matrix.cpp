@@ -24,11 +24,17 @@
 
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
+#include <cassert>
+
 
 namespace spbla {
 
-    OpenCLMatrix::OpenCLMatrix(size_t nrows, size_t ncols) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+    OpenCLMatrix::OpenCLMatrix(clbool::Controls *controls, size_t nrows, size_t ncols)
+    : mNrows(nrows)
+    , mNcols(ncols)
+    , mNvals(0) {
+        CHECK_RAISE_ERROR(controls != nullptr, InvalidState, "Clbool state isn't initialized!")
+        this->clboolState = controls;
     }
 
     OpenCLMatrix::~OpenCLMatrix() {
@@ -39,19 +45,36 @@ namespace spbla {
         RAISE_ERROR(NotImplemented, "This function is not supported for this matrix class");
     }
 
+    // shallow copy
     void OpenCLMatrix::clone(const MatrixBase &otherBase) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        auto other = dynamic_cast<const OpenCLMatrix*>(&otherBase);
+
+        CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Passed matrix does not belong to OpenCLMatrix class");
+        CHECK_RAISE_ERROR(other != this, InvalidArgument, "Matrices must differ");
+
+        assert(this->getNrows() == other->getNrows());
+        assert(this->getNcols() == other->getNcols());
+
+        this->mMatrixImpl = other->mMatrixImpl;
+        updateFromImpl();
+
     }
 
     index OpenCLMatrix::getNrows() const {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        return mNrows;
     }
 
     index OpenCLMatrix::getNcols() const {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        return mNcols;
     }
 
     index OpenCLMatrix::getNvals() const {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        return mNvals;
+    }
+
+    OpenCLMatrix::OpenCLMatrix(clbool::Controls *controls, MatrixImplType clbool_matrix)
+    : mMatrixImpl(std::move(clbool_matrix))
+    , clboolState(controls) {
+        updateFromImpl();
     }
 }

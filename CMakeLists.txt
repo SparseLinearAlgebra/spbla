@@ -44,6 +44,11 @@ if (SPBLA_WITH_CUDA)
     add_subdirectory(deps/nsparse)
 endif()
 
+
+if (SPBLA_WITH_OPENCL)
+    add_subdirectory(deps/clbool)
+endif()
+
 if (SPBLA_BUILD_TESTS)
     message(STATUS "Add googletest as unit-testing library")
     add_subdirectory(deps/gtest)

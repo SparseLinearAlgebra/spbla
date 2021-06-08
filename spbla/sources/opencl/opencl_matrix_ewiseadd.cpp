@@ -25,10 +25,46 @@
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
 
+#include <matrices_conversions.hpp>
+#include <coo.hpp>
+#include <csr/csr.hpp>
+#include <cassert>
+
+#define OPENCL_ADDITION_CSR
+
 namespace spbla {
 
     void OpenCLMatrix::eWiseAdd(const MatrixBase &aBase, const MatrixBase &bBase, bool checkTime) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
-    }
 
+        auto a = dynamic_cast<const OpenCLMatrix*>(&aBase);
+        auto b = dynamic_cast<const OpenCLMatrix*>(&bBase);
+
+        CHECK_RAISE_ERROR(a != nullptr, InvalidArgument, "Passed matrix does not belong to OpenCLMatrix class");
+        CHECK_RAISE_ERROR(b != nullptr, InvalidArgument, "Passed matrix does not belong to OpenCLMatrix class");
+
+        assert(this->getNrows() == a->getNrows());
+        assert(b->getNrows() == a->getNrows());
+        assert(this->getNcols() == a->getNcols());
+        assert(b->getNcols() == a->getNcols());
+
+
+#ifdef OPENCL_ADDITION_CSR
+        auto aCsr = clbool::dcsr_to_csr(*clboolState, *const_cast<clbool::matrix_dcsr*>(&a->mMatrixImpl));
+        auto bCsr = clbool::dcsr_to_csr(*clboolState, *const_cast<clbool::matrix_dcsr*>(&b->mMatrixImpl));
+
+        clbool::matrix_csr resCsr;
+        clbool::csr::matrix_addition(*clboolState, resCsr, aCsr, bCsr);
+
+        mMatrixImpl = clbool::csr_to_dcsr(*clboolState, resCsr);
+#else
+        auto aCoo = clbool::dcsr_to_coo_shallow(*clboolState, *const_cast<clbool::matrix_dcsr*>(&a->mMatrixImpl));
+        auto bCoo = clbool::dcsr_to_coo_shallow(*clboolState, *const_cast<clbool::matrix_dcsr*>(&b->mMatrixImpl));
+
+        clbool::matrix_coo resCoo;
+        clbool::coo::matrix_addition(*clboolState, resCoo, aCoo, bCoo);
+
+        mMatrixImpl = clbool::coo_to_dcsr_shallow(*clboolState, resCoo);
+#endif
+        updateFromImpl();
+    }
 }

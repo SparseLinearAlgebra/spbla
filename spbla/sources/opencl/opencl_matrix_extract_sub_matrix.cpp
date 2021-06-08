@@ -24,11 +24,20 @@
 
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
+#include <dcsr/dcsr.hpp>
+#include <cassert>
 
 namespace spbla {
 
     void OpenCLMatrix::extractSubMatrix(const MatrixBase &otherBase, index i, index j, index nrows, index ncols, bool checkTime) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
-    }
+        assert(this->getNrows() == nrows);
+        assert(this->getNcols() == ncols);
 
+        auto other = dynamic_cast<const OpenCLMatrix*>(&otherBase);
+
+        CHECK_RAISE_ERROR(other != nullptr, InvalidArgument, "Passed matrix does not belong to OpenCLMatrix class");
+
+        clbool::dcsr::submatrix(*clboolState, mMatrixImpl, other->mMatrixImpl, i, j, nrows, ncols);
+        updateFromImpl();
+    }
 }

@@ -24,11 +24,25 @@
 
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
+#include <dcsr/dcsr.hpp>
+#include <cassert>
 
 namespace spbla {
 
     void OpenCLMatrix::reduce(const MatrixBase &otherBase, bool checkTime) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+        auto other = dynamic_cast<const OpenCLMatrix*>(&otherBase);
+
+        CHECK_RAISE_ERROR(other != nullptr, InvalidArgument,
+                          "Passed matrix does not belong to OpenCLMatrix class")
+
+        assert(this->getNcols() == 1);
+        assert(this->getNrows() == other->getNrows());
+
+
+        clbool::dcsr::reduce(*clboolState, mMatrixImpl, other->mMatrixImpl);
+        updateFromImpl();
+
+        assert(this->getNvals() == other->mMatrixImpl.nzr());
     }
 
 }

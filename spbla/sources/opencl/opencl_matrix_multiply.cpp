@@ -24,11 +24,34 @@
 
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
+#include <dcsr/dcsr.hpp>
+#include <cassert>
 
 namespace spbla {
 
     void OpenCLMatrix::multiply(const MatrixBase &aBase, const MatrixBase &bBase, bool accumulate, bool checkTime) {
-        RAISE_ERROR(NotImplemented, "This function must be implemented");
+
+        auto a = dynamic_cast<const OpenCLMatrix*>(&aBase);
+        auto b = dynamic_cast<const OpenCLMatrix*>(&bBase);
+
+        CHECK_RAISE_ERROR(a != nullptr, InvalidArgument, "Passed matrix does not belong to OpenCLMatrix class")
+        CHECK_RAISE_ERROR(b != nullptr, InvalidArgument, "Passed matrix does not belong to OpenCLMatrix class")
+
+        assert(a->getNcols() == b->getNrows());
+        assert(this->getNrows() == a->getNrows());
+        assert(this->getNcols() == b->getNcols());
+
+        clbool::matrix_dcsr multResDcsr;
+        clbool::dcsr::matrix_multiplication_hash(*clboolState, multResDcsr, a->mMatrixImpl, b->mMatrixImpl);
+
+        if (accumulate) {
+            this->eWiseAdd(*this, OpenCLMatrix(clboolState, multResDcsr), checkTime);
+        } else {
+            mMatrixImpl = multResDcsr;
+        }
+
+        updateFromImpl();
+
     }
 
 }
