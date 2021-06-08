@@ -40,17 +40,13 @@ namespace spbla {
         ~OpenCLBackend() override = default;
 
         void initialize(hints initHints) override;
-
         void finalize() override;
-
         bool isInitialized() const override;
 
         MatrixBase *createMatrix(size_t nrows, size_t ncols) override;
-
         void releaseMatrix(MatrixBase *matrixBase) override;
 
         void queryCapabilities(spbla_DeviceCaps &caps) override;
-
         void queryAvailableDevices();
 
         static std::shared_ptr<clbool::Controls> controls;

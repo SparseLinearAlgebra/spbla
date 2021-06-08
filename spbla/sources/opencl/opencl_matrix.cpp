@@ -30,15 +30,11 @@
 namespace spbla {
 
     OpenCLMatrix::OpenCLMatrix(clbool::Controls *controls, size_t nrows, size_t ncols)
-    : mNrows(nrows)
-    , mNcols(ncols)
-    , mNvals(0) {
+        : mNrows(nrows)
+        , mNcols(ncols)
+        , mNvals(0) {
         CHECK_RAISE_ERROR(controls != nullptr, InvalidState, "Clbool state isn't initialized!")
         this->clboolState = controls;
-    }
-
-    OpenCLMatrix::~OpenCLMatrix() {
-        //RAISE_ERROR(NotImplemented, "This function must be implemented");
     }
 
     void OpenCLMatrix::setElement(index i, index j) {
@@ -57,7 +53,6 @@ namespace spbla {
 
         this->mMatrixImpl = other->mMatrixImpl;
         updateFromImpl();
-
     }
 
     index OpenCLMatrix::getNrows() const {
@@ -73,8 +68,8 @@ namespace spbla {
     }
 
     OpenCLMatrix::OpenCLMatrix(clbool::Controls *controls, MatrixImplType clbool_matrix)
-    : mMatrixImpl(std::move(clbool_matrix))
-    , clboolState(controls) {
+        : mMatrixImpl(std::move(clbool_matrix))
+        , clboolState(controls) {
         updateFromImpl();
     }
 }

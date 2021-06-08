@@ -107,3 +107,6 @@ endif()
 target_compile_definitions(clbool PUBLIC CL_HPP_ENABLE_EXCEPTIONS)
 target_compile_definitions(clbool PUBLIC CL_HPP_MINIMUM_OPENCL_VERSION=110)
 target_compile_definitions(clbool PUBLIC CL_HPP_TARGET_OPENCL_VERSION=110)
+
+# Don't know, if win suffers from that, enable when compile for linux (with gcc)
+target_compile_options(clbool PRIVATE $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:AppleClang,Clang,GNU>>: -fPIC>)

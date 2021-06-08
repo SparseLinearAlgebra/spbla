@@ -37,7 +37,7 @@ namespace spbla {
         using MatrixImplType = clbool::matrix_dcsr;
 
         OpenCLMatrix(clbool::Controls *controls, size_t nrows, size_t ncols);
-        ~OpenCLMatrix() override;
+        ~OpenCLMatrix() override = default;
 
         void setElement(index i, index j) override;
         void build(const index *rows, const index *cols, size_t nvals, bool isSorted, bool noDuplicates) override;
@@ -57,9 +57,11 @@ namespace spbla {
         index getNvals() const override;
 
     private:
-        OpenCLMatrix(clbool::Controls *controls, MatrixImplType clbool_matrix);
-        MatrixImplType mMatrixImpl;
         friend spbla::OpenCLBackend;
+
+        OpenCLMatrix(clbool::Controls *controls, MatrixImplType clbool_matrix);
+
+        MatrixImplType mMatrixImpl;
         clbool::Controls *clboolState = nullptr;
 
         size_t mNrows = 0;

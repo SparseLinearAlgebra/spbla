@@ -38,7 +38,6 @@ namespace spbla {
         assert(this->getNcols() == 1);
         assert(this->getNrows() == other->getNrows());
 
-
         clbool::dcsr::reduce(*clboolState, mMatrixImpl, other->mMatrixImpl);
         updateFromImpl();
 
