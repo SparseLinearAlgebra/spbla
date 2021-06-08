@@ -20,7 +20,7 @@ for entry in os.listdir(SOURCE_PATH.parent / "pyspbla"):
 
 setuptools.setup(
     name="pyspbla",
-    version="0.0.0",
+    version="1.0.0",
     author="Egor Orachyov",
     author_email="egororachyov@gmail.com",
     license="MIT",
@@ -33,7 +33,7 @@ setuptools.setup(
         "Bug Tracker": "https://github.com/JetBrains-Research/spbla/issues"
     },
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 5 - Production/Stable",
         "Programming Language :: Python :: 3",
         "Programming Language :: C++",
         "License :: OSI Approved :: MIT License",
@@ -56,7 +56,8 @@ setuptools.setup(
         "graph-analysis",
         "graph-algorithms",
         "graphblas",
-        "nvidia-cuda"
+        "nvidia-cuda",
+        "opencl"
     ],
     packages=["pyspbla"],
     package_dir={'': '.'},

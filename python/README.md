@@ -24,7 +24,7 @@ element-wise addition, matrix-matrix multiplication and Kronecker product.
 
 **As a fallback** library provides sequential backend for mentioned above operations
 for computations on CPU side only. This backend is selected automatically
-if Cuda compatible device is not presented in the system. This can be quite handy for 
+if Cuda/OpenCL compatible device is not presented in the system. This can be quite handy for 
 prototyping algorithms on a local computer for later running on a powerful server.   
 
 ### Features

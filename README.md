@@ -3,6 +3,7 @@
 [![JB Research](https://jb.gg/badges/research-flat-square.svg)](https://research.jetbrains.org/)
 [![Ubuntu](https://github.com/JetBrains-Research/spbla/actions/workflows/ubuntu.yml/badge.svg?branch=main)](https://github.com/JetBrains-Research/spbla/actions/workflows/ubuntu.yml)
 [![License](https://img.shields.io/badge/license-MIT-orange)](https://github.com/JetBrains-Research/spbla/blob/master/LICENSE)
+[![Package](https://img.shields.io/badge/pypi%20package-1.0.0-%233776ab)](https://pypi.org/project/pyspbla/)
 
 **spbla** is a linear Boolean algebra library primitives and operations for 
 work with sparse matrices written for CPU, Cuda and OpenCL platforms. The primary 
@@ -24,6 +25,8 @@ element-wise addition, matrix-matrix multiplication and Kronecker product.
 for computations on CPU side only. This backend is selected automatically
 if Cuda compatible device is not present in the system. This can be quite handy for 
 prototyping algorithms on a local computer for later running on a powerful server.  
+
+**PyPI package web page** is following [link](https://pypi.org/project/pyspbla/).
 
 ### Features summary
 
@@ -74,7 +77,7 @@ These steps are required if you want to build library for your specific platform
 
 ### Requirements
 
-- Linux based OS (tested on Ubuntu 20.04)
+- Linux-based OS (tested on Ubuntu 20.04)
 - CMake Version 3.15 or higher
 - CUDA Compatible GPU device (to run Cuda computations)
 - GCC Compiler 
