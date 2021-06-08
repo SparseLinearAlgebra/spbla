@@ -14,7 +14,7 @@ set(CLBOOL_SOURCES)
 list(APPEND KERNELS
         merge_path
         merge_path1d
-        dcsr_addition_count
+        csr_addition
         hash/hash_global
         submatrix
         reduce
@@ -36,10 +36,11 @@ list(APPEND KERNELS
         merge_large_rows
         bitonic_esc
         count_workload
-        for_test/new_merge
         dcsr_kronecker
         coo_reduce_duplicates
-        )
+        initialization
+        conversions)
+
 
 foreach(KERNEL ${KERNELS})
     STRING(REPLACE "/" "___" HNAME ${KERNEL})
