@@ -305,6 +305,7 @@ spbla
 │   ├── tests - regression tests for python wrapper
 │   └── data - generate data for pyspbla regression tests
 ├── deps - project dependencies
+│   ├── clbool - OpenCL based matrix operations for dcsr, csr and coo matrices
 │   ├── cub - cuda utility, required for nsparse
 │   ├── gtest - google test framework for unit testing
 │   └── nsparse - SpGEMM implementation for csr matrices (with unified memory, configurable)
@@ -314,6 +315,7 @@ spbla
 ## Contributors
 
 - Egor Orachyov (Github: [EgorOrachyov](https://github.com/EgorOrachyov))
+- Maria Karpenko (Github: [mkarpenkospb](https://github.com/mkarpenkospb))
 - Pavel Alimov (Github : [Krekep](https://github.com/Krekep))
 - Semyon Grigorev (Github: [gsvgit](https://github.com/gsvgit))
 
@@ -321,11 +323,11 @@ spbla
 
 ```ignorelang
 @online{spbla,
-  author = {Orachyov, Egor and Alimov, Pavel and Grigorev, Semyon},
+  author = {Orachyov, Egor and Karpenko, Maria and Alimov, Pavel and Grigorev, Semyon},
   title = {spbla: sparse Boolean linear algebra for CPU, Cuda and OpenCL computations},
   year = 2021,
   url = {https://github.com/JetBrains-Research/spbla},
-  note = {Version Alpha}
+  note = {Version 1.0.0}
 }
 ```
 
@@ -338,9 +340,3 @@ This project is licensed under MIT License. License text can be found in the
 
 This is a research project of the Programming Languages and Tools Laboratory
 at JetBrains-Research. Laboratory website [link](https://research.jetbrains.org/groups/plt_lab/).
-
-## Also
-
-The name of the library is formed by a combination of words *Cuda* and *Boolean*,
-what literally means *Cuda with Boolean* and sounds very similar to the name of 
-the programming language *COBOL*.

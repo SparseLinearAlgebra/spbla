@@ -112,6 +112,7 @@ Script can be rendered by any [gviz tool](https://dreampuf.github.io/GraphvizOnl
 ## Contributors
 
 - Egor Orachyov (Github: [EgorOrachyov](https://github.com/EgorOrachyov))
+- Maria Karpenko (Github: [mkarpenkospb](https://github.com/mkarpenkospb))
 - Pavel Alimov (Github : [Krekep](https://github.com/Krekep))
 - Semyon Grigorev (Github: [gsvgit](https://github.com/gsvgit))
 
@@ -119,11 +120,11 @@ Script can be rendered by any [gviz tool](https://dreampuf.github.io/GraphvizOnl
 
 ```ignorelang
 @online{spbla,
-  author = {Orachyov, Egor and Alimov, Pavel and Grigorev, Semyon},
+  author = {Orachyov, Egor and Karpenko, Maria and Alimov, Pavel and Grigorev, Semyon},
   title = {spbla: sparse Boolean linear algebra for CPU, Cuda and OpenCL computations},
   year = 2021,
   url = {https://github.com/JetBrains-Research/spbla},
-  note = {Version Alpha}
+  note = {Version 1.0.0}
 }
 ```
 
