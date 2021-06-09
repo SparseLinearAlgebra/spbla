@@ -26,7 +26,7 @@ for computations on CPU side only. This backend is selected automatically
 if Cuda/OpenCL compatible device is not present in the system. This can be quite handy for 
 prototyping algorithms on a local computer for later running on a powerful server.  
 
-**PyPI package web page** is following [link](https://pypi.org/project/pyspbla/).
+**PyPI package web page** is available at following [link](https://pypi.org/project/pyspbla/).
 
 ### Features summary
 
@@ -78,8 +78,7 @@ Machine configuration: PC with Ubuntu 20.04, Intel Core i7-6700 3.40GHz CPU, DDR
 ![time](https://github.com/JetBrains-Research/spbla/raw/main/docs/pictures/mxm-perf-time.svg?raw=true&sanitize=true)
 ![mem](https://github.com/JetBrains-Research/spbla/raw/main/docs/pictures/mxm-perf-mem.svg?raw=true&sanitize=true)
 
-The matrix data is selected from the SuiteSparse Matrix Collection 
-(formerly the University of Florida Sparse Matrix Collection) [link](https://sparse.tamu.edu).
+The matrix data is selected from the SuiteSparse Matrix Collection [link](https://sparse.tamu.edu).
 
 | Matrix name              | # Rows      | Nnz M       | Nnz/row   | Max Nnz/row | Nnz M^2     |
 |---                       |---:         |---:         |---:       |---:         |---:         |

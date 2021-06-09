@@ -49,8 +49,7 @@ Machine configuration: PC with Ubuntu 20.04, Intel Core i7-6700 3.40GHz CPU, DDR
 ![time](https://github.com/JetBrains-Research/spbla/raw/main/docs/pictures/mxm-perf-time.svg?raw=true&sanitize=true)
 ![mem](https://github.com/JetBrains-Research/spbla/raw/main/docs/pictures/mxm-perf-mem.svg?raw=true&sanitize=true)
 
-The matrix data is selected from the SuiteSparse Matrix Collection 
-(formerly the University of Florida Sparse Matrix Collection) [link](https://sparse.tamu.edu).
+The matrix data is selected from the SuiteSparse Matrix Collection [link](https://sparse.tamu.edu).
 
 | Matrix name              | # Rows      | Nnz M       | Nnz/row   | Max Nnz/row | Nnz M^2     |
 |---                       |---:         |---:         |---:       |---:         |---:         |
