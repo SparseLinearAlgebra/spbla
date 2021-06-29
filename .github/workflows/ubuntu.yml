@@ -5,15 +5,23 @@ name: Ubuntu
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - .gitignore
+      - LICENSE.md
+      - README.md
+      - CODE_OF_CONDUCT.md
+      - CHANGELOG.md
   pull_request:
     branches: [ main ]
-  paths-ignore:
-    - 'docs/**'
-    - .gitignore
-    - LICENSE.md
-    - README.md
-    - CODE_OF_CONDUCT.md
-    - CHANGELOG.md
+    paths-ignore:
+      - 'docs/**'
+      - .gitignore
+      - LICENSE.md
+      - README.md
+      - CODE_OF_CONDUCT.md
+      - CHANGELOG.md
+
 
 jobs:
   build:
