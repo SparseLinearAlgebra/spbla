@@ -1,0 +1,23 @@
+{
+  "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
+  "@type": "Code",
+  "author": [
+    {
+      "@id": "http://orcid.org/0000-0002-0424-4059",
+      "@type": "Person",
+      "email": "egor.orachev@gmail.com",
+      "name": "Egor Orachev",
+      "affiliation": "Saint Petersburg State University, JetBrains Research"
+    }
+  ],
+  "identifier": "",
+  "codeRepository": "https://github.com/JetBrains-Research/spbla",
+  "datePublished": "2021-06-30",
+  "dateModified": "2021-06-30",
+  "dateCreated": "2021-06-30",
+  "description": "Sparse Boolean linear algebra for Nvidia Cuda, OpenCL and CPU computations",
+  "keywords": "python, cplusplus, sparse-matrix, linear-algebra, boolean-algebra, graph-analysis, graph-algorithms, nvidia-cuda, opencl",
+  "license": "MIT",
+  "title": "SPbLA",
+  "version": "v1.0.0"
+}

@@ -42,7 +42,7 @@ provide a set of building blocks and allows for reducing algorithms to sparse
 linear algebra operations. While GPGPU utilization for high-performance linear 
 algebra is common, the high complexity of GPGPU programming makes the implementation 
 of the complete set of sparse operations on GPGPU challenging. Thus, it is worth
-to address this problem by focusing on a basic by still important case — sparse Boolean algebra.
+to address this problem by focusing on a basic but still important case — sparse Boolean algebra.
 
 # Statement of need
 
