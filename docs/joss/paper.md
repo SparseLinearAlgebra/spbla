@@ -47,11 +47,10 @@ reduce, matrix-matrix element-wise addition, multiplication and Kronecker produc
 
 # Statement of need
 
-Sparse matrices are widely applicable in data analysis and `GraphBLAS API` provides a set of unified building linear algebra based blocks for reducing data analysis algorithms to sparse linear algebra operations. While GPGPU utilization for high-performance linear algebra is common, the high complexity of GPGPU programming makes the implementation of the complete set of sparse operations on GPGPU challenging. Thus, it is worth addressing this problem by focusing on a basic but still important case — sparse Boolean algebra.
+Sparse matrices are widely applicable in data analysis and `GraphBLAS API` provides a set of unified building linear algebra based blocks for reducing data analysis algorithms to sparse linear algebra operations. While GPGPU utilization for high-performance linear algebra is common, the high complexity of GPGPU programming makes the implementation of the complete set of sparse operations on GPGPU challenging. Moreover, state-of-the-art linear algebra algorithms often have not arranged as full-featured libraries but are implemented separately for evaluation purposes only. On the other hand, existing mature libraries implemented only for the Nvidia Cuda platform, which limits portability. Thus, it is worth addressing this problem by focusing on a basic but still important case — sparse Boolean algebra.
 
 The primary goal of the `SPbLA` is to provide a base for the implementation, testing and profiling high-performance algorithms for solving data analysis problems, such as RDF analysis [@article:cfpq_and_rdf_analysis], RNA secondary structure analysis [@article:rna_prediction], static program code analysis (such as points-to or alias analysis) [@article:dyck_cfl_code_analysis] and evaluation of regular and CFL-reachability queries [@inproceedings:matrix_cfpq; @inbook:kronecker_cfpq_adbis]. 
-
-Thus we can offload different language-constrained path querying related problems, and other problems that can be reduced to manipulation of boolean matrices, to GPGPU in a uniform way. 
+It allows one to offload different language-constrained path querying related problems, and other problems that can be reduced to manipulation of boolean matrices, to GPGPU in a uniform way.
 
 Moreover, real data analysis leads to huge matrix processing that can not be efficiently handled on a single GPGPU. Thus the creation of the library which supports multi-GPU and out-of-VRAM computations helps to create an efficient solution for a wide range of applied problems. The creation of such a solution is an open problem while ad-hoc solutions exist in specific areas. We propose an SPbLA as a base for such a solution.
 
@@ -74,7 +73,6 @@ data processing. However, GPGPU programming is still challenging.
 Best to our knowledge, the is no complete GraphBLAS API implementation for GPGPU
 computations, except `GraphBLAST` [@yang2019graphblast], which is currently in the
 active development. Some work is also done to move SuiteSparse forward GPGPU computations.
-OpenCL and portability?
 
 The sparsity of data introduces issues with load balancing, irregular data access, 
 thus sparsity complicates the implementation of high-performance algorithms for 
