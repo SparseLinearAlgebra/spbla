@@ -32,7 +32,9 @@ namespace spbla {
     OpenCLMatrix::OpenCLMatrix(clbool::Controls *controls, size_t nrows, size_t ncols)
     : mNrows(nrows)
     , mNcols(ncols)
-    , mNvals(0) {
+    , mNvals(0)
+    , mMatrixImpl(clbool::matrix_dcsr(mNrows, mNcols))
+    {
         CHECK_RAISE_ERROR(controls != nullptr, InvalidState, "Clbool state isn't initialized!")
         this->clboolState = controls;
     }

@@ -25,7 +25,6 @@
 #include <opencl/opencl_matrix.hpp>
 #include <core/error.hpp>
 #include <matrix_coo.hpp>
-#include <utils.hpp>
 #include <matrices_conversions.hpp>
 
 namespace spbla {

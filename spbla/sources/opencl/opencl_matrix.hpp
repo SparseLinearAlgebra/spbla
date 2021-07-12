@@ -57,14 +57,14 @@ namespace spbla {
         index getNvals() const override;
 
     private:
-        OpenCLMatrix(clbool::Controls *controls, MatrixImplType clbool_matrix);
-        MatrixImplType mMatrixImpl;
-        friend spbla::OpenCLBackend;
-        clbool::Controls *clboolState = nullptr;
-
         size_t mNrows = 0;
         size_t mNcols = 0;
         size_t mNvals = 0;
+        MatrixImplType mMatrixImpl;
+
+        OpenCLMatrix(clbool::Controls *controls, MatrixImplType clbool_matrix);
+        friend spbla::OpenCLBackend;
+        clbool::Controls *clboolState = nullptr;
 
         void updateFromImpl() {
             mNrows = mMatrixImpl.nrows();

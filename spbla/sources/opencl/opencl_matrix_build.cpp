@@ -26,10 +26,7 @@
 #include <core/error.hpp>
 
 #include <core/matrix_coo.hpp>
-#include <core/matrix_dcsr.hpp>
 #include <common/matrices_conversions.hpp>
-#include <kernel.hpp>
-#include <env.hpp>
 
 namespace spbla {
 
