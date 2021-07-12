@@ -40,6 +40,7 @@ namespace spbla {
 
         clbool::dcsr::transpose(*clboolState, mMatrixImpl, other->mMatrixImpl);
         updateFromImpl();
+
         assert(this->getNvals() == other->getNvals());
     }
 }

@@ -104,7 +104,6 @@ namespace spbla {
 
     void OpenCLBackend::queryCapabilities(spbla_DeviceCaps &caps) {
         if (controls != nullptr) {
-
             {
                 int maxNameLength = oclDetails::getNameMaxLength(caps.name);
                 std::string nameStr = controls->device.getInfo<CL_DEVICE_NAME>();
@@ -118,7 +117,6 @@ namespace spbla {
 
             caps.cudaSupported = false;
             caps.openclSupported = true;
-
 
             auto version = getVersion();
             caps.major = version.first;

@@ -31,7 +31,6 @@
 namespace spbla {
 
     void OpenCLMatrix::build(const index *rows, const index *cols, size_t nvals, bool isSorted, bool noDuplicates) {
-
         clbool::matrix_coo matrixCoo(*clboolState, rows, cols,  mNrows, mNcols, nvals, isSorted, noDuplicates);
         mMatrixImpl = clbool::coo_to_dcsr_shallow(*clboolState, matrixCoo);
 

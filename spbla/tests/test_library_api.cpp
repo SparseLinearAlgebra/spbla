@@ -67,9 +67,9 @@ spbla_Status TransitiveClosure(spbla_Matrix A, spbla_Matrix* T) {
 
     spbla_Matrix_Nvals(*T, &current);                          /* Query current nvals value */
 
-    while (current != total) {                                  /* Iterate, while new values are added */
+    while (current != total) {                                 /* Iterate, while new values are added */
         total = current;
-        spbla_MxM(*T, *T, *T, SPBLA_HINT_ACCUMULATE);  /* T += T x T */
+        spbla_MxM(*T, *T, *T, SPBLA_HINT_ACCUMULATE);   /* T += T x T */
         spbla_Matrix_Nvals(*T, &current);
     }
 
@@ -132,7 +132,7 @@ TEST(spbla, DeviceCaps) {
         << "major: " << caps.major << std::endl
         << "minor: " << caps.minor << std::endl
         << "cuda supported: " << caps.cudaSupported << std::endl
-        << "opencl supported: " << caps.cudaSupported << std::endl
+        << "opencl supported: " << caps.openclSupported << std::endl
         << "warp: " << caps.warp << std::endl
         << "globalMemoryKiBs: " << caps.globalMemoryKiBs << std::endl
         << "sharedMemoryPerMultiProcKiBs: " << caps.sharedMemoryPerMultiProcKiBs << std::endl

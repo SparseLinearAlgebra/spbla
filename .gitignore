@@ -9,4 +9,4 @@
 /**/__pycache__/
 
 # opencl source binaries
-/**/cl/headers/
+/deps/clbool/src/cl/headers/

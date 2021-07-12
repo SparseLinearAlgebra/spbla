@@ -1,13 +1,27 @@
-# Original script from https://github.com/ptheywood/cuda-cmake-github-actions
+# Cuda setup is based on original script from https://github.com/ptheywood/cuda-cmake-github-actions
 
 name: Ubuntu
 
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - .gitignore
+      - LICENSE.md
+      - README.md
+      - CODE_OF_CONDUCT.md
+      - CHANGELOG.md
   pull_request:
     branches: [ main ]
-  workflow_dispatch:
+    paths-ignore:
+      - 'docs/**'
+      - .gitignore
+      - LICENSE.md
+      - README.md
+      - CODE_OF_CONDUCT.md
+      - CHANGELOG.md
+
 
 jobs:
   build:
@@ -23,6 +37,7 @@ jobs:
     env:
       build_dir: "build"
       config: "Release"
+      artifact: "spbla-ubuntu-build.tar.xz"
 
     steps:
       - uses: actions/checkout@v2
@@ -54,7 +69,7 @@ jobs:
           echo "CUDAHOSTCXX=/usr/bin/g++-${{ matrix.gcc }}" >> $GITHUB_ENV
 
       - name: Configure CMake build
-        run: cmake . -B ${{ env.build_dir }} -DCMAKE_BUILD_TYPE=${{ env.config }} -DSPBLA_WITH_OPENCL=OFF -DSPBLA_BUILD_TESTS=ON
+        run: cmake . -B ${{ env.build_dir }} -DCMAKE_BUILD_TYPE=${{ env.config }} -DSPBLA_BUILD_TESTS=ON
 
       - name: Build library sources
         working-directory: ${{ env.build_dir }}
@@ -69,3 +84,13 @@ jobs:
         working-directory: ${{ env.build_dir }}/python
         run: bash run_tests.sh
         shell: bash
+
+      - name: Prepare upload binary
+        shell: bash
+        run: tar cfz ${{ env.artifact }} ${{ env.build_dir }}
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.artifact }}
+          path: ${{ env.artifact }}

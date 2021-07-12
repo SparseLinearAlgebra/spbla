@@ -34,6 +34,7 @@ const char* spbla_GetAbout() {
         ""
         "Contributors:"
         "- Egor Orachyov (Github: https://github.com/EgorOrachyov)\n"
+        "- Maria Karpenko (Github: https://github.com/mkarpenkospb)\n"
         "- Pavel Alimov (Github : https://github.com/Krekep)\n"
         "- Semyon Grigorev (Github: https://github.com/gsvgit)";
 

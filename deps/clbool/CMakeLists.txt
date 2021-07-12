@@ -88,22 +88,12 @@ add_library(clbool STATIC ${CLBOOL_SOURCES})
 target_link_libraries (clbool PUBLIC ${OpenCL_LIBRARY})
 target_include_directories(clbool PUBLIC "libs/clew" ${LIB_CLASSES} ${CLBOOL_DIRS})
 
-#endif()
-
 # to use as submodule
 target_include_directories(clbool PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src/)
-
-if(SPBLA_BUILD_TESTS)
-    add_custom_command(
-            TARGET clbool POST_BUILD
-            COMMAND "${CMAKE_COMMAND}" -E
-            copy
-            "${CMAKE_BINARY_DIR}/deps/clbool/libclbool.a"
-            "${CMAKE_BINARY_DIR}/spbla/tests"
-            COMMENT "Copy clbool static lib into test directory"
-    )
-endif()
 
 target_compile_definitions(clbool PUBLIC CL_HPP_ENABLE_EXCEPTIONS)
 target_compile_definitions(clbool PUBLIC CL_HPP_MINIMUM_OPENCL_VERSION=110)
 target_compile_definitions(clbool PUBLIC CL_HPP_TARGET_OPENCL_VERSION=110)
+
+# Don't know, if win suffers from that, enable when compile for linux (with gcc)
+target_compile_options(clbool PRIVATE $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:AppleClang,Clang,GNU>>: -fPIC>)
