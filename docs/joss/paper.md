@@ -28,7 +28,7 @@ affiliations:
    index: 2
  - name: JetBrains Research
    index: 3
-date: 29 June 2021
+date: 5 September 2021
 bibliography: paper.bib
 ---
 
@@ -37,7 +37,7 @@ bibliography: paper.bib
 `SPbLA` is a sparse Boolean linear algebra primitives and operations
 for GPGPU computations. It comes as stand-alone self-sufficient 
 library with C API for high-performance computing with multiple backends
-for NVIDIA CUDA, OpenCL and CPU-only platforms. The library is shipped
+for Nvidia Cuda, OpenCL and CPU-only platforms. The library is shipped
 with PyPI `pyspbla` package [@pyspbla] for work within Python runtime. 
 The primary library primitive is a sparse matrix of boolean values. The library 
 provides the most popular operations for matrix manipulation, such as 
@@ -86,6 +86,45 @@ Libraries such as `cuSPARSE` [@net:cusparse_docs], `bhSPARSE` [@10.1016/j.jpdc.2
 and operators customization features with major focus on numerical types only.
 
 # Performance
+
+We evaluate the applicability of the proposed library for some real-world matrix data.
+The experiment itself is designed as a computational tasks, 
+which arises as stand-alone or intermediate step in the solving of practical problems.
+Results of the evaluation compared to CPU GraphBLAS implementation SuiteSparse 
+and existing GPU sparse linear algebra libraries. The comparison is not entirely fair,
+but it shows lack of Boolean linear algebra libraries for GPU computations.
+
+Machine for performance evaluation has the following configuration:
+PC with OS Ubuntu 20.04 installed, Intel Core i7-6700 3.4Hz CPU, 64Gb DDR4 RAM,
+GeForce GTX 1070 GPU with 8Gb VRAM.
+
+For evaluation, we selected a number of square real-world matrices,
+widely applicable for sparse matrix benchmarks, from the Sparse Matrix Collection 
+at University of Florida [@data:suitesparse_matrix_collection]. Information about matrices summarized
+in the table bellow.
+
+| Matrix name              | # Rows      | Nnz M       | Nnz/row   | Max Nnz/row | Nnz M^2     |
+|---                       |---:         |---:         |---:       |---:         |---:         |
+| SNAP/amazon0312          | 400,727     | 3,200,440   | 7.9       | 10          | 14,390,544  |
+| LAW/amazon-2008          | 735,323     | 5,158,388   | 7.0       | 10          | 25,366,745  |
+| SNAP/web-Google          | 916,428     | 5,105,039   | 5.5       | 456         | 29,710,164  |
+| SNAP/roadNet-PA          | 1,090,920   | 3,083,796   | 2.8       | 9           | 7,238,920   |
+| SNAP/roadNet-TX	       | 1,393,383   | 3,843,320   | 2.7       | 12          | 8,903,897   |
+| SNAP/roadNet-CA	       | 1,971,281   | 5,533,214   | 2.8       | 12          | 12,908,450  |
+| DIMACS10/netherlands_osm | 2,216,688   | 4,882,476   | 2.2       | 7           | 8,755,758   |
+
+(Matrix name, number of rows in the matrix, number of non-zero elements, max nnz in the row, nnz in the result squared matrix.)
+
+Experiment is intended to measure the performance of matrix-matrix multiplication as $M x M$.
+Results of the evaluation presented in figures \autoref{fig:perf-time} and \autoref{fig:perf-mem}.
+`SPbLA` library shows the best performance among competitors for both OpenCL and Nvidia Cuda backends.
+`CUSP` and `cuSPARSE` show good performance as well. However, they have significant
+memory consumption is some cases, what can be a critical limitation in practical analysis tasks.
+SuiteSparse library on CPU has acceptable performance characteristics, and it is still a 
+good alternative for CPU-only computations.
+
+![Matrix-matrix multiplication time consumption. Time in milliseconds. \label{fig:perf-time}](perf-time.svg)
+![Matrix-matrix multiplication memory consumption. Memory in megabytes. \label{fig:perf-mem}](perf-mem.svg)
 
 # Future research
 
