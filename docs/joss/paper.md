@@ -51,7 +51,7 @@ Sparse matrices are widely applicable in data analysis and `GraphBLAS API` provi
 
 The primary goal of the `SPbLA` is to provide a base for the implementation, testing and profiling high-performance algorithms for solving data analysis problems, such as RDF analysis [@article:cfpq_and_rdf_analysis], RNA secondary structure analysis [@article:rna_prediction], static program code analysis (such as points-to or alias analysis) [@article:dyck_cfl_code_analysis] and evaluation of regular and CFL-reachability queries [@inproceedings:matrix_cfpq; @inbook:kronecker_cfpq_adbis]. 
 
-Thus we can offload different language-constrained path querying related problems, and other problems that can be reduced to manipulation of boolean matrices, to GPGPU in a uniform way. 
+Thus, we can offload different language-constrained path querying related problems, and other problems that can be reduced to manipulation of boolean matrices, to GPGPU in a uniform way. 
 
 Moreover, real data analysis leads to huge matrix processing that can not be efficiently handled on a single GPGPU. Thus the creation of the library which supports multi-GPU and out-of-VRAM computations helps to create an efficient solution for a wide range of applied problems. The creation of such a solution is an open problem while ad-hoc solutions exist in specific areas. We propose an SPbLA as a base for such a solution.
 
@@ -68,10 +68,10 @@ of the `GraphBLAS API` for CPU computation. It is mature and fully featured libr
 with number of bindings for other programming languages, such `pygraphblas` [@pygraphblas] 
 for Python programming.
 
-GPGPU utilization for data analysis and for linear algebra operations is a promising 
+GPGPU's utilization for data analysis and for linear algebra operations is a promising 
 way to high-performance data analysis because GPGPU is much more powerful in parallel
 data processing. However, GPGPU programming is still challenging.
-Best to our knowledge, the is no complete GraphBLAS API implementation for GPGPU
+Best to our knowledge, there is no complete GraphBLAS API implementation for GPGPU
 computations, except `GraphBLAST` [@yang2019graphblast], which is currently in the
 active development. Some work is also done to move SuiteSparse forward GPGPU computations.
 OpenCL and portability?
@@ -88,6 +88,24 @@ and operators customization features with major focus on numerical types only.
 # Performance
 
 # Future research
+
+First direction of the future research is experiments with virtual memory, 
+so-called *Shared Virtual Memory* (SVM) in OpenCL and *Unified Memory* (Managed memory) in Nvidia Cuda.
+Experiments show, that processed data can easily exceed available VRAM. 
+Thus, it is worth to study if implemented algorithms can process more
+data without significant modifications in matrices structure or workload balance.
+
+Moreover, it is necessary to further extend library to work in multi-GPU environment.
+This step introduces a number of issues, such as memory management among computational
+units as well as proper workload dispatch and granularity of parallel tasks.
+Potential solution is to use a hybrid sparse matrix format, such as quadtree,
+utilize virtual memory and expose more control over expressions evaluations to the 
+user in order to support matrix and expression level granularity among computational units. 
+
+Finally, we plan to generalize computational kernels and primitives in order to
+support arbitrary types and operations, defined by user. This step will allow
+defining custom elements, operations and functions, which will be executed on
+GPU similarly as it is done for predefined Boolean values. 
 
 # Acknowledgements
 
