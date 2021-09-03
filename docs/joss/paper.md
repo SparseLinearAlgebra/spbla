@@ -47,15 +47,30 @@ reduce, matrix-matrix element-wise addition, multiplication and Kronecker produc
 
 # Statement of need
 
-Sparse matrices are widely applicable in data analysis and `GraphBLAS API` provides a set of unified building linear algebra based blocks for reducing data analysis algorithms to sparse linear algebra operations. While GPGPU utilization for high-performance linear algebra is common, the high complexity of GPGPU programming makes the implementation of the complete set of sparse operations on GPGPU challenging. Thus, it is worth addressing this problem by focusing on a basic but still important case — sparse Boolean algebra.
+Sparse matrices are widely applicable in data analysis and `GraphBLAS API` provides a set 
+of unified building linear algebra based blocks for reducing data analysis algorithms to 
+sparse linear algebra operations. While GPGPU utilization for high-performance linear algebra is common, 
+the high complexity of GPGPU programming makes the implementation of the complete set of sparse operations on GPGPU challenging. 
+Thus, it is worth addressing this problem by focusing on a basic but still important case — sparse Boolean algebra.
 
-The primary goal of the `SPbLA` is to provide a base for the implementation, testing and profiling high-performance algorithms for solving data analysis problems, such as RDF analysis [@article:cfpq_and_rdf_analysis], RNA secondary structure analysis [@article:rna_prediction], static program code analysis (such as points-to or alias analysis) [@article:dyck_cfl_code_analysis] and evaluation of regular and CFL-reachability queries [@inproceedings:matrix_cfpq; @inbook:kronecker_cfpq_adbis]. 
+The primary goal of the `SPbLA` is to provide a base for the implementation, 
+testing and profiling high-performance algorithms for solving data analysis problems, 
+such as RDF analysis [@article:cfpq_and_rdf_analysis], 
+RNA secondary structure analysis [@article:rna_prediction], 
+static program code analysis (such as points-to or alias analysis) [@article:dyck_cfl_code_analysis] 
+and evaluation of regular and CFL-reachability queries [@inproceedings:matrix_cfpq; @inbook:kronecker_cfpq_adbis]. 
 
-Thus, we can offload different language-constrained path querying related problems, and other problems that can be reduced to manipulation of boolean matrices, to GPGPU in a uniform way. 
+Thus, we can offload different language-constrained path querying related problems, 
+and other problems that can be reduced to manipulation of boolean matrices, to GPGPU in a uniform way. 
 
-Moreover, real data analysis leads to huge matrix processing that can not be efficiently handled on a single GPGPU. Thus the creation of the library which supports multi-GPU and out-of-VRAM computations helps to create an efficient solution for a wide range of applied problems. The creation of such a solution is an open problem while ad-hoc solutions exist in specific areas. We propose an SPbLA as a base for such a solution.
+Moreover, real data analysis leads to huge matrix processing that can not be efficiently 
+handled on a single GPGPU. Thus the creation of the library which supports multi-GPU and 
+out-of-VRAM computations helps to create an efficient solution for a wide range of applied problems. 
+The creation of such a solution is an open problem while ad-hoc solutions exist in specific areas. 
+We propose an SPbLA as a base for such a solution.
 
-Also, we hope, that the library is a small step to move forward the implementation of the fully-featured sparse linear algebra as specified in GrpahBLAS multi-GPU computations.
+Also, we hope, that the library is a small step to move forward the implementation of 
+the fully-featured sparse linear algebra as specified in GrpahBLAS multi-GPU computations.
 
 
 # Related tools
@@ -100,31 +115,31 @@ GeForce GTX 1070 GPU with 8Gb VRAM.
 
 For evaluation, we selected a number of square real-world matrices,
 widely applicable for sparse matrix benchmarks, from the Sparse Matrix Collection 
-at University of Florida [@data:suitesparse_matrix_collection]. Information about matrices summarized
-in the table bellow.
+at University of Florida [@data:suitesparse_matrix_collection]. Information about matrices summarized bellow. 
+Table contains matrix name, number of rows in the matrix (the same as number of columns),
+number of non-zero elements (Nnz) in the matrix, average and maximum number of nnz in row, nnz in the result evaluated matrix.
 
-| Matrix name              | # Rows      | Nnz M       | Nnz/row   | Max Nnz/row | Nnz M^2     |
-|---                       |---:         |---:         |---:       |---:         |---:         |
-| SNAP/amazon0312          | 400,727     | 3,200,440   | 7.9       | 10          | 14,390,544  |
-| LAW/amazon-2008          | 735,323     | 5,158,388   | 7.0       | 10          | 25,366,745  |
-| SNAP/web-Google          | 916,428     | 5,105,039   | 5.5       | 456         | 29,710,164  |
-| SNAP/roadNet-PA          | 1,090,920   | 3,083,796   | 2.8       | 9           | 7,238,920   |
-| SNAP/roadNet-TX	       | 1,393,383   | 3,843,320   | 2.7       | 12          | 8,903,897   |
-| SNAP/roadNet-CA	       | 1,971,281   | 5,533,214   | 2.8       | 12          | 12,908,450  |
-| DIMACS10/netherlands_osm | 2,216,688   | 4,882,476   | 2.2       | 7           | 8,755,758   |
+| Matrix name     | # Rows      | Nnz M       | Nnz/row   | Max Nnz/row | Nnz M^2     |
+|---              |---:         |---:         |---:       |---:         |---:         |
+| amazon0312      | 400,727     | 3,200,440   | 7.9       | 10          | 14,390,544  |
+| amazon-2008     | 735,323     | 5,158,388   | 7.0       | 10          | 25,366,745  |
+| web-Google      | 916,428     | 5,105,039   | 5.5       | 456         | 29,710,164  |
+| roadNet-PA      | 1,090,920   | 3,083,796   | 2.8       | 9           | 7,238,920   |
+| roadNet-TX	  | 1,393,383   | 3,843,320   | 2.7       | 12          | 8,903,897   |
+| roadNet-CA	  | 1,971,281   | 5,533,214   | 2.8       | 12          | 12,908,450  |
+| netherlands_osm | 2,216,688   | 4,882,476   | 2.2       | 7           | 8,755,758   |
 
-(Matrix name, number of rows in the matrix, number of non-zero elements, max nnz in the row, nnz in the result squared matrix.)
-
-Experiment is intended to measure the performance of matrix-matrix multiplication as $M x M$.
-Results of the evaluation presented in figures \autoref{fig:perf-time} and \autoref{fig:perf-mem}.
+Experiment is intended to measure the performance of matrix-matrix multiplication as $M \times M$.
+Results of the evaluation presented in \autoref{fig:perftime} and \autoref{fig:perfmem}.
 `SPbLA` library shows the best performance among competitors for both OpenCL and Nvidia Cuda backends.
 `CUSP` and `cuSPARSE` show good performance as well. However, they have significant
 memory consumption is some cases, what can be a critical limitation in practical analysis tasks.
 SuiteSparse library on CPU has acceptable performance characteristics, and it is still a 
 good alternative for CPU-only computations.
 
-![Matrix-matrix multiplication time consumption. Time in milliseconds. \label{fig:perf-time}](perf-time.svg)
-![Matrix-matrix multiplication memory consumption. Memory in megabytes. \label{fig:perf-mem}](perf-mem.svg)
+![Matrix-matrix multiplication time consumption. Time in milliseconds.\label{fig:perftime}](perf-time.svg)
+
+![Matrix-matrix multiplication memory consumption. Memory in megabytes.\label{fig:perfmem}](perf-mem.svg)
 
 # Future research
 
