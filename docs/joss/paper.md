@@ -37,9 +37,9 @@ bibliography: paper.bib
 `SPbLA` is a sparse Boolean linear algebra primitives and operations
 for GPGPU computations. It comes as stand-alone self-sufficient 
 library with C API for high-performance computing with multiple backends
-for Nvidia Cuda, OpenCL and CPU-only platforms. The library is shipped
-with PyPI `pyspbla` package [@pyspbla] for work within Python runtime. 
-The primary library primitive is a sparse matrix of boolean values. The library 
+for Nvidia Cuda, OpenCL and CPU-only platforms. The library has 
+PyPI `pyspbla` package [@pyspbla] for work within Python runtime. 
+The primary library primitive is a sparse matrix of Boolean values. The library 
 provides the most popular operations for matrix manipulation, such as 
 construction from values, transpose, sub-matrix extraction, matrix-to-vector 
 reduce, matrix-matrix element-wise addition, multiplication and Kronecker product.  
@@ -57,20 +57,20 @@ The primary goal of the `SPbLA` is to provide a base for the implementation,
 testing and profiling high-performance algorithms for solving data analysis problems, 
 such as RDF analysis [@article:cfpq_and_rdf_analysis], 
 RNA secondary structure analysis [@article:rna_prediction], 
-static program code analysis (such as points-to or alias analysis) [@article:dyck_cfl_code_analysis] 
+static code analysis (such as points-to or alias analysis) [@article:dyck_cfl_code_analysis] 
 and evaluation of regular and CFL-reachability queries [@inproceedings:matrix_cfpq; @inbook:kronecker_cfpq_adbis]. 
 
 Thus, we can offload different language-constrained path querying related problems, 
-and other problems that can be reduced to manipulation of boolean matrices, to GPGPU in a uniform way. 
+and other problems that can be reduced to manipulation of Boolean matrices, to GPGPU uniformly. 
 
 Moreover, real data analysis leads to huge matrix processing that can not be efficiently 
-handled on a single GPGPU. Thus the creation of the library which supports multi-GPU and 
+handled on a single GPGPU. The creation of the library which supports multi-GPU and 
 out-of-VRAM computations helps to create an efficient solution for a wide range of applied problems. 
 The creation of such a solution is an open problem while ad-hoc solutions exist in specific areas. 
-We propose an SPbLA as a base for such a solution.
+We propose an `SPbLA` as a base for such a solution.
 
-Also, we hope, that the library is a small step to move forward the implementation of 
-the fully-featured sparse linear algebra as specified in GrpahBLAS multi-GPU computations.
+Also, we hope, that the library is a small step to move the implementation of 
+the fully-featured sparse linear algebra as specified in `GraphBLAS` forward multi-GPU computations.
 
 
 # Related tools
@@ -86,38 +86,38 @@ for Python programming.
 GPGPU's utilization for data analysis and for linear algebra operations is a promising 
 way to high-performance data analysis because GPGPU is much more powerful in parallel
 data processing. However, GPGPU programming is still challenging.
-Best to our knowledge, there is no complete GraphBLAS API implementation for GPGPU
+Best to our knowledge, there is no complete `GraphBLAS API` implementation for GPGPU
 computations, except `GraphBLAST` [@yang2019graphblast], which is currently in the
-active development. Some work is also done to move SuiteSparse forward GPGPU computations.
-OpenCL and portability?
+active development. Some work is also done to move `SuiteSparse` forward GPGPU computations.
 
-The sparsity of data introduces issues with load balancing, irregular data access, 
+However, the sparsity of data introduces issues with load balancing, irregular data access, 
 thus sparsity complicates the implementation of high-performance algorithms for 
-sparse linear algebra on GPGPU even more. There is number of open-source libraries,
+sparse linear algebra on GPGPU. There is number of open-source libraries,
 which implement independently different sparse formats and operations.
-Thus, there are no sparse linear algebra libraries based on the state-of-the-art algorithms.
+Thus, there is no single solid sparse linear algebra framework.
 Libraries such as `cuSPARSE` [@net:cusparse_docs], `bhSPARSE` [@10.1016/j.jpdc.2015.06.010], 
 `clSPARSE` [@10.1145/2909437.2909442] and `CUSP` [@net:cusplibrary] have limited type 
 and operators customization features with major focus on numerical types only.
+
 
 # Performance
 
 We evaluate the applicability of the proposed library for some real-world matrix data.
 The experiment itself is designed as a computational tasks, 
 which arises as stand-alone or intermediate step in the solving of practical problems.
-Results of the evaluation compared to CPU GraphBLAS implementation SuiteSparse 
+Results of the evaluation compared to CPU `GraphBLAS` implementation `SuiteSparse` 
 and existing GPU sparse linear algebra libraries. The comparison is not entirely fair,
-but it shows lack of Boolean linear algebra libraries for GPU computations.
+since there are still no Boolean linear algebra libraries for GPU computations.
 
 Machine for performance evaluation has the following configuration:
 PC with OS Ubuntu 20.04 installed, Intel Core i7-6700 3.4Hz CPU, 64Gb DDR4 RAM,
 GeForce GTX 1070 GPU with 8Gb VRAM.
 
 For evaluation, we selected a number of square real-world matrices,
-widely applicable for sparse matrix benchmarks, from the Sparse Matrix Collection 
+widely applicable for sparse matrices benchmarks, from the Sparse Matrix Collection 
 at University of Florida [@data:suitesparse_matrix_collection]. Information about matrices summarized bellow. 
 Table contains matrix name, number of rows in the matrix (the same as number of columns),
-number of non-zero elements (Nnz) in the matrix, average and maximum number of nnz in row, nnz in the result evaluated matrix.
+number of non-zero elements (Nnz) in the matrix, average and maximum nnz in row, nnz in the result matrix.
 
 | Matrix name     | # Rows      | Nnz M       | Nnz/row   | Max Nnz/row | Nnz M^2     |
 |---              |---:         |---:         |---:       |---:         |---:         |
@@ -141,11 +141,12 @@ good alternative for CPU-only computations.
 
 ![Matrix-matrix multiplication memory consumption. Memory in megabytes.\label{fig:perfmem}](perf-mem.svg)
 
+
 # Future research
 
 First direction of the future research is experiments with virtual memory, 
-so-called *Shared Virtual Memory* (SVM) in OpenCL and *Unified Memory* (Managed memory) in Nvidia Cuda.
-Experiments show, that processed data can easily exceed available VRAM. 
+so-called `Shared Virtual Memory` (SVM) in OpenCL and `Unified Memory` (Managed memory) in Nvidia Cuda.
+Our results show, that processed data can easily exceed available VRAM. 
 Thus, it is worth to study if implemented algorithms can process more
 data without significant modifications in matrices structure or workload balance.
 
@@ -158,11 +159,13 @@ user in order to support matrix and expression level granularity among computati
 
 Finally, we plan to generalize computational kernels and primitives in order to
 support arbitrary types and operations, defined by user. This step will allow
-defining custom elements, operations and functions, which will be executed on
+defining custom elements and functions, which will be executed on
 GPU similarly as it is done for predefined Boolean values. 
+
 
 # Acknowledgements
 
 Work on the `SPbLA` project was supported by a grant from JetBrains Research.
+
 
 # References
