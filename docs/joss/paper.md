@@ -137,9 +137,9 @@ memory consumption is some cases, what can be a critical limitation in practical
 SuiteSparse library on CPU has acceptable performance characteristics, and it is still a 
 good alternative for CPU-only computations.
 
-![Matrix-matrix multiplication time consumption. Time in milliseconds.\label{fig:perftime}](perf-time.svg)
+![Matrix-matrix multiplication time consumption. Time in milliseconds.\label{fig:perftime}](perf-time.png)
 
-![Matrix-matrix multiplication memory consumption. Memory in megabytes.\label{fig:perfmem}](perf-mem.svg)
+![Matrix-matrix multiplication memory consumption. Memory in megabytes.\label{fig:perfmem}](perf-mem.png)
 
 
 # Future research
