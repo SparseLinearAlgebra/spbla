@@ -22,6 +22,24 @@
 /* SOFTWARE.                                                                      */
 /**********************************************************************************/
 
+/**
+ * @file spbla.h
+ * @author Egor Orachyov
+ * @brief SPbLA library public C API.
+ *
+ * This file contains:
+ *  - Status and error codes
+ *  - Optional functions hint flags
+ *  - Device capabilities structure and query
+ *  - Library initialization/finalization api
+ *  - Matrix manipulation api
+ *  - Matrix-matrix operations
+ *
+ * @see https://github.com/JetBrains-Research/spbla
+ * @see https://jetbrains-research.github.io/spbla/
+ * @see https://pypi.org/project/pyspbla/
+ */
+
 #ifndef SPBLA_SPBLA_H
 #define SPBLA_SPBLA_H
 
