@@ -189,6 +189,7 @@ if (SPBLA_WITH_CUDA)
     set_target_properties(spbla PROPERTIES CUDA_STANDARD_REQUIRED ON)
     set_target_properties(spbla PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
+    set_target_properties(spbla PROPERTIES CUDA_ARCHITECTURES "60;61;62;70;72;75")
     target_compile_options(spbla PRIVATE $<$<COMPILE_LANGUAGE:CUDA>: -use_fast_math -Xptxas -O2>)
 
     target_compile_definitions(spbla PUBLIC SPBLA_WITH_CUDA)
