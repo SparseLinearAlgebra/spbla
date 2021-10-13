@@ -27,6 +27,8 @@
 #include <core/error.hpp>
 #include <algorithm>
 #include <cassert>
+#include <cstddef>
+#include <limits>
 
 namespace spbla {
 
