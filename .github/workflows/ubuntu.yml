@@ -69,7 +69,7 @@ jobs:
           echo "CUDAHOSTCXX=/usr/bin/g++-${{ matrix.gcc }}" >> $GITHUB_ENV
 
       - name: Configure CMake build
-        run: cmake . -B ${{ env.build_dir }} -DCMAKE_BUILD_TYPE=${{ env.config }} -DSPBLA_BUILD_TESTS=ON
+        run: cmake . -B ${{ env.build_dir }} -DCMAKE_BUILD_TYPE=${{ env.config }} -DSPBLA_WITH_CUB=ON -DSPBLA_BUILD_TESTS=ON
 
       - name: Build library sources
         working-directory: ${{ env.build_dir }}

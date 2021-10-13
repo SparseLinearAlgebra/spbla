@@ -10,6 +10,7 @@ option(SPBLA_WITH_OPENCL        "Build library with opencl backend (default)" ON
 option(SPBLA_WITH_SEQUENTIAL    "Build library with cpu sequential backend (fallback)" ON)
 option(SPBLA_BUILD_TESTS        "Build project unit-tests with gtest" ON)
 option(SPBLA_COPY_TO_PY_PACKAGE "Copy compiled shared library into python package folder (for package use purposes)" ON)
+option(SPBLA_WITH_CUB           "Build with bundled cub sources (enable for CUDA SDK version <= 10)" OFF)
 
 set(SPBLA_VERSION_MAJOR 1)
 set(SPBLA_VERSION_MINOR 0)
@@ -36,9 +37,12 @@ if (SPBLA_WITH_CUDA)
     set(CUB_ENABLE_HEADER_TESTING OFF CACHE BOOL "" FORCE)
     set(CUB_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
     set(CUB_ENABLE_EXAMPLES OFF CACHE BOOL "" FORCE)
-    add_subdirectory(deps/cub)
-    add_library(cub INTERFACE IMPORTED)
-    target_link_libraries(cub INTERFACE CUB::CUB)
+
+    if (SPBLA_WITH_CUB)
+        add_subdirectory(deps/cub)
+        add_library(cub INTERFACE IMPORTED)
+        target_link_libraries(cub INTERFACE CUB::CUB)
+    endif()
 
     message(STATUS "Add nsparse library as crs matrix multiplication backend")
     add_subdirectory(deps/nsparse)

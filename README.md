@@ -192,6 +192,7 @@ By default, the following cmake options will be automatically enabled:
 - `SPBLA_WITH_OPENCL` - build library with actual cuda backend
 - `SPBLA_WITH_SEQUENTIAL` - build library witt cpu based backend
 - `SPBLA_WITH_TESTS` - build library unit-tests collection
+- `SPBLA_WITH_CUB` - build library with bundled CUB sources, relevant for CUDA SDK 10 and earlier
 
 > Note: in order to provide correct GCC version for CUDA sources compiling,
 > you will have to provide custom paths to the CC and CXX compilers before 
