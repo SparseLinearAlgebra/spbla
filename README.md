@@ -17,6 +17,7 @@ library features and primitives in high-level format with automated resources ma
 * **Tutorial:** [https://github.com/JetBrains-Research/spbla/blob/main/docs/tutorial.md](https://github.com/JetBrains-Research/spbla/blob/main/docs/tutorial.md)
 * **Getting started:** [https://github.com/JetBrains-Research/spbla/blob/main/docs/getting_started.md](https://github.com/JetBrains-Research/spbla/blob/main/docs/getting_started.md)
 * **Extended example:** [https://github.com/JetBrains-Research/spbla/blob/main/docs/getting_started.md](https://github.com/JetBrains-Research/spbla/blob/main/docs/getting_started.md)
+* **Contributing guide:** [https://github.com/JetBrains-Research/spbla/blob/master/CONTRIBUTING.md](https://github.com/JetBrains-Research/spbla/blob/master/CONTRIBUTING.md)
 * **Python Reference:**
 * **C API Reference:** [https://jetbrains-research.github.io/spbla/](https://jetbrains-research.github.io/spbla/)
 * **Package source code:** [https://github.com/JetBrains-Research/spbla/tree/main/python/pyspbla](https://github.com/JetBrains-Research/spbla/tree/main/python/pyspbla)
@@ -115,6 +116,11 @@ spbla
 │   └── nsparse - SpGEMM implementation for csr matrices (with unified memory, configurable)
 └── CMakeLists.txt - library cmake config, add this as sub-directory to your project
 ```
+
+## Contributing
+
+If you want to contribute to this project, follow our short and simple open-source
+contributors [guide](./CONTRIBUTING.md). Also have a look at [code of conduct](./CODE_OF_CONDUCT.md).
 
 ## Contributors
 
