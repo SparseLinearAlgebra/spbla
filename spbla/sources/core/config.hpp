@@ -26,11 +26,15 @@
 #define SPBLA_CONFIG_HPP
 
 #include <spbla/spbla.h>
+#include <cstddef>
 
 namespace spbla {
     using index = spbla_Index;
     using hints = spbla_Hints;
-    struct Pair { spbla_Index i; spbla_Index j; };
+    struct Pair {
+        spbla_Index i;
+        spbla_Index j;
+    };
 }
 
 #endif //SPBLA_CONFIG_HPP

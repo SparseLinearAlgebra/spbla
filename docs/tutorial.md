@@ -21,7 +21,7 @@ The following terminal commands allow to download the latest **pyspbla** package
 python3 -m pip install pyspbla
 ```
 
-## Fist pyspbla program
+## First pyspbla program
 
 Run python interpreter and execute following commands:
 
