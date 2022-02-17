@@ -1,0 +1,2723 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>pyspbla.matrix API documentation</title>
+<meta name="description" content="Matrix primitive." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pyspbla.matrix</code></h1>
+</header>
+<section id="section-intro">
+<p>Matrix primitive.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+Matrix primitive.
+&#34;&#34;&#34;
+
+import ctypes
+import random
+
+from . import wrapper
+from . import bridge
+
+
+__all__ = [
+    &#34;Matrix&#34;
+]
+
+
+class Matrix:
+    &#34;&#34;&#34;
+    Wrapper for spbla Sparse boolean matrix type.
+
+    Matrix class supports all spbla C API Matrix functions.
+    Also Matrix class provides additional fancy functions/operators for better user experience.
+
+    Matrix creation:
+    - empty
+    - from lists data
+    - random generated
+
+    Matrix operations:
+    - mxm
+    - ewiseadd
+    - kronecker
+    - reduce
+    - transpose
+    - matrix extraction
+
+    Matrix functions:
+    - to string
+    - values iterating
+    - equality check
+
+    Debug features:
+    - String markers
+    &#34;&#34;&#34;
+
+    __slots__ = [&#34;hnd&#34;]
+
+    def __init__(self, hnd):
+        self.hnd = hnd
+
+    def __del__(self):
+        bridge.check(wrapper.loaded_dll.spbla_Matrix_Free(self.hnd))
+
+    @classmethod
+    def empty(cls, shape):
+        &#34;&#34;&#34;
+        Creates empty matrix of specified `shape`.
+
+        :param shape: Pair with two values with rows and cols count of the matrix
+        :return: Created empty matrix
+        &#34;&#34;&#34;
+
+        hnd = ctypes.c_void_p(0)
+
+        nrows = shape[0]
+        ncols = shape[1]
+
+        status = wrapper.loaded_dll.spbla_Matrix_New(
+            ctypes.byref(hnd), ctypes.c_uint(nrows), ctypes.c_uint(ncols)
+        )
+
+        bridge.check(status)
+
+        return Matrix(hnd)
+
+    @classmethod
+    def from_lists(cls, shape, rows, cols, is_sorted=False, no_duplicates=False):
+        &#34;&#34;&#34;
+        Build matrix from provided `shape` and non-zero values data.
+
+        &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+        &gt;&gt;&gt; print(matrix)
+        &#39;
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   1   .   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param shape: Matrix shape
+        :param rows: List with row indices
+        :param cols: List with column indices
+        :param is_sorted: True if values are sorted in row-col order
+        :param no_duplicates: True if provided values has no duplicates
+        :return: Created matrix filled with data
+        &#34;&#34;&#34;
+
+        out = cls.empty(shape)
+        out.build(rows, cols, is_sorted=is_sorted, no_duplicates=no_duplicates)
+        return out
+
+    @classmethod
+    def generate(cls, shape, density: float):
+        &#34;&#34;&#34;
+        Generate matrix of the specified shape with desired values density.
+
+        &gt;&gt;&gt; matrix = Matrix.generate(shape=(4, 4), density=0.5)
+        &gt;&gt;&gt; print(matrix)
+        &#39;
+                0   1   2   3
+          0 |   .   1   .   . |   0
+          1 |   .   .   1   1 |   1
+          2 |   1   1   .   . |   2
+          3 |   .   1   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param shape: Matrix shape to generate
+        :param density: Matrix values density, must be within [0, 1] bounds
+        :return: Generated matrix
+        &#34;&#34;&#34;
+
+        density = min(1.0, max(density, 0.0))
+        nvals_max = shape[0] * shape[1]
+        nvals_to_gen = int(nvals_max * density)
+
+        m, n = shape
+        rows, cols = list(), list()
+
+        for i in range(nvals_to_gen):
+            rows.append(random.randrange(0, m))
+            cols.append(random.randrange(0, n))
+
+        return Matrix.from_lists(shape=shape, rows=rows, cols=cols, is_sorted=False, no_duplicates=False)
+
+    def build(self, rows, cols, is_sorted=False, no_duplicates=False):
+        &#34;&#34;&#34;
+        Build sparse matrix of boolean values from provided arrays of non-zero rows and columns.
+
+        &gt;&gt;&gt; matrix = Matrix.empty(shape=(4,4))
+        &gt;&gt;&gt; matrix.build([0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+        &gt;&gt;&gt; print(matrix)
+        &#39;
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   1   .   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param rows: Array of values rows indices
+        :param cols: Array of values column indices
+        :param is_sorted: True if values are sorted in row-col order
+        :param no_duplicates: True if provided values has no duplicates
+        :return:
+        &#34;&#34;&#34;
+
+        if len(rows) != len(cols):
+            raise Exception(&#34;Rows and cols arrays must have equal size&#34;)
+
+        nvals = len(rows)
+        t_rows = (ctypes.c_uint * len(rows))(*rows)
+        t_cols = (ctypes.c_uint * len(cols))(*cols)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Build(
+            self.hnd, t_rows, t_cols,
+            ctypes.c_uint(nvals),
+            ctypes.c_uint(bridge.get_build_hints(is_sorted, no_duplicates))
+        )
+
+        bridge.check(status)
+
+    def dup(self):
+        &#34;&#34;&#34;
+        Creates new matrix instance, the exact copy of the `self`
+
+        &gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+        &gt;&gt;&gt; b = a.dup()
+        &gt;&gt;&gt; b[3, 3] = True
+        &gt;&gt;&gt; print(a, b, sep=&#34;&#34;)
+        &#39;
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   1   .   .   . |   3
+                0   1   2   3
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   1   .   .   1 |   3
+                0   1   2   3
+        &#39;
+
+        :return: New matrix instance with `self` copied data
+        &#34;&#34;&#34;
+
+        hnd = ctypes.c_void_p(0)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Duplicate(
+            self.hnd, ctypes.byref(hnd)
+        )
+
+        bridge.check(status)
+        return Matrix(hnd)
+
+    def transpose(self, time_check=False):
+        &#34;&#34;&#34;
+        Creates new transposed `self` matrix.
+
+        &gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+        &gt;&gt;&gt; b = a.transpose()
+        &gt;&gt;&gt; print(a, b, sep=&#34;&#34;)
+        &#39;
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   1   .   .   . |   3
+                0   1   2   3
+                0   1   2   3
+          0 |   1   .   .   1 |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   .   .   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param time_check: Pass True to measure and log elapsed time of the operation
+        :return: New matrix instance with `self` transposed data
+        &#34;&#34;&#34;
+
+        shape = (self.ncols, self.nrows)
+        out = Matrix.empty(shape)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Transpose(
+            out.hnd,
+            self.hnd,
+            ctypes.c_uint(bridge.get_transpose_hints(time_check=time_check))
+        )
+
+        bridge.check(status)
+        return out
+
+    def set_marker(self, marker: str):
+        &#34;&#34;&#34;
+        Sets to the matrix specific debug string marker.
+        This marker will appear in the log messages as string identifier of the matrix.
+
+        &gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+        &gt;&gt;&gt; print(a.marker)
+        &#39;0x1a767b0&#39;
+        &gt;&gt;&gt; a.set_marker(&#34;meow&#34;)
+        &gt;&gt;&gt; print(a.marker)
+        &#39;meow (0x1a767b0)&#39;
+
+        :param marker: String marker to set
+        :return: None
+        &#34;&#34;&#34;
+
+        assert marker is not None
+
+        status = wrapper.loaded_dll.spbla_Matrix_SetMarker(
+            self.hnd, marker.encode(&#34;utf-8&#34;)
+        )
+
+        bridge.check(status)
+        return None
+
+    @property
+    def marker(self):
+        &#34;&#34;&#34;
+        Allows to get matrix debug string marker.
+
+        &gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+        &gt;&gt;&gt; print(a.marker)
+        &#39;0x1a767b0&#39;
+        &gt;&gt;&gt; a.set_marker(&#34;meow&#34;)
+        &gt;&gt;&gt; print(a.marker)
+        &#39;meow (0x1a767b0)&#39;
+
+        :return: String matrix marker.
+        &#34;&#34;&#34;
+
+        size = ctypes.c_uint(0)
+        status = wrapper.loaded_dll.spbla_Matrix_Marker(
+            self.hnd, ctypes.POINTER(ctypes.c_char)(), ctypes.byref(size)
+        )
+
+        bridge.check(status)
+
+        c_buffer = (ctypes.c_char * int(size.value))()
+        status = wrapper.loaded_dll.spbla_Matrix_Marker(
+            self.hnd, c_buffer, ctypes.byref(size)
+        )
+
+        bridge.check(status)
+        return c_buffer.value.decode(&#34;utf-8&#34;)
+
+    @property
+    def nrows(self) -&gt; int:
+        &#34;&#34;&#34;
+        Query number of rows of the `self` matrix.
+        :return: Number of rows
+        &#34;&#34;&#34;
+
+        result = ctypes.c_uint(0)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Nrows(
+            self.hnd, ctypes.byref(result)
+        )
+
+        bridge.check(status)
+        return int(result.value)
+
+    @property
+    def ncols(self) -&gt; int:
+        &#34;&#34;&#34;
+        Query number of columns of the `self` matrix.
+        :return: Number of columns
+        &#34;&#34;&#34;
+
+        result = ctypes.c_uint(0)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Ncols(
+            self.hnd, ctypes.byref(result)
+        )
+
+        bridge.check(status)
+        return int(result.value)
+
+    @property
+    def nvals(self) -&gt; int:
+        &#34;&#34;&#34;
+        Query number of non-zero values of the `self` matrix.
+        :return: Number of non-zero values
+        &#34;&#34;&#34;
+
+        result = ctypes.c_uint(0)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Nvals(
+            self.hnd, ctypes.byref(result)
+        )
+
+        bridge.check(status)
+        return int(result.value)
+
+    @property
+    def shape(self) -&gt; (int, int):
+        &#34;&#34;&#34;
+        Query shape of `self` matrix as (nrows, ncols) tuple.
+        :return: Return tuple of (nrows, ncols)
+        &#34;&#34;&#34;
+
+        return self.nrows, self.ncols
+
+    def to_lists(self):
+        &#34;&#34;&#34;
+        Read matrix data as lists of `rows` and `clos` indices.
+
+        &gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+        &gt;&gt;&gt; a[0, 0] = True
+        &gt;&gt;&gt; a[1, 3] = True
+        &gt;&gt;&gt; a[1, 0] = True
+        &gt;&gt;&gt; a[2, 2] = True
+        &gt;&gt;&gt; rows, cols = a.to_lists()
+        &gt;&gt;&gt; print(list(rows), list(cols))
+        &#39;[0, 1, 1, 2] [0, 0, 3, 2]&#39;
+
+        :return: Pair with `rows` and `cols` lists
+        &#34;&#34;&#34;
+
+        count = self.nvals
+
+        rows = (ctypes.c_uint * count)()
+        cols = (ctypes.c_uint * count)()
+        nvals = ctypes.c_uint(count)
+
+        status = wrapper.loaded_dll.spbla_Matrix_ExtractPairs(
+            self.hnd, rows, cols, ctypes.byref(nvals)
+        )
+
+        bridge.check(status)
+
+        return rows, cols
+
+    def to_list(self):
+        &#34;&#34;&#34;
+        Read matrix values as list of (i,j) pairs.
+
+        &gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+        &gt;&gt;&gt; a[0, 0] = True
+        &gt;&gt;&gt; a[1, 3] = True
+        &gt;&gt;&gt; a[1, 0] = True
+        &gt;&gt;&gt; a[2, 2] = True
+        &gt;&gt;&gt; vals = a.to_list()
+        &gt;&gt;&gt; print(vals)
+        &#39;[(0, 0), (1, 0), (1, 3), (2, 2)]&#39;
+
+        :return: List of (i, j) pairs
+        &#34;&#34;&#34;
+
+        I, J = self.to_lists()
+        return list(zip(I, J))
+
+    def to_string(self, width=3):
+        &#34;&#34;&#34;
+        Return a string representation of the matrix.
+
+        &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+        &gt;&gt;&gt; print(matrix)
+        &#39;
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   1   .   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param width: Width of the field in chars where to put numbers of rows and columns
+        :return: Matrix string representation
+        &#34;&#34;&#34;
+
+        nrows = self.nrows
+        ncols = self.ncols
+        nvals = self.nvals
+        rows, cols = self.to_lists()
+
+        cell_empty = &#34;.&#34;
+        cell_filled = &#34;1&#34;
+        cell_sep = &#34; &#34;
+        format_str = &#34;{:&gt;%s}&#34; % width
+
+        header = format_str.format(&#34;&#34;) + &#34;  &#34; + cell_sep + &#34;&#34;.join(format_str.format(j) + cell_sep for j in range(ncols))
+        result = header + &#34;\n&#34;
+
+        v = 0
+        for i in range(nrows):
+            line = format_str.format(i) + &#34; |&#34; + cell_sep
+            for j in range(ncols):
+                if v &lt; nvals and rows[v] == i and cols[v] == j:
+                    line += format_str.format(cell_filled) + cell_sep
+                    v += 1
+                else:
+                    line += format_str.format(cell_empty) + cell_sep
+            line += &#34;| &#34; + format_str.format(i) + &#34;\n&#34;
+            result += line
+
+        result += header + &#34;\n&#34;
+        return result
+
+    def extract_matrix(self, i, j, shape, out=None, time_check=False):
+        &#34;&#34;&#34;
+        Extract a sub-matrix.
+
+        &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True)
+        &gt;&gt;&gt; print(matrix.extract_matrix(0, 1, shape=(3, 3)))
+        &#39;
+                0   1   2
+          0 |   .   .   . |   0
+          1 |   1   .   . |   1
+          2 |   .   1   . |   2
+                0   1   2
+        &#39;
+
+        :param i: First row index to extract
+        :param j: First column index to extract
+        :param shape: Shape of the sub-matrix
+        :param out: Optional matrix where to store result
+        :param time_check: Pass True to measure and log elapsed time of the operation
+        :return: Sub-matrix
+        &#34;&#34;&#34;
+
+        if out is None:
+            out = Matrix.empty(shape)
+
+        status = wrapper.loaded_dll.spbla_Matrix_ExtractSubMatrix(
+            out.hnd, self.hnd,
+            ctypes.c_uint(i),
+            ctypes.c_uint(j),
+            ctypes.c_uint(shape[0]),
+            ctypes.c_uint(shape[1]),
+            ctypes.c_uint(bridge.get_sub_matrix_hints(time_check=time_check))
+        )
+
+        bridge.check(status)
+        return out
+
+    def mxm(self, other, out=None, accumulate=False, time_check=False):
+        &#34;&#34;&#34;
+        Matrix-matrix multiplication in boolean semiring with &#34;x = and&#34; and &#34;+ = or&#34; operations.
+        Returns `self` multiplied to `other` matrix.
+
+        Pass optional `out` matrix to store result.
+        Pass `accumulate`=True to sum the multiplication result with `out` matrix.
+
+        &gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2], [2, 3, 0])
+        &gt;&gt;&gt; b = Matrix.from_lists((4, 4), [0, 1, 3], [2, 3, 0])
+        &gt;&gt;&gt; print(a.mxm(b, out=a, accumulate=True))
+        &#39;
+                0   1   2   3
+          0 |   .   .   1   . |   0
+          1 |   1   .   .   1 |   1
+          2 |   1   .   1   . |   2
+          3 |   .   .   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param other: Input matrix for multiplication
+        :param out: Optional out matrix to store result
+        :param accumulate: Set in true to accumulate the result with `out` matrix
+        :param time_check: Pass True to measure and log elapsed time of the operation
+        :return: Matrix-matrix multiplication result (with possible accumulation to `out` if provided)
+        &#34;&#34;&#34;
+
+        if out is None:
+            shape = (self.nrows, other.ncols)
+            out = Matrix.empty(shape)
+            accumulate = False
+
+        status = wrapper.loaded_dll.spbla_MxM(
+            out.hnd,
+            self.hnd,
+            other.hnd,
+            ctypes.c_uint(bridge.get_mxm_hints(is_accumulated=accumulate, time_check=time_check))
+        )
+
+        bridge.check(status)
+        return out
+
+    def kronecker(self, other, time_check=False):
+        &#34;&#34;&#34;
+        Matrix-matrix kronecker product with boolean &#34;x = and&#34; operation.
+        Returns kronecker product of `self` and `other` matrices.
+
+        &gt;&gt;&gt; a = Matrix.from_lists((3, 3), [0, 0, 1, 2, 2], [0, 2, 1, 0, 2])
+        &gt;&gt;&gt; b = Matrix.from_lists((3, 3), [0, 1, 1, 2], [1, 0, 2, 1])
+        &gt;&gt;&gt; print(a.kronecker(b))
+        &#39;
+                0   1   2   3   4   5   6   7   8
+          0 |   .   1   .   .   .   .   .   1   . |   0
+          1 |   1   .   1   .   .   .   1   .   1 |   1
+          2 |   .   1   .   .   .   .   .   1   . |   2
+          3 |   .   .   .   .   1   .   .   .   . |   3
+          4 |   .   .   .   1   .   1   .   .   . |   4
+          5 |   .   .   .   .   1   .   .   .   . |   5
+          6 |   .   1   .   .   .   .   .   1   . |   6
+          7 |   1   .   1   .   .   .   1   .   1 |   7
+          8 |   .   1   .   .   .   .   .   1   . |   8
+                0   1   2   3   4   5   6   7   8
+        &#39;
+
+        :param other: Input matrix
+        :param time_check: Pass True to measure and log elapsed time of the operation
+        :return: Matrices kronecker product matrix
+        &#34;&#34;&#34;
+
+        shape = (self.nrows * other.nrows, self.ncols * other.ncols)
+        out = Matrix.empty(shape)
+
+        status = wrapper.loaded_dll.spbla_Kronecker(
+            out.hnd,
+            self.hnd,
+            other.hnd,
+            ctypes.c_uint(bridge.get_kronecker_hints(time_check=time_check))
+        )
+
+        bridge.check(status)
+        return out
+
+    def ewiseadd(self, other, time_check=False):
+        &#34;&#34;&#34;
+        Element-wise matrix-matrix addition with boolean &#34;+ = or&#34; operation.
+        Returns element-wise sum of `self` and `other` matrix.
+
+        &gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2], [2, 3, 0])
+        &gt;&gt;&gt; b = Matrix.from_lists((4, 4), [0, 1, 3], [2, 3, 0])
+        &gt;&gt;&gt; print(a.ewiseadd(b))
+        &#39;
+                0   1   2   3
+          0 |   .   .   1   . |   0
+          1 |   .   .   .   1 |   1
+          2 |   1   .   .   . |   2
+          3 |   1   .   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param other: Input matrix to sum
+        :param time_check: Pass True to measure and log elapsed time of the operation
+        :return: Element-wise matrix-matrix sum
+        &#34;&#34;&#34;
+
+        shape = (self.nrows, self.ncols)
+        out = Matrix.empty(shape)
+
+        status = wrapper.loaded_dll.spbla_Matrix_EWiseAdd(
+            out.hnd,
+            self.hnd,
+            other.hnd,
+            ctypes.c_uint(bridge.get_ewiseadd_hints(time_check=time_check))
+        )
+
+        bridge.check(status)
+        return out
+
+    def reduce(self, time_check=False):
+        &#34;&#34;&#34;
+        Reduce matrix to vector with boolean &#34;+ = or&#34; operation.
+        Return `self` reduced matrix.
+
+        &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 2], [0, 1, 0, 2])
+        &gt;&gt;&gt; print(matrix.reduce())
+        &#39;
+                  0
+            0 |   1 |   0
+            1 |   1 |   1
+            2 |   1 |   2
+            3 |   . |   3
+                  0
+        &#39;
+
+        :param time_check: Pass True to measure and log elapsed time of the operation
+        :return: Reduced matrix (matrix with M x 1 shape)
+        &#34;&#34;&#34;
+
+        shape = (self.nrows, 1)
+        out = Matrix.empty(shape)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Reduce(
+            out.hnd,
+            self.hnd,
+            ctypes.c_uint(bridge.get_reduce_hints(time_check=time_check))
+        )
+
+        bridge.check(status)
+        return out
+
+    def equals(self, other) -&gt; bool:
+        &#34;&#34;&#34;
+        Compare two matrices. Returns true if they are equal.
+        todo: Add this method into C API
+
+        :param other: Other matrix to compare
+        :return: True if matrices are equal
+        &#34;&#34;&#34;
+
+        if not self.shape == other.shape:
+            return False
+        if not self.nvals == other.nvals:
+            return False
+
+        self_rows, self_cols = self.to_lists()
+        other_rows, other_cols = other.to_lists()
+
+        for i in range(len(self_rows)):
+            if self_rows[i] != other_rows[i]:
+                return False
+        for i in range(len(self_cols)):
+            if self_cols[i] != other_cols[i]:
+                return False
+
+        return True
+
+    def __str__(self):
+        return self.to_string()
+
+    def __iter__(self):
+        &#34;&#34;&#34;
+        Iterate over (i, j) tuples of the matrix values.
+
+        &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True)
+        &gt;&gt;&gt; print(list(iter(matrix)))
+        &#39;[(0, 0), (1, 1), (2, 2), (3, 0)]&#39;
+
+        :return: Matrix tuples iterator
+        &#34;&#34;&#34;
+
+        rows, cols = self.to_lists()
+        return zip(rows, cols)
+
+    def __getitem__(self, item):
+        &#34;&#34;&#34;
+        Extract sub-matrix from `self`.
+        Supported only tuple `item` with two slices. Step in slices is not supported.
+
+        &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True)
+        &gt;&gt;&gt; print(matrix[0:3, 1:])
+        &#39;
+                0   1   2
+          0 |   .   .   . |   0
+          1 |   1   .   . |   1
+          2 |   .   1   . |   2
+                0   1   2
+        &#39;
+
+        :param item: Tuple of two slices for rows and cols regions
+        :return: Extracted sub-matrix
+        &#34;&#34;&#34;
+
+        if isinstance(item, tuple):
+            first = item[0]
+            second = item[1]
+
+            if isinstance(first, slice) and isinstance(second, slice):
+                i = first.start
+                iend = first.stop
+
+                j = second.start
+                jend = second.stop
+
+                assert first.step is None
+                assert second.step is None
+
+                if i is None:
+                    i = 0
+                if j is None:
+                    j = 0
+
+                assert 0 &lt;= i &lt; self.nrows
+                assert 0 &lt;= j &lt; self.ncols
+
+                if iend is None:
+                    iend = self.nrows
+                if jend is None:
+                    jend = self.ncols
+
+                shape = (iend - i, jend - j)
+                return self.extract_matrix(i, j, shape)
+
+        raise Exception(&#34;Invalid matrix slicing&#34;)
+
+    def __setitem__(self, key, value):
+        &#34;&#34;&#34;
+        Sets Sets specified `key` = (i, j) value of the matrix to True.
+
+        &gt;&gt;&gt; matrix = Matrix.empty(shape=(4, 4))
+        &gt;&gt;&gt; matrix[0, 0] = True
+        &gt;&gt;&gt; matrix[1, 1] = True
+        &gt;&gt;&gt; matrix[2, 3] = True
+        &gt;&gt;&gt; matrix[3, 1] = True
+        &gt;&gt;&gt; print(matrix)
+        &#39;
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   .   1 |   2
+          3 |   .   1   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param key: (i, j) pair to set matrix element in True
+        :param value: Must be True always
+        :return:
+        &#34;&#34;&#34;
+
+        assert value is True
+
+        if isinstance(key, tuple):
+            i = key[0]
+            j = key[1]
+
+            status = wrapper.loaded_dll.spbla_Matrix_SetElement(
+                self.hnd,
+                ctypes.c_uint(i),
+                ctypes.c_uint(j)
+            )
+
+            bridge.check(status)
+            return
+
+        raise Exception(&#34;Invalid item assignment&#34;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pyspbla.matrix.Matrix"><code class="flex name class">
+<span>class <span class="ident">Matrix</span></span>
+<span>(</span><span>hnd)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Wrapper for spbla Sparse boolean matrix type.</p>
+<p>Matrix class supports all spbla C API Matrix functions.
+Also Matrix class provides additional fancy functions/operators for better user experience.</p>
+<p>Matrix creation:
+- empty
+- from lists data
+- random generated</p>
+<p>Matrix operations:
+- mxm
+- ewiseadd
+- kronecker
+- reduce
+- transpose
+- matrix extraction</p>
+<p>Matrix functions:
+- to string
+- values iterating
+- equality check</p>
+<p>Debug features:
+- String markers</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Matrix:
+    &#34;&#34;&#34;
+    Wrapper for spbla Sparse boolean matrix type.
+
+    Matrix class supports all spbla C API Matrix functions.
+    Also Matrix class provides additional fancy functions/operators for better user experience.
+
+    Matrix creation:
+    - empty
+    - from lists data
+    - random generated
+
+    Matrix operations:
+    - mxm
+    - ewiseadd
+    - kronecker
+    - reduce
+    - transpose
+    - matrix extraction
+
+    Matrix functions:
+    - to string
+    - values iterating
+    - equality check
+
+    Debug features:
+    - String markers
+    &#34;&#34;&#34;
+
+    __slots__ = [&#34;hnd&#34;]
+
+    def __init__(self, hnd):
+        self.hnd = hnd
+
+    def __del__(self):
+        bridge.check(wrapper.loaded_dll.spbla_Matrix_Free(self.hnd))
+
+    @classmethod
+    def empty(cls, shape):
+        &#34;&#34;&#34;
+        Creates empty matrix of specified `shape`.
+
+        :param shape: Pair with two values with rows and cols count of the matrix
+        :return: Created empty matrix
+        &#34;&#34;&#34;
+
+        hnd = ctypes.c_void_p(0)
+
+        nrows = shape[0]
+        ncols = shape[1]
+
+        status = wrapper.loaded_dll.spbla_Matrix_New(
+            ctypes.byref(hnd), ctypes.c_uint(nrows), ctypes.c_uint(ncols)
+        )
+
+        bridge.check(status)
+
+        return Matrix(hnd)
+
+    @classmethod
+    def from_lists(cls, shape, rows, cols, is_sorted=False, no_duplicates=False):
+        &#34;&#34;&#34;
+        Build matrix from provided `shape` and non-zero values data.
+
+        &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+        &gt;&gt;&gt; print(matrix)
+        &#39;
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   1   .   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param shape: Matrix shape
+        :param rows: List with row indices
+        :param cols: List with column indices
+        :param is_sorted: True if values are sorted in row-col order
+        :param no_duplicates: True if provided values has no duplicates
+        :return: Created matrix filled with data
+        &#34;&#34;&#34;
+
+        out = cls.empty(shape)
+        out.build(rows, cols, is_sorted=is_sorted, no_duplicates=no_duplicates)
+        return out
+
+    @classmethod
+    def generate(cls, shape, density: float):
+        &#34;&#34;&#34;
+        Generate matrix of the specified shape with desired values density.
+
+        &gt;&gt;&gt; matrix = Matrix.generate(shape=(4, 4), density=0.5)
+        &gt;&gt;&gt; print(matrix)
+        &#39;
+                0   1   2   3
+          0 |   .   1   .   . |   0
+          1 |   .   .   1   1 |   1
+          2 |   1   1   .   . |   2
+          3 |   .   1   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param shape: Matrix shape to generate
+        :param density: Matrix values density, must be within [0, 1] bounds
+        :return: Generated matrix
+        &#34;&#34;&#34;
+
+        density = min(1.0, max(density, 0.0))
+        nvals_max = shape[0] * shape[1]
+        nvals_to_gen = int(nvals_max * density)
+
+        m, n = shape
+        rows, cols = list(), list()
+
+        for i in range(nvals_to_gen):
+            rows.append(random.randrange(0, m))
+            cols.append(random.randrange(0, n))
+
+        return Matrix.from_lists(shape=shape, rows=rows, cols=cols, is_sorted=False, no_duplicates=False)
+
+    def build(self, rows, cols, is_sorted=False, no_duplicates=False):
+        &#34;&#34;&#34;
+        Build sparse matrix of boolean values from provided arrays of non-zero rows and columns.
+
+        &gt;&gt;&gt; matrix = Matrix.empty(shape=(4,4))
+        &gt;&gt;&gt; matrix.build([0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+        &gt;&gt;&gt; print(matrix)
+        &#39;
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   1   .   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param rows: Array of values rows indices
+        :param cols: Array of values column indices
+        :param is_sorted: True if values are sorted in row-col order
+        :param no_duplicates: True if provided values has no duplicates
+        :return:
+        &#34;&#34;&#34;
+
+        if len(rows) != len(cols):
+            raise Exception(&#34;Rows and cols arrays must have equal size&#34;)
+
+        nvals = len(rows)
+        t_rows = (ctypes.c_uint * len(rows))(*rows)
+        t_cols = (ctypes.c_uint * len(cols))(*cols)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Build(
+            self.hnd, t_rows, t_cols,
+            ctypes.c_uint(nvals),
+            ctypes.c_uint(bridge.get_build_hints(is_sorted, no_duplicates))
+        )
+
+        bridge.check(status)
+
+    def dup(self):
+        &#34;&#34;&#34;
+        Creates new matrix instance, the exact copy of the `self`
+
+        &gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+        &gt;&gt;&gt; b = a.dup()
+        &gt;&gt;&gt; b[3, 3] = True
+        &gt;&gt;&gt; print(a, b, sep=&#34;&#34;)
+        &#39;
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   1   .   .   . |   3
+                0   1   2   3
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   1   .   .   1 |   3
+                0   1   2   3
+        &#39;
+
+        :return: New matrix instance with `self` copied data
+        &#34;&#34;&#34;
+
+        hnd = ctypes.c_void_p(0)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Duplicate(
+            self.hnd, ctypes.byref(hnd)
+        )
+
+        bridge.check(status)
+        return Matrix(hnd)
+
+    def transpose(self, time_check=False):
+        &#34;&#34;&#34;
+        Creates new transposed `self` matrix.
+
+        &gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+        &gt;&gt;&gt; b = a.transpose()
+        &gt;&gt;&gt; print(a, b, sep=&#34;&#34;)
+        &#39;
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   1   .   .   . |   3
+                0   1   2   3
+                0   1   2   3
+          0 |   1   .   .   1 |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   .   .   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param time_check: Pass True to measure and log elapsed time of the operation
+        :return: New matrix instance with `self` transposed data
+        &#34;&#34;&#34;
+
+        shape = (self.ncols, self.nrows)
+        out = Matrix.empty(shape)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Transpose(
+            out.hnd,
+            self.hnd,
+            ctypes.c_uint(bridge.get_transpose_hints(time_check=time_check))
+        )
+
+        bridge.check(status)
+        return out
+
+    def set_marker(self, marker: str):
+        &#34;&#34;&#34;
+        Sets to the matrix specific debug string marker.
+        This marker will appear in the log messages as string identifier of the matrix.
+
+        &gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+        &gt;&gt;&gt; print(a.marker)
+        &#39;0x1a767b0&#39;
+        &gt;&gt;&gt; a.set_marker(&#34;meow&#34;)
+        &gt;&gt;&gt; print(a.marker)
+        &#39;meow (0x1a767b0)&#39;
+
+        :param marker: String marker to set
+        :return: None
+        &#34;&#34;&#34;
+
+        assert marker is not None
+
+        status = wrapper.loaded_dll.spbla_Matrix_SetMarker(
+            self.hnd, marker.encode(&#34;utf-8&#34;)
+        )
+
+        bridge.check(status)
+        return None
+
+    @property
+    def marker(self):
+        &#34;&#34;&#34;
+        Allows to get matrix debug string marker.
+
+        &gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+        &gt;&gt;&gt; print(a.marker)
+        &#39;0x1a767b0&#39;
+        &gt;&gt;&gt; a.set_marker(&#34;meow&#34;)
+        &gt;&gt;&gt; print(a.marker)
+        &#39;meow (0x1a767b0)&#39;
+
+        :return: String matrix marker.
+        &#34;&#34;&#34;
+
+        size = ctypes.c_uint(0)
+        status = wrapper.loaded_dll.spbla_Matrix_Marker(
+            self.hnd, ctypes.POINTER(ctypes.c_char)(), ctypes.byref(size)
+        )
+
+        bridge.check(status)
+
+        c_buffer = (ctypes.c_char * int(size.value))()
+        status = wrapper.loaded_dll.spbla_Matrix_Marker(
+            self.hnd, c_buffer, ctypes.byref(size)
+        )
+
+        bridge.check(status)
+        return c_buffer.value.decode(&#34;utf-8&#34;)
+
+    @property
+    def nrows(self) -&gt; int:
+        &#34;&#34;&#34;
+        Query number of rows of the `self` matrix.
+        :return: Number of rows
+        &#34;&#34;&#34;
+
+        result = ctypes.c_uint(0)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Nrows(
+            self.hnd, ctypes.byref(result)
+        )
+
+        bridge.check(status)
+        return int(result.value)
+
+    @property
+    def ncols(self) -&gt; int:
+        &#34;&#34;&#34;
+        Query number of columns of the `self` matrix.
+        :return: Number of columns
+        &#34;&#34;&#34;
+
+        result = ctypes.c_uint(0)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Ncols(
+            self.hnd, ctypes.byref(result)
+        )
+
+        bridge.check(status)
+        return int(result.value)
+
+    @property
+    def nvals(self) -&gt; int:
+        &#34;&#34;&#34;
+        Query number of non-zero values of the `self` matrix.
+        :return: Number of non-zero values
+        &#34;&#34;&#34;
+
+        result = ctypes.c_uint(0)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Nvals(
+            self.hnd, ctypes.byref(result)
+        )
+
+        bridge.check(status)
+        return int(result.value)
+
+    @property
+    def shape(self) -&gt; (int, int):
+        &#34;&#34;&#34;
+        Query shape of `self` matrix as (nrows, ncols) tuple.
+        :return: Return tuple of (nrows, ncols)
+        &#34;&#34;&#34;
+
+        return self.nrows, self.ncols
+
+    def to_lists(self):
+        &#34;&#34;&#34;
+        Read matrix data as lists of `rows` and `clos` indices.
+
+        &gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+        &gt;&gt;&gt; a[0, 0] = True
+        &gt;&gt;&gt; a[1, 3] = True
+        &gt;&gt;&gt; a[1, 0] = True
+        &gt;&gt;&gt; a[2, 2] = True
+        &gt;&gt;&gt; rows, cols = a.to_lists()
+        &gt;&gt;&gt; print(list(rows), list(cols))
+        &#39;[0, 1, 1, 2] [0, 0, 3, 2]&#39;
+
+        :return: Pair with `rows` and `cols` lists
+        &#34;&#34;&#34;
+
+        count = self.nvals
+
+        rows = (ctypes.c_uint * count)()
+        cols = (ctypes.c_uint * count)()
+        nvals = ctypes.c_uint(count)
+
+        status = wrapper.loaded_dll.spbla_Matrix_ExtractPairs(
+            self.hnd, rows, cols, ctypes.byref(nvals)
+        )
+
+        bridge.check(status)
+
+        return rows, cols
+
+    def to_list(self):
+        &#34;&#34;&#34;
+        Read matrix values as list of (i,j) pairs.
+
+        &gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+        &gt;&gt;&gt; a[0, 0] = True
+        &gt;&gt;&gt; a[1, 3] = True
+        &gt;&gt;&gt; a[1, 0] = True
+        &gt;&gt;&gt; a[2, 2] = True
+        &gt;&gt;&gt; vals = a.to_list()
+        &gt;&gt;&gt; print(vals)
+        &#39;[(0, 0), (1, 0), (1, 3), (2, 2)]&#39;
+
+        :return: List of (i, j) pairs
+        &#34;&#34;&#34;
+
+        I, J = self.to_lists()
+        return list(zip(I, J))
+
+    def to_string(self, width=3):
+        &#34;&#34;&#34;
+        Return a string representation of the matrix.
+
+        &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+        &gt;&gt;&gt; print(matrix)
+        &#39;
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   1   . |   2
+          3 |   1   .   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param width: Width of the field in chars where to put numbers of rows and columns
+        :return: Matrix string representation
+        &#34;&#34;&#34;
+
+        nrows = self.nrows
+        ncols = self.ncols
+        nvals = self.nvals
+        rows, cols = self.to_lists()
+
+        cell_empty = &#34;.&#34;
+        cell_filled = &#34;1&#34;
+        cell_sep = &#34; &#34;
+        format_str = &#34;{:&gt;%s}&#34; % width
+
+        header = format_str.format(&#34;&#34;) + &#34;  &#34; + cell_sep + &#34;&#34;.join(format_str.format(j) + cell_sep for j in range(ncols))
+        result = header + &#34;\n&#34;
+
+        v = 0
+        for i in range(nrows):
+            line = format_str.format(i) + &#34; |&#34; + cell_sep
+            for j in range(ncols):
+                if v &lt; nvals and rows[v] == i and cols[v] == j:
+                    line += format_str.format(cell_filled) + cell_sep
+                    v += 1
+                else:
+                    line += format_str.format(cell_empty) + cell_sep
+            line += &#34;| &#34; + format_str.format(i) + &#34;\n&#34;
+            result += line
+
+        result += header + &#34;\n&#34;
+        return result
+
+    def extract_matrix(self, i, j, shape, out=None, time_check=False):
+        &#34;&#34;&#34;
+        Extract a sub-matrix.
+
+        &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True)
+        &gt;&gt;&gt; print(matrix.extract_matrix(0, 1, shape=(3, 3)))
+        &#39;
+                0   1   2
+          0 |   .   .   . |   0
+          1 |   1   .   . |   1
+          2 |   .   1   . |   2
+                0   1   2
+        &#39;
+
+        :param i: First row index to extract
+        :param j: First column index to extract
+        :param shape: Shape of the sub-matrix
+        :param out: Optional matrix where to store result
+        :param time_check: Pass True to measure and log elapsed time of the operation
+        :return: Sub-matrix
+        &#34;&#34;&#34;
+
+        if out is None:
+            out = Matrix.empty(shape)
+
+        status = wrapper.loaded_dll.spbla_Matrix_ExtractSubMatrix(
+            out.hnd, self.hnd,
+            ctypes.c_uint(i),
+            ctypes.c_uint(j),
+            ctypes.c_uint(shape[0]),
+            ctypes.c_uint(shape[1]),
+            ctypes.c_uint(bridge.get_sub_matrix_hints(time_check=time_check))
+        )
+
+        bridge.check(status)
+        return out
+
+    def mxm(self, other, out=None, accumulate=False, time_check=False):
+        &#34;&#34;&#34;
+        Matrix-matrix multiplication in boolean semiring with &#34;x = and&#34; and &#34;+ = or&#34; operations.
+        Returns `self` multiplied to `other` matrix.
+
+        Pass optional `out` matrix to store result.
+        Pass `accumulate`=True to sum the multiplication result with `out` matrix.
+
+        &gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2], [2, 3, 0])
+        &gt;&gt;&gt; b = Matrix.from_lists((4, 4), [0, 1, 3], [2, 3, 0])
+        &gt;&gt;&gt; print(a.mxm(b, out=a, accumulate=True))
+        &#39;
+                0   1   2   3
+          0 |   .   .   1   . |   0
+          1 |   1   .   .   1 |   1
+          2 |   1   .   1   . |   2
+          3 |   .   .   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param other: Input matrix for multiplication
+        :param out: Optional out matrix to store result
+        :param accumulate: Set in true to accumulate the result with `out` matrix
+        :param time_check: Pass True to measure and log elapsed time of the operation
+        :return: Matrix-matrix multiplication result (with possible accumulation to `out` if provided)
+        &#34;&#34;&#34;
+
+        if out is None:
+            shape = (self.nrows, other.ncols)
+            out = Matrix.empty(shape)
+            accumulate = False
+
+        status = wrapper.loaded_dll.spbla_MxM(
+            out.hnd,
+            self.hnd,
+            other.hnd,
+            ctypes.c_uint(bridge.get_mxm_hints(is_accumulated=accumulate, time_check=time_check))
+        )
+
+        bridge.check(status)
+        return out
+
+    def kronecker(self, other, time_check=False):
+        &#34;&#34;&#34;
+        Matrix-matrix kronecker product with boolean &#34;x = and&#34; operation.
+        Returns kronecker product of `self` and `other` matrices.
+
+        &gt;&gt;&gt; a = Matrix.from_lists((3, 3), [0, 0, 1, 2, 2], [0, 2, 1, 0, 2])
+        &gt;&gt;&gt; b = Matrix.from_lists((3, 3), [0, 1, 1, 2], [1, 0, 2, 1])
+        &gt;&gt;&gt; print(a.kronecker(b))
+        &#39;
+                0   1   2   3   4   5   6   7   8
+          0 |   .   1   .   .   .   .   .   1   . |   0
+          1 |   1   .   1   .   .   .   1   .   1 |   1
+          2 |   .   1   .   .   .   .   .   1   . |   2
+          3 |   .   .   .   .   1   .   .   .   . |   3
+          4 |   .   .   .   1   .   1   .   .   . |   4
+          5 |   .   .   .   .   1   .   .   .   . |   5
+          6 |   .   1   .   .   .   .   .   1   . |   6
+          7 |   1   .   1   .   .   .   1   .   1 |   7
+          8 |   .   1   .   .   .   .   .   1   . |   8
+                0   1   2   3   4   5   6   7   8
+        &#39;
+
+        :param other: Input matrix
+        :param time_check: Pass True to measure and log elapsed time of the operation
+        :return: Matrices kronecker product matrix
+        &#34;&#34;&#34;
+
+        shape = (self.nrows * other.nrows, self.ncols * other.ncols)
+        out = Matrix.empty(shape)
+
+        status = wrapper.loaded_dll.spbla_Kronecker(
+            out.hnd,
+            self.hnd,
+            other.hnd,
+            ctypes.c_uint(bridge.get_kronecker_hints(time_check=time_check))
+        )
+
+        bridge.check(status)
+        return out
+
+    def ewiseadd(self, other, time_check=False):
+        &#34;&#34;&#34;
+        Element-wise matrix-matrix addition with boolean &#34;+ = or&#34; operation.
+        Returns element-wise sum of `self` and `other` matrix.
+
+        &gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2], [2, 3, 0])
+        &gt;&gt;&gt; b = Matrix.from_lists((4, 4), [0, 1, 3], [2, 3, 0])
+        &gt;&gt;&gt; print(a.ewiseadd(b))
+        &#39;
+                0   1   2   3
+          0 |   .   .   1   . |   0
+          1 |   .   .   .   1 |   1
+          2 |   1   .   .   . |   2
+          3 |   1   .   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param other: Input matrix to sum
+        :param time_check: Pass True to measure and log elapsed time of the operation
+        :return: Element-wise matrix-matrix sum
+        &#34;&#34;&#34;
+
+        shape = (self.nrows, self.ncols)
+        out = Matrix.empty(shape)
+
+        status = wrapper.loaded_dll.spbla_Matrix_EWiseAdd(
+            out.hnd,
+            self.hnd,
+            other.hnd,
+            ctypes.c_uint(bridge.get_ewiseadd_hints(time_check=time_check))
+        )
+
+        bridge.check(status)
+        return out
+
+    def reduce(self, time_check=False):
+        &#34;&#34;&#34;
+        Reduce matrix to vector with boolean &#34;+ = or&#34; operation.
+        Return `self` reduced matrix.
+
+        &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 2], [0, 1, 0, 2])
+        &gt;&gt;&gt; print(matrix.reduce())
+        &#39;
+                  0
+            0 |   1 |   0
+            1 |   1 |   1
+            2 |   1 |   2
+            3 |   . |   3
+                  0
+        &#39;
+
+        :param time_check: Pass True to measure and log elapsed time of the operation
+        :return: Reduced matrix (matrix with M x 1 shape)
+        &#34;&#34;&#34;
+
+        shape = (self.nrows, 1)
+        out = Matrix.empty(shape)
+
+        status = wrapper.loaded_dll.spbla_Matrix_Reduce(
+            out.hnd,
+            self.hnd,
+            ctypes.c_uint(bridge.get_reduce_hints(time_check=time_check))
+        )
+
+        bridge.check(status)
+        return out
+
+    def equals(self, other) -&gt; bool:
+        &#34;&#34;&#34;
+        Compare two matrices. Returns true if they are equal.
+        todo: Add this method into C API
+
+        :param other: Other matrix to compare
+        :return: True if matrices are equal
+        &#34;&#34;&#34;
+
+        if not self.shape == other.shape:
+            return False
+        if not self.nvals == other.nvals:
+            return False
+
+        self_rows, self_cols = self.to_lists()
+        other_rows, other_cols = other.to_lists()
+
+        for i in range(len(self_rows)):
+            if self_rows[i] != other_rows[i]:
+                return False
+        for i in range(len(self_cols)):
+            if self_cols[i] != other_cols[i]:
+                return False
+
+        return True
+
+    def __str__(self):
+        return self.to_string()
+
+    def __iter__(self):
+        &#34;&#34;&#34;
+        Iterate over (i, j) tuples of the matrix values.
+
+        &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True)
+        &gt;&gt;&gt; print(list(iter(matrix)))
+        &#39;[(0, 0), (1, 1), (2, 2), (3, 0)]&#39;
+
+        :return: Matrix tuples iterator
+        &#34;&#34;&#34;
+
+        rows, cols = self.to_lists()
+        return zip(rows, cols)
+
+    def __getitem__(self, item):
+        &#34;&#34;&#34;
+        Extract sub-matrix from `self`.
+        Supported only tuple `item` with two slices. Step in slices is not supported.
+
+        &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True)
+        &gt;&gt;&gt; print(matrix[0:3, 1:])
+        &#39;
+                0   1   2
+          0 |   .   .   . |   0
+          1 |   1   .   . |   1
+          2 |   .   1   . |   2
+                0   1   2
+        &#39;
+
+        :param item: Tuple of two slices for rows and cols regions
+        :return: Extracted sub-matrix
+        &#34;&#34;&#34;
+
+        if isinstance(item, tuple):
+            first = item[0]
+            second = item[1]
+
+            if isinstance(first, slice) and isinstance(second, slice):
+                i = first.start
+                iend = first.stop
+
+                j = second.start
+                jend = second.stop
+
+                assert first.step is None
+                assert second.step is None
+
+                if i is None:
+                    i = 0
+                if j is None:
+                    j = 0
+
+                assert 0 &lt;= i &lt; self.nrows
+                assert 0 &lt;= j &lt; self.ncols
+
+                if iend is None:
+                    iend = self.nrows
+                if jend is None:
+                    jend = self.ncols
+
+                shape = (iend - i, jend - j)
+                return self.extract_matrix(i, j, shape)
+
+        raise Exception(&#34;Invalid matrix slicing&#34;)
+
+    def __setitem__(self, key, value):
+        &#34;&#34;&#34;
+        Sets Sets specified `key` = (i, j) value of the matrix to True.
+
+        &gt;&gt;&gt; matrix = Matrix.empty(shape=(4, 4))
+        &gt;&gt;&gt; matrix[0, 0] = True
+        &gt;&gt;&gt; matrix[1, 1] = True
+        &gt;&gt;&gt; matrix[2, 3] = True
+        &gt;&gt;&gt; matrix[3, 1] = True
+        &gt;&gt;&gt; print(matrix)
+        &#39;
+                0   1   2   3
+          0 |   1   .   .   . |   0
+          1 |   .   1   .   . |   1
+          2 |   .   .   .   1 |   2
+          3 |   .   1   .   . |   3
+                0   1   2   3
+        &#39;
+
+        :param key: (i, j) pair to set matrix element in True
+        :param value: Must be True always
+        :return:
+        &#34;&#34;&#34;
+
+        assert value is True
+
+        if isinstance(key, tuple):
+            i = key[0]
+            j = key[1]
+
+            status = wrapper.loaded_dll.spbla_Matrix_SetElement(
+                self.hnd,
+                ctypes.c_uint(i),
+                ctypes.c_uint(j)
+            )
+
+            bridge.check(status)
+            return
+
+        raise Exception(&#34;Invalid item assignment&#34;)</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="pyspbla.matrix.Matrix.empty"><code class="name flex">
+<span>def <span class="ident">empty</span></span>(<span>shape)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates empty matrix of specified <code>shape</code>.</p>
+<p>:param shape: Pair with two values with rows and cols count of the matrix
+:return: Created empty matrix</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def empty(cls, shape):
+    &#34;&#34;&#34;
+    Creates empty matrix of specified `shape`.
+
+    :param shape: Pair with two values with rows and cols count of the matrix
+    :return: Created empty matrix
+    &#34;&#34;&#34;
+
+    hnd = ctypes.c_void_p(0)
+
+    nrows = shape[0]
+    ncols = shape[1]
+
+    status = wrapper.loaded_dll.spbla_Matrix_New(
+        ctypes.byref(hnd), ctypes.c_uint(nrows), ctypes.c_uint(ncols)
+    )
+
+    bridge.check(status)
+
+    return Matrix(hnd)</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.from_lists"><code class="name flex">
+<span>def <span class="ident">from_lists</span></span>(<span>shape, rows, cols, is_sorted=False, no_duplicates=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Build matrix from provided <code>shape</code> and non-zero values data.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+&gt;&gt;&gt; print(matrix)
+'
+        0   1   2   3
+  0 |   1   .   .   . |   0
+  1 |   .   1   .   . |   1
+  2 |   .   .   1   . |   2
+  3 |   1   .   .   . |   3
+        0   1   2   3
+'
+</code></pre>
+<p>:param shape: Matrix shape
+:param rows: List with row indices
+:param cols: List with column indices
+:param is_sorted: True if values are sorted in row-col order
+:param no_duplicates: True if provided values has no duplicates
+:return: Created matrix filled with data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_lists(cls, shape, rows, cols, is_sorted=False, no_duplicates=False):
+    &#34;&#34;&#34;
+    Build matrix from provided `shape` and non-zero values data.
+
+    &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+    &gt;&gt;&gt; print(matrix)
+    &#39;
+            0   1   2   3
+      0 |   1   .   .   . |   0
+      1 |   .   1   .   . |   1
+      2 |   .   .   1   . |   2
+      3 |   1   .   .   . |   3
+            0   1   2   3
+    &#39;
+
+    :param shape: Matrix shape
+    :param rows: List with row indices
+    :param cols: List with column indices
+    :param is_sorted: True if values are sorted in row-col order
+    :param no_duplicates: True if provided values has no duplicates
+    :return: Created matrix filled with data
+    &#34;&#34;&#34;
+
+    out = cls.empty(shape)
+    out.build(rows, cols, is_sorted=is_sorted, no_duplicates=no_duplicates)
+    return out</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.generate"><code class="name flex">
+<span>def <span class="ident">generate</span></span>(<span>shape, density: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generate matrix of the specified shape with desired values density.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; matrix = Matrix.generate(shape=(4, 4), density=0.5)
+&gt;&gt;&gt; print(matrix)
+'
+        0   1   2   3
+  0 |   .   1   .   . |   0
+  1 |   .   .   1   1 |   1
+  2 |   1   1   .   . |   2
+  3 |   .   1   .   . |   3
+        0   1   2   3
+'
+</code></pre>
+<p>:param shape: Matrix shape to generate
+:param density: Matrix values density, must be within [0, 1] bounds
+:return: Generated matrix</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def generate(cls, shape, density: float):
+    &#34;&#34;&#34;
+    Generate matrix of the specified shape with desired values density.
+
+    &gt;&gt;&gt; matrix = Matrix.generate(shape=(4, 4), density=0.5)
+    &gt;&gt;&gt; print(matrix)
+    &#39;
+            0   1   2   3
+      0 |   .   1   .   . |   0
+      1 |   .   .   1   1 |   1
+      2 |   1   1   .   . |   2
+      3 |   .   1   .   . |   3
+            0   1   2   3
+    &#39;
+
+    :param shape: Matrix shape to generate
+    :param density: Matrix values density, must be within [0, 1] bounds
+    :return: Generated matrix
+    &#34;&#34;&#34;
+
+    density = min(1.0, max(density, 0.0))
+    nvals_max = shape[0] * shape[1]
+    nvals_to_gen = int(nvals_max * density)
+
+    m, n = shape
+    rows, cols = list(), list()
+
+    for i in range(nvals_to_gen):
+        rows.append(random.randrange(0, m))
+        cols.append(random.randrange(0, n))
+
+    return Matrix.from_lists(shape=shape, rows=rows, cols=cols, is_sorted=False, no_duplicates=False)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="pyspbla.matrix.Matrix.hnd"><code class="name">var <span class="ident">hnd</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pyspbla.matrix.Matrix.marker"><code class="name">var <span class="ident">marker</span></code></dt>
+<dd>
+<div class="desc"><p>Allows to get matrix debug string marker.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+&gt;&gt;&gt; print(a.marker)
+'0x1a767b0'
+&gt;&gt;&gt; a.set_marker(&quot;meow&quot;)
+&gt;&gt;&gt; print(a.marker)
+'meow (0x1a767b0)'
+</code></pre>
+<p>:return: String matrix marker.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def marker(self):
+    &#34;&#34;&#34;
+    Allows to get matrix debug string marker.
+
+    &gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+    &gt;&gt;&gt; print(a.marker)
+    &#39;0x1a767b0&#39;
+    &gt;&gt;&gt; a.set_marker(&#34;meow&#34;)
+    &gt;&gt;&gt; print(a.marker)
+    &#39;meow (0x1a767b0)&#39;
+
+    :return: String matrix marker.
+    &#34;&#34;&#34;
+
+    size = ctypes.c_uint(0)
+    status = wrapper.loaded_dll.spbla_Matrix_Marker(
+        self.hnd, ctypes.POINTER(ctypes.c_char)(), ctypes.byref(size)
+    )
+
+    bridge.check(status)
+
+    c_buffer = (ctypes.c_char * int(size.value))()
+    status = wrapper.loaded_dll.spbla_Matrix_Marker(
+        self.hnd, c_buffer, ctypes.byref(size)
+    )
+
+    bridge.check(status)
+    return c_buffer.value.decode(&#34;utf-8&#34;)</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.ncols"><code class="name">var <span class="ident">ncols</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Query number of columns of the <code>self</code> matrix.
+:return: Number of columns</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def ncols(self) -&gt; int:
+    &#34;&#34;&#34;
+    Query number of columns of the `self` matrix.
+    :return: Number of columns
+    &#34;&#34;&#34;
+
+    result = ctypes.c_uint(0)
+
+    status = wrapper.loaded_dll.spbla_Matrix_Ncols(
+        self.hnd, ctypes.byref(result)
+    )
+
+    bridge.check(status)
+    return int(result.value)</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.nrows"><code class="name">var <span class="ident">nrows</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Query number of rows of the <code>self</code> matrix.
+:return: Number of rows</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def nrows(self) -&gt; int:
+    &#34;&#34;&#34;
+    Query number of rows of the `self` matrix.
+    :return: Number of rows
+    &#34;&#34;&#34;
+
+    result = ctypes.c_uint(0)
+
+    status = wrapper.loaded_dll.spbla_Matrix_Nrows(
+        self.hnd, ctypes.byref(result)
+    )
+
+    bridge.check(status)
+    return int(result.value)</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.nvals"><code class="name">var <span class="ident">nvals</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Query number of non-zero values of the <code>self</code> matrix.
+:return: Number of non-zero values</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def nvals(self) -&gt; int:
+    &#34;&#34;&#34;
+    Query number of non-zero values of the `self` matrix.
+    :return: Number of non-zero values
+    &#34;&#34;&#34;
+
+    result = ctypes.c_uint(0)
+
+    status = wrapper.loaded_dll.spbla_Matrix_Nvals(
+        self.hnd, ctypes.byref(result)
+    )
+
+    bridge.check(status)
+    return int(result.value)</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.shape"><code class="name">var <span class="ident">shape</span> : (<class 'int'>, <class 'int'>)</code></dt>
+<dd>
+<div class="desc"><p>Query shape of <code>self</code> matrix as (nrows, ncols) tuple.
+:return: Return tuple of (nrows, ncols)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def shape(self) -&gt; (int, int):
+    &#34;&#34;&#34;
+    Query shape of `self` matrix as (nrows, ncols) tuple.
+    :return: Return tuple of (nrows, ncols)
+    &#34;&#34;&#34;
+
+    return self.nrows, self.ncols</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="pyspbla.matrix.Matrix.build"><code class="name flex">
+<span>def <span class="ident">build</span></span>(<span>self, rows, cols, is_sorted=False, no_duplicates=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Build sparse matrix of boolean values from provided arrays of non-zero rows and columns.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; matrix = Matrix.empty(shape=(4,4))
+&gt;&gt;&gt; matrix.build([0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+&gt;&gt;&gt; print(matrix)
+'
+        0   1   2   3
+  0 |   1   .   .   . |   0
+  1 |   .   1   .   . |   1
+  2 |   .   .   1   . |   2
+  3 |   1   .   .   . |   3
+        0   1   2   3
+'
+</code></pre>
+<p>:param rows: Array of values rows indices
+:param cols: Array of values column indices
+:param is_sorted: True if values are sorted in row-col order
+:param no_duplicates: True if provided values has no duplicates
+:return:</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def build(self, rows, cols, is_sorted=False, no_duplicates=False):
+    &#34;&#34;&#34;
+    Build sparse matrix of boolean values from provided arrays of non-zero rows and columns.
+
+    &gt;&gt;&gt; matrix = Matrix.empty(shape=(4,4))
+    &gt;&gt;&gt; matrix.build([0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+    &gt;&gt;&gt; print(matrix)
+    &#39;
+            0   1   2   3
+      0 |   1   .   .   . |   0
+      1 |   .   1   .   . |   1
+      2 |   .   .   1   . |   2
+      3 |   1   .   .   . |   3
+            0   1   2   3
+    &#39;
+
+    :param rows: Array of values rows indices
+    :param cols: Array of values column indices
+    :param is_sorted: True if values are sorted in row-col order
+    :param no_duplicates: True if provided values has no duplicates
+    :return:
+    &#34;&#34;&#34;
+
+    if len(rows) != len(cols):
+        raise Exception(&#34;Rows and cols arrays must have equal size&#34;)
+
+    nvals = len(rows)
+    t_rows = (ctypes.c_uint * len(rows))(*rows)
+    t_cols = (ctypes.c_uint * len(cols))(*cols)
+
+    status = wrapper.loaded_dll.spbla_Matrix_Build(
+        self.hnd, t_rows, t_cols,
+        ctypes.c_uint(nvals),
+        ctypes.c_uint(bridge.get_build_hints(is_sorted, no_duplicates))
+    )
+
+    bridge.check(status)</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.dup"><code class="name flex">
+<span>def <span class="ident">dup</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates new matrix instance, the exact copy of the <code>self</code></p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+&gt;&gt;&gt; b = a.dup()
+&gt;&gt;&gt; b[3, 3] = True
+&gt;&gt;&gt; print(a, b, sep=&quot;&quot;)
+'
+        0   1   2   3
+  0 |   1   .   .   . |   0
+  1 |   .   1   .   . |   1
+  2 |   .   .   1   . |   2
+  3 |   1   .   .   . |   3
+        0   1   2   3
+        0   1   2   3
+  0 |   1   .   .   . |   0
+  1 |   .   1   .   . |   1
+  2 |   .   .   1   . |   2
+  3 |   1   .   .   1 |   3
+        0   1   2   3
+'
+</code></pre>
+<p>:return: New matrix instance with <code>self</code> copied data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dup(self):
+    &#34;&#34;&#34;
+    Creates new matrix instance, the exact copy of the `self`
+
+    &gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+    &gt;&gt;&gt; b = a.dup()
+    &gt;&gt;&gt; b[3, 3] = True
+    &gt;&gt;&gt; print(a, b, sep=&#34;&#34;)
+    &#39;
+            0   1   2   3
+      0 |   1   .   .   . |   0
+      1 |   .   1   .   . |   1
+      2 |   .   .   1   . |   2
+      3 |   1   .   .   . |   3
+            0   1   2   3
+            0   1   2   3
+      0 |   1   .   .   . |   0
+      1 |   .   1   .   . |   1
+      2 |   .   .   1   . |   2
+      3 |   1   .   .   1 |   3
+            0   1   2   3
+    &#39;
+
+    :return: New matrix instance with `self` copied data
+    &#34;&#34;&#34;
+
+    hnd = ctypes.c_void_p(0)
+
+    status = wrapper.loaded_dll.spbla_Matrix_Duplicate(
+        self.hnd, ctypes.byref(hnd)
+    )
+
+    bridge.check(status)
+    return Matrix(hnd)</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.equals"><code class="name flex">
+<span>def <span class="ident">equals</span></span>(<span>self, other) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Compare two matrices. Returns true if they are equal.
+todo: Add this method into C API</p>
+<p>:param other: Other matrix to compare
+:return: True if matrices are equal</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def equals(self, other) -&gt; bool:
+    &#34;&#34;&#34;
+    Compare two matrices. Returns true if they are equal.
+    todo: Add this method into C API
+
+    :param other: Other matrix to compare
+    :return: True if matrices are equal
+    &#34;&#34;&#34;
+
+    if not self.shape == other.shape:
+        return False
+    if not self.nvals == other.nvals:
+        return False
+
+    self_rows, self_cols = self.to_lists()
+    other_rows, other_cols = other.to_lists()
+
+    for i in range(len(self_rows)):
+        if self_rows[i] != other_rows[i]:
+            return False
+    for i in range(len(self_cols)):
+        if self_cols[i] != other_cols[i]:
+            return False
+
+    return True</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.ewiseadd"><code class="name flex">
+<span>def <span class="ident">ewiseadd</span></span>(<span>self, other, time_check=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Element-wise matrix-matrix addition with boolean "+ = or" operation.
+Returns element-wise sum of <code>self</code> and <code>other</code> matrix.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2], [2, 3, 0])
+&gt;&gt;&gt; b = Matrix.from_lists((4, 4), [0, 1, 3], [2, 3, 0])
+&gt;&gt;&gt; print(a.ewiseadd(b))
+'
+        0   1   2   3
+  0 |   .   .   1   . |   0
+  1 |   .   .   .   1 |   1
+  2 |   1   .   .   . |   2
+  3 |   1   .   .   . |   3
+        0   1   2   3
+'
+</code></pre>
+<p>:param other: Input matrix to sum
+:param time_check: Pass True to measure and log elapsed time of the operation
+:return: Element-wise matrix-matrix sum</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ewiseadd(self, other, time_check=False):
+    &#34;&#34;&#34;
+    Element-wise matrix-matrix addition with boolean &#34;+ = or&#34; operation.
+    Returns element-wise sum of `self` and `other` matrix.
+
+    &gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2], [2, 3, 0])
+    &gt;&gt;&gt; b = Matrix.from_lists((4, 4), [0, 1, 3], [2, 3, 0])
+    &gt;&gt;&gt; print(a.ewiseadd(b))
+    &#39;
+            0   1   2   3
+      0 |   .   .   1   . |   0
+      1 |   .   .   .   1 |   1
+      2 |   1   .   .   . |   2
+      3 |   1   .   .   . |   3
+            0   1   2   3
+    &#39;
+
+    :param other: Input matrix to sum
+    :param time_check: Pass True to measure and log elapsed time of the operation
+    :return: Element-wise matrix-matrix sum
+    &#34;&#34;&#34;
+
+    shape = (self.nrows, self.ncols)
+    out = Matrix.empty(shape)
+
+    status = wrapper.loaded_dll.spbla_Matrix_EWiseAdd(
+        out.hnd,
+        self.hnd,
+        other.hnd,
+        ctypes.c_uint(bridge.get_ewiseadd_hints(time_check=time_check))
+    )
+
+    bridge.check(status)
+    return out</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.extract_matrix"><code class="name flex">
+<span>def <span class="ident">extract_matrix</span></span>(<span>self, i, j, shape, out=None, time_check=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Extract a sub-matrix.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True)
+&gt;&gt;&gt; print(matrix.extract_matrix(0, 1, shape=(3, 3)))
+'
+        0   1   2
+  0 |   .   .   . |   0
+  1 |   1   .   . |   1
+  2 |   .   1   . |   2
+        0   1   2
+'
+</code></pre>
+<p>:param i: First row index to extract
+:param j: First column index to extract
+:param shape: Shape of the sub-matrix
+:param out: Optional matrix where to store result
+:param time_check: Pass True to measure and log elapsed time of the operation
+:return: Sub-matrix</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def extract_matrix(self, i, j, shape, out=None, time_check=False):
+    &#34;&#34;&#34;
+    Extract a sub-matrix.
+
+    &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True)
+    &gt;&gt;&gt; print(matrix.extract_matrix(0, 1, shape=(3, 3)))
+    &#39;
+            0   1   2
+      0 |   .   .   . |   0
+      1 |   1   .   . |   1
+      2 |   .   1   . |   2
+            0   1   2
+    &#39;
+
+    :param i: First row index to extract
+    :param j: First column index to extract
+    :param shape: Shape of the sub-matrix
+    :param out: Optional matrix where to store result
+    :param time_check: Pass True to measure and log elapsed time of the operation
+    :return: Sub-matrix
+    &#34;&#34;&#34;
+
+    if out is None:
+        out = Matrix.empty(shape)
+
+    status = wrapper.loaded_dll.spbla_Matrix_ExtractSubMatrix(
+        out.hnd, self.hnd,
+        ctypes.c_uint(i),
+        ctypes.c_uint(j),
+        ctypes.c_uint(shape[0]),
+        ctypes.c_uint(shape[1]),
+        ctypes.c_uint(bridge.get_sub_matrix_hints(time_check=time_check))
+    )
+
+    bridge.check(status)
+    return out</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.kronecker"><code class="name flex">
+<span>def <span class="ident">kronecker</span></span>(<span>self, other, time_check=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Matrix-matrix kronecker product with boolean "x = and" operation.
+Returns kronecker product of <code>self</code> and <code>other</code> matrices.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; a = Matrix.from_lists((3, 3), [0, 0, 1, 2, 2], [0, 2, 1, 0, 2])
+&gt;&gt;&gt; b = Matrix.from_lists((3, 3), [0, 1, 1, 2], [1, 0, 2, 1])
+&gt;&gt;&gt; print(a.kronecker(b))
+'
+        0   1   2   3   4   5   6   7   8
+  0 |   .   1   .   .   .   .   .   1   . |   0
+  1 |   1   .   1   .   .   .   1   .   1 |   1
+  2 |   .   1   .   .   .   .   .   1   . |   2
+  3 |   .   .   .   .   1   .   .   .   . |   3
+  4 |   .   .   .   1   .   1   .   .   . |   4
+  5 |   .   .   .   .   1   .   .   .   . |   5
+  6 |   .   1   .   .   .   .   .   1   . |   6
+  7 |   1   .   1   .   .   .   1   .   1 |   7
+  8 |   .   1   .   .   .   .   .   1   . |   8
+        0   1   2   3   4   5   6   7   8
+'
+</code></pre>
+<p>:param other: Input matrix
+:param time_check: Pass True to measure and log elapsed time of the operation
+:return: Matrices kronecker product matrix</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def kronecker(self, other, time_check=False):
+    &#34;&#34;&#34;
+    Matrix-matrix kronecker product with boolean &#34;x = and&#34; operation.
+    Returns kronecker product of `self` and `other` matrices.
+
+    &gt;&gt;&gt; a = Matrix.from_lists((3, 3), [0, 0, 1, 2, 2], [0, 2, 1, 0, 2])
+    &gt;&gt;&gt; b = Matrix.from_lists((3, 3), [0, 1, 1, 2], [1, 0, 2, 1])
+    &gt;&gt;&gt; print(a.kronecker(b))
+    &#39;
+            0   1   2   3   4   5   6   7   8
+      0 |   .   1   .   .   .   .   .   1   . |   0
+      1 |   1   .   1   .   .   .   1   .   1 |   1
+      2 |   .   1   .   .   .   .   .   1   . |   2
+      3 |   .   .   .   .   1   .   .   .   . |   3
+      4 |   .   .   .   1   .   1   .   .   . |   4
+      5 |   .   .   .   .   1   .   .   .   . |   5
+      6 |   .   1   .   .   .   .   .   1   . |   6
+      7 |   1   .   1   .   .   .   1   .   1 |   7
+      8 |   .   1   .   .   .   .   .   1   . |   8
+            0   1   2   3   4   5   6   7   8
+    &#39;
+
+    :param other: Input matrix
+    :param time_check: Pass True to measure and log elapsed time of the operation
+    :return: Matrices kronecker product matrix
+    &#34;&#34;&#34;
+
+    shape = (self.nrows * other.nrows, self.ncols * other.ncols)
+    out = Matrix.empty(shape)
+
+    status = wrapper.loaded_dll.spbla_Kronecker(
+        out.hnd,
+        self.hnd,
+        other.hnd,
+        ctypes.c_uint(bridge.get_kronecker_hints(time_check=time_check))
+    )
+
+    bridge.check(status)
+    return out</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.mxm"><code class="name flex">
+<span>def <span class="ident">mxm</span></span>(<span>self, other, out=None, accumulate=False, time_check=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Matrix-matrix multiplication in boolean semiring with "x = and" and "+ = or" operations.
+Returns <code>self</code> multiplied to <code>other</code> matrix.</p>
+<p>Pass optional <code>out</code> matrix to store result.
+Pass <code>accumulate</code>=True to sum the multiplication result with <code>out</code> matrix.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2], [2, 3, 0])
+&gt;&gt;&gt; b = Matrix.from_lists((4, 4), [0, 1, 3], [2, 3, 0])
+&gt;&gt;&gt; print(a.mxm(b, out=a, accumulate=True))
+'
+        0   1   2   3
+  0 |   .   .   1   . |   0
+  1 |   1   .   .   1 |   1
+  2 |   1   .   1   . |   2
+  3 |   .   .   .   . |   3
+        0   1   2   3
+'
+</code></pre>
+<p>:param other: Input matrix for multiplication
+:param out: Optional out matrix to store result
+:param accumulate: Set in true to accumulate the result with <code>out</code> matrix
+:param time_check: Pass True to measure and log elapsed time of the operation
+:return: Matrix-matrix multiplication result (with possible accumulation to <code>out</code> if provided)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mxm(self, other, out=None, accumulate=False, time_check=False):
+    &#34;&#34;&#34;
+    Matrix-matrix multiplication in boolean semiring with &#34;x = and&#34; and &#34;+ = or&#34; operations.
+    Returns `self` multiplied to `other` matrix.
+
+    Pass optional `out` matrix to store result.
+    Pass `accumulate`=True to sum the multiplication result with `out` matrix.
+
+    &gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2], [2, 3, 0])
+    &gt;&gt;&gt; b = Matrix.from_lists((4, 4), [0, 1, 3], [2, 3, 0])
+    &gt;&gt;&gt; print(a.mxm(b, out=a, accumulate=True))
+    &#39;
+            0   1   2   3
+      0 |   .   .   1   . |   0
+      1 |   1   .   .   1 |   1
+      2 |   1   .   1   . |   2
+      3 |   .   .   .   . |   3
+            0   1   2   3
+    &#39;
+
+    :param other: Input matrix for multiplication
+    :param out: Optional out matrix to store result
+    :param accumulate: Set in true to accumulate the result with `out` matrix
+    :param time_check: Pass True to measure and log elapsed time of the operation
+    :return: Matrix-matrix multiplication result (with possible accumulation to `out` if provided)
+    &#34;&#34;&#34;
+
+    if out is None:
+        shape = (self.nrows, other.ncols)
+        out = Matrix.empty(shape)
+        accumulate = False
+
+    status = wrapper.loaded_dll.spbla_MxM(
+        out.hnd,
+        self.hnd,
+        other.hnd,
+        ctypes.c_uint(bridge.get_mxm_hints(is_accumulated=accumulate, time_check=time_check))
+    )
+
+    bridge.check(status)
+    return out</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.reduce"><code class="name flex">
+<span>def <span class="ident">reduce</span></span>(<span>self, time_check=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reduce matrix to vector with boolean "+ = or" operation.
+Return <code>self</code> reduced matrix.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 2], [0, 1, 0, 2])
+&gt;&gt;&gt; print(matrix.reduce())
+'
+          0
+    0 |   1 |   0
+    1 |   1 |   1
+    2 |   1 |   2
+    3 |   . |   3
+          0
+'
+</code></pre>
+<p>:param time_check: Pass True to measure and log elapsed time of the operation
+:return: Reduced matrix (matrix with M x 1 shape)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reduce(self, time_check=False):
+    &#34;&#34;&#34;
+    Reduce matrix to vector with boolean &#34;+ = or&#34; operation.
+    Return `self` reduced matrix.
+
+    &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 2], [0, 1, 0, 2])
+    &gt;&gt;&gt; print(matrix.reduce())
+    &#39;
+              0
+        0 |   1 |   0
+        1 |   1 |   1
+        2 |   1 |   2
+        3 |   . |   3
+              0
+    &#39;
+
+    :param time_check: Pass True to measure and log elapsed time of the operation
+    :return: Reduced matrix (matrix with M x 1 shape)
+    &#34;&#34;&#34;
+
+    shape = (self.nrows, 1)
+    out = Matrix.empty(shape)
+
+    status = wrapper.loaded_dll.spbla_Matrix_Reduce(
+        out.hnd,
+        self.hnd,
+        ctypes.c_uint(bridge.get_reduce_hints(time_check=time_check))
+    )
+
+    bridge.check(status)
+    return out</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.set_marker"><code class="name flex">
+<span>def <span class="ident">set_marker</span></span>(<span>self, marker: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets to the matrix specific debug string marker.
+This marker will appear in the log messages as string identifier of the matrix.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+&gt;&gt;&gt; print(a.marker)
+'0x1a767b0'
+&gt;&gt;&gt; a.set_marker(&quot;meow&quot;)
+&gt;&gt;&gt; print(a.marker)
+'meow (0x1a767b0)'
+</code></pre>
+<p>:param marker: String marker to set
+:return: None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_marker(self, marker: str):
+    &#34;&#34;&#34;
+    Sets to the matrix specific debug string marker.
+    This marker will appear in the log messages as string identifier of the matrix.
+
+    &gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+    &gt;&gt;&gt; print(a.marker)
+    &#39;0x1a767b0&#39;
+    &gt;&gt;&gt; a.set_marker(&#34;meow&#34;)
+    &gt;&gt;&gt; print(a.marker)
+    &#39;meow (0x1a767b0)&#39;
+
+    :param marker: String marker to set
+    :return: None
+    &#34;&#34;&#34;
+
+    assert marker is not None
+
+    status = wrapper.loaded_dll.spbla_Matrix_SetMarker(
+        self.hnd, marker.encode(&#34;utf-8&#34;)
+    )
+
+    bridge.check(status)
+    return None</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.to_list"><code class="name flex">
+<span>def <span class="ident">to_list</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Read matrix values as list of (i,j) pairs.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+&gt;&gt;&gt; a[0, 0] = True
+&gt;&gt;&gt; a[1, 3] = True
+&gt;&gt;&gt; a[1, 0] = True
+&gt;&gt;&gt; a[2, 2] = True
+&gt;&gt;&gt; vals = a.to_list()
+&gt;&gt;&gt; print(vals)
+'[(0, 0), (1, 0), (1, 3), (2, 2)]'
+</code></pre>
+<p>:return: List of (i, j) pairs</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_list(self):
+    &#34;&#34;&#34;
+    Read matrix values as list of (i,j) pairs.
+
+    &gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+    &gt;&gt;&gt; a[0, 0] = True
+    &gt;&gt;&gt; a[1, 3] = True
+    &gt;&gt;&gt; a[1, 0] = True
+    &gt;&gt;&gt; a[2, 2] = True
+    &gt;&gt;&gt; vals = a.to_list()
+    &gt;&gt;&gt; print(vals)
+    &#39;[(0, 0), (1, 0), (1, 3), (2, 2)]&#39;
+
+    :return: List of (i, j) pairs
+    &#34;&#34;&#34;
+
+    I, J = self.to_lists()
+    return list(zip(I, J))</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.to_lists"><code class="name flex">
+<span>def <span class="ident">to_lists</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Read matrix data as lists of <code>rows</code> and <code>clos</code> indices.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+&gt;&gt;&gt; a[0, 0] = True
+&gt;&gt;&gt; a[1, 3] = True
+&gt;&gt;&gt; a[1, 0] = True
+&gt;&gt;&gt; a[2, 2] = True
+&gt;&gt;&gt; rows, cols = a.to_lists()
+&gt;&gt;&gt; print(list(rows), list(cols))
+'[0, 1, 1, 2] [0, 0, 3, 2]'
+</code></pre>
+<p>:return: Pair with <code>rows</code> and <code>cols</code> lists</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_lists(self):
+    &#34;&#34;&#34;
+    Read matrix data as lists of `rows` and `clos` indices.
+
+    &gt;&gt;&gt; a = Matrix.empty(shape=(4, 4))
+    &gt;&gt;&gt; a[0, 0] = True
+    &gt;&gt;&gt; a[1, 3] = True
+    &gt;&gt;&gt; a[1, 0] = True
+    &gt;&gt;&gt; a[2, 2] = True
+    &gt;&gt;&gt; rows, cols = a.to_lists()
+    &gt;&gt;&gt; print(list(rows), list(cols))
+    &#39;[0, 1, 1, 2] [0, 0, 3, 2]&#39;
+
+    :return: Pair with `rows` and `cols` lists
+    &#34;&#34;&#34;
+
+    count = self.nvals
+
+    rows = (ctypes.c_uint * count)()
+    cols = (ctypes.c_uint * count)()
+    nvals = ctypes.c_uint(count)
+
+    status = wrapper.loaded_dll.spbla_Matrix_ExtractPairs(
+        self.hnd, rows, cols, ctypes.byref(nvals)
+    )
+
+    bridge.check(status)
+
+    return rows, cols</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.to_string"><code class="name flex">
+<span>def <span class="ident">to_string</span></span>(<span>self, width=3)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a string representation of the matrix.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+&gt;&gt;&gt; print(matrix)
+'
+        0   1   2   3
+  0 |   1   .   .   . |   0
+  1 |   .   1   .   . |   1
+  2 |   .   .   1   . |   2
+  3 |   1   .   .   . |   3
+        0   1   2   3
+'
+</code></pre>
+<p>:param width: Width of the field in chars where to put numbers of rows and columns
+:return: Matrix string representation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_string(self, width=3):
+    &#34;&#34;&#34;
+    Return a string representation of the matrix.
+
+    &gt;&gt;&gt; matrix = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+    &gt;&gt;&gt; print(matrix)
+    &#39;
+            0   1   2   3
+      0 |   1   .   .   . |   0
+      1 |   .   1   .   . |   1
+      2 |   .   .   1   . |   2
+      3 |   1   .   .   . |   3
+            0   1   2   3
+    &#39;
+
+    :param width: Width of the field in chars where to put numbers of rows and columns
+    :return: Matrix string representation
+    &#34;&#34;&#34;
+
+    nrows = self.nrows
+    ncols = self.ncols
+    nvals = self.nvals
+    rows, cols = self.to_lists()
+
+    cell_empty = &#34;.&#34;
+    cell_filled = &#34;1&#34;
+    cell_sep = &#34; &#34;
+    format_str = &#34;{:&gt;%s}&#34; % width
+
+    header = format_str.format(&#34;&#34;) + &#34;  &#34; + cell_sep + &#34;&#34;.join(format_str.format(j) + cell_sep for j in range(ncols))
+    result = header + &#34;\n&#34;
+
+    v = 0
+    for i in range(nrows):
+        line = format_str.format(i) + &#34; |&#34; + cell_sep
+        for j in range(ncols):
+            if v &lt; nvals and rows[v] == i and cols[v] == j:
+                line += format_str.format(cell_filled) + cell_sep
+                v += 1
+            else:
+                line += format_str.format(cell_empty) + cell_sep
+        line += &#34;| &#34; + format_str.format(i) + &#34;\n&#34;
+        result += line
+
+    result += header + &#34;\n&#34;
+    return result</code></pre>
+</details>
+</dd>
+<dt id="pyspbla.matrix.Matrix.transpose"><code class="name flex">
+<span>def <span class="ident">transpose</span></span>(<span>self, time_check=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates new transposed <code>self</code> matrix.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+&gt;&gt;&gt; b = a.transpose()
+&gt;&gt;&gt; print(a, b, sep=&quot;&quot;)
+'
+        0   1   2   3
+  0 |   1   .   .   . |   0
+  1 |   .   1   .   . |   1
+  2 |   .   .   1   . |   2
+  3 |   1   .   .   . |   3
+        0   1   2   3
+        0   1   2   3
+  0 |   1   .   .   1 |   0
+  1 |   .   1   .   . |   1
+  2 |   .   .   1   . |   2
+  3 |   .   .   .   . |   3
+        0   1   2   3
+'
+</code></pre>
+<p>:param time_check: Pass True to measure and log elapsed time of the operation
+:return: New matrix instance with <code>self</code> transposed data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def transpose(self, time_check=False):
+    &#34;&#34;&#34;
+    Creates new transposed `self` matrix.
+
+    &gt;&gt;&gt; a = Matrix.from_lists((4, 4), [0, 1, 2, 3], [0, 1, 2, 0], is_sorted=True, no_duplicates=True)
+    &gt;&gt;&gt; b = a.transpose()
+    &gt;&gt;&gt; print(a, b, sep=&#34;&#34;)
+    &#39;
+            0   1   2   3
+      0 |   1   .   .   . |   0
+      1 |   .   1   .   . |   1
+      2 |   .   .   1   . |   2
+      3 |   1   .   .   . |   3
+            0   1   2   3
+            0   1   2   3
+      0 |   1   .   .   1 |   0
+      1 |   .   1   .   . |   1
+      2 |   .   .   1   . |   2
+      3 |   .   .   .   . |   3
+            0   1   2   3
+    &#39;
+
+    :param time_check: Pass True to measure and log elapsed time of the operation
+    :return: New matrix instance with `self` transposed data
+    &#34;&#34;&#34;
+
+    shape = (self.ncols, self.nrows)
+    out = Matrix.empty(shape)
+
+    status = wrapper.loaded_dll.spbla_Matrix_Transpose(
+        out.hnd,
+        self.hnd,
+        ctypes.c_uint(bridge.get_transpose_hints(time_check=time_check))
+    )
+
+    bridge.check(status)
+    return out</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pyspbla" href="index.html">pyspbla</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pyspbla.matrix.Matrix" href="#pyspbla.matrix.Matrix">Matrix</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pyspbla.matrix.Matrix.build" href="#pyspbla.matrix.Matrix.build">build</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.dup" href="#pyspbla.matrix.Matrix.dup">dup</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.empty" href="#pyspbla.matrix.Matrix.empty">empty</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.equals" href="#pyspbla.matrix.Matrix.equals">equals</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.ewiseadd" href="#pyspbla.matrix.Matrix.ewiseadd">ewiseadd</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.extract_matrix" href="#pyspbla.matrix.Matrix.extract_matrix">extract_matrix</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.from_lists" href="#pyspbla.matrix.Matrix.from_lists">from_lists</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.generate" href="#pyspbla.matrix.Matrix.generate">generate</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.hnd" href="#pyspbla.matrix.Matrix.hnd">hnd</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.kronecker" href="#pyspbla.matrix.Matrix.kronecker">kronecker</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.marker" href="#pyspbla.matrix.Matrix.marker">marker</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.mxm" href="#pyspbla.matrix.Matrix.mxm">mxm</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.ncols" href="#pyspbla.matrix.Matrix.ncols">ncols</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.nrows" href="#pyspbla.matrix.Matrix.nrows">nrows</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.nvals" href="#pyspbla.matrix.Matrix.nvals">nvals</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.reduce" href="#pyspbla.matrix.Matrix.reduce">reduce</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.set_marker" href="#pyspbla.matrix.Matrix.set_marker">set_marker</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.shape" href="#pyspbla.matrix.Matrix.shape">shape</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.to_list" href="#pyspbla.matrix.Matrix.to_list">to_list</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.to_lists" href="#pyspbla.matrix.Matrix.to_lists">to_lists</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.to_string" href="#pyspbla.matrix.Matrix.to_string">to_string</a></code></li>
+<li><code><a title="pyspbla.matrix.Matrix.transpose" href="#pyspbla.matrix.Matrix.transpose">transpose</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
