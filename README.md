@@ -15,7 +15,7 @@ library features and primitives in high-level format with automated resources ma
 
 * **PyPI package:** [https://pypi.org/project/pyspbla/](https://pypi.org/project/pyspbla/)
 * **Tutorial:** [https://github.com/JetBrains-Research/spbla/blob/main/docs/tutorial.md](https://github.com/JetBrains-Research/spbla/blob/main/docs/tutorial.md)
-* **Extended example:** [https://github.com/JetBrains-Research/spbla/blob/main/docs/getting_started.md](https://github.com/JetBrains-Research/spbla/blob/main/docs/getting_started.md)
+* **Extended example:** [https://github.com/JetBrains-Research/spbla/blob/main/docs/extended_example.md](https://github.com/JetBrains-Research/spbla/blob/main/docs/extended_example.md)
 * **Getting started:** [https://github.com/JetBrains-Research/spbla/blob/main/docs/getting_started.md](https://github.com/JetBrains-Research/spbla/blob/main/docs/getting_started.md)
 * **Contributing guide:** [https://github.com/JetBrains-Research/spbla/blob/master/CONTRIBUTING.md](https://github.com/JetBrains-Research/spbla/blob/master/CONTRIBUTING.md)
 * **Python Reference:** [https://jetbrains-research.github.io/spbla/pydocs/pyspbla](https://jetbrains-research.github.io/spbla/pydocs/pyspbla)
