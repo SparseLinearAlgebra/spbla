@@ -47,6 +47,12 @@ class Wrapper:
         self.backend = "default"
 
         try:
+            if os.environ["SPBLA_DOCS_ONLY"]:
+                return
+        except KeyError:
+            pass
+
+        try:
             # Try from config if present
             self.load_path = os.environ["SPBLA_PATH"]
         except KeyError:
@@ -74,8 +80,9 @@ class Wrapper:
         bridge.check(status)
 
     def __release_library(self):
-        status = self.loaded_dll.spbla_Finalize()
-        bridge.check(status)
+        if self.loaded_dll is not None:
+            status = self.loaded_dll.spbla_Finalize()
+            bridge.check(status)
 
     @classmethod
     def __get_lib_path(cls, prefix):
