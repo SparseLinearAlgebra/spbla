@@ -38,7 +38,7 @@ bibliography: paper.bib
 for GPGPU computations. It comes as stand-alone self-sufficient 
 library with C API for high-performance computing with multiple backends
 for Nvidia Cuda, OpenCL and CPU-only platforms. The library has 
-PyPI `pyspbla` package [@pyspbla] for work within Python runtime. 
+PyPI `pyspbla` package [@pyspbla] for work within a Python runtime. 
 The primary library primitive is a sparse matrix of Boolean values. The library 
 provides the most popular operations for matrix manipulation, such as 
 construction from values, transpose, sub-matrix extraction, matrix-to-vector 
@@ -87,7 +87,7 @@ for Python programming.
 GPGPU's utilization for data analysis and for linear algebra operations is a promising 
 way to high-performance data analysis because GPGPU is much more powerful in parallel
 data processing. However, GPGPU programming is still challenging.
-Best to our knowledge, there is no complete `GraphBLAS API` implementation for GPGPU
+To the best of our knowledge, there is no complete `GraphBLAS API` implementation for GPGPU
 computations, except `GraphBLAST` [@yang2019graphblast], which is currently in the
 active development. Some work is also done to move `SuiteSparse` forward GPGPU computations.
 
@@ -129,7 +129,7 @@ at University of Florida [@data:suitesparse_matrix_collection]. Information abou
 Table contains matrix name, number of rows in the matrix (the same as number of columns),
 number of non-zero elements (Nnz) in the matrix, average and maximum nnz in row, nnz in the result matrix.
 
-Experiment is intended to measure the performance of matrix-matrix multiplication as $M \times M$.
+The experiment is intended to measure the performance of matrix-matrix multiplication as $M \times M$.
 Results of the evaluation presented in \autoref{fig:perftime} and \autoref{fig:perfmem}. 
 Results averaged among 10 runs. The deviation of results does not exceed 10%. Best and worst results highlighted.
 Extra warm-up run, required for initialization and kernels compilation, is excluded from measurements.
@@ -150,7 +150,7 @@ good alternative for CPU-only computations.
 First direction of the future research is library extension to multi-GPU environment support.
 This step introduces a number of issues, such as memory management among computational
 units as well as proper workload dispatch and granularity of parallel tasks.
-Potential solution is to use a hybrid sparse matrix format, such as quadtree or blocked storage,
+A potential solution is to use a hybrid sparse matrix format, such as quadtree or blocked storage,
 and utilize virtual memory. It is necessary to expose more control over expressions evaluations to the 
 user in order to support matrix and expression level granularity among computational units. 
 
