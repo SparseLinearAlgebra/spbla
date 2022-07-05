@@ -64,7 +64,7 @@ and evaluation of regular and CFL-reachability queries [@inproceedings:matrix_cf
 Thus, we can offload different language-constrained path querying related problems, 
 and other problems that can be reduced to manipulation of Boolean matrices, to GPGPU uniformly. 
 
-Moreover, real data analysis leads to huge matrix processing that can not be efficiently 
+Moreover, real world data analysis leads to huge matrix processing that can not be efficiently 
 handled on a single GPGPU. The creation of the library which supports multi-GPU and 
 out-of-VRAM computations helps to create an efficient solution for a wide range of applied problems. 
 The creation of such a solution is an open problem while ad-hoc solutions exist in specific areas. 
