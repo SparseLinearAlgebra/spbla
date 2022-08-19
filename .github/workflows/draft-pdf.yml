@@ -1,3 +1,5 @@
+name: Joss Paper Draft
+
 on:
   push:
     branches: [ main ]
