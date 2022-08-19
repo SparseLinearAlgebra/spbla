@@ -5,6 +5,45 @@ Changes format: version name and date, minor notes, new features, fixes, what re
 
 Release are available at [link](https://github.com/JetBrains-Research/spbla/releases). 
 
+## v1.0.0+zenodo - August 19, 2022
+
+Project source code archive for JOSS publication `SPbLA: The Library of GPGPU-powered Sparse Boolean Linear Algebra Operations`
+
+### Authors
+
+- name: Egor Orachev   
+  orcid: 0000-0002-0424-4059
+  affiliations: 1, 3
+- name: Maria Karpenko
+  affiliations: 2
+- name: Pavel Alimov
+  affiliations: 1
+- name: Semyon Grigorev   
+  affiliations: 1, 3
+  orcid: 0000-0002-7966-0698
+
+### Affiliations
+
+- name: Saint Petersburg State University
+- name: ITMO University
+- name: JetBrains Research
+
+### Tags
+
+- Python
+- C
+- C++
+- sparse-matrix
+- linear-algebra
+- graph-analysis
+- graph-algorithms
+- nvidia-cuda
+- opencl
+
+### Note
+
+spbla project source code for the version 1.0.0+ (Zenodo archive).
+
 ## v1.0.0 - June 8, 2021
 
 ### Summary 
